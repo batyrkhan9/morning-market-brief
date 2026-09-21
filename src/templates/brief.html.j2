@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ t.site_title }} · {{ day.date }}</title>
+  <script src="{{ charts.cdn }}" charset="utf-8"></script>
   <style>
     :root { --pos: #1a7f37; --neg: #c0392b; --muted: #666; --line: #e3e3e3; --note: #fff4e5; --note-line: #f0b35e; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 56rem; margin: 2rem auto; padding: 0 1rem; color: #1b1b1b; line-height: 1.4; }
@@ -21,11 +22,26 @@
     .src { font-size: .75rem; color: var(--muted); margin-left: .3rem; text-decoration: none; }
     .note { background: var(--note); border-left: 4px solid var(--note-line); padding: .5rem .8rem; margin: .6rem 0; font-size: .9rem; }
     footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+    h3 { font-size: 1rem; margin: 1.2rem 0 .2rem; }
+    .note.small { font-size: .8rem; padding: .3rem .6rem; }
+    .pub { color: var(--muted); font-size: .8rem; }
+    .tag { font-size: .7rem; border: 1px solid var(--muted); border-radius: 3px; padding: 0 .3rem; color: var(--muted); }
+    ul.news { margin: .2rem 0 .4rem; padding-left: 1.1rem; font-size: .9rem; }
+    ul.news li { margin: .15rem 0; white-space: normal; }
+    table.movers td { white-space: normal; vertical-align: top; }
+    tr.sub td { border-bottom: 1px solid var(--line); padding-top: 0; }
+    .card { border: 1px solid var(--line); border-radius: 6px; padding: .8rem 1rem; margin: .8rem 0; }
+    .card .rules { margin: .2rem 0 .5rem; }
+    .card .rules span { display: inline-block; background: #eef3fb; border-radius: 3px; padding: .1rem .4rem; margin: .1rem .2rem .1rem 0; font-size: .85rem; }
+    .kv { color: var(--muted); font-size: .85rem; }
+    .chart { margin: .5rem 0; }
+    a.more { font-size: .9rem; }
   </style>
 </head>
 <body>
   <h1>{{ t.site_title }}</h1>
-  <p class="meta">{{ t.edition }} {{ day.date }} · {{ t.as_of }} {{ day.as_of or "—" }} · {{ t.built_at }} {{ day.built_at }}</p>
+  <p class="meta">{{ t.edition }} {{ day.date }} · {{ t.as_of }} {{ day.as_of or "—" }} · {{ t.built_at }} {{ day.built_at }} · <a class="more" href="baseline.html">{{ t.baseline_title }}</a></p>
+  {% import "_macros.html.j2" as m with context %}
 
   {% macro row(r) -%}
     <tr>
@@ -74,10 +90,50 @@
     </table>
   {% endif %}
 
+  {% set hm = day.sections.heatmap %}
+  <h2>{{ t.heatmap }}</h2>
+  {% if hm.error %}
+    <div class="note">{{ t.section_failed }}: {{ hm.error }}</div>
+  {% else %}
+    <p class="kv">{{ t.heatmap_legend }}{% if hm.skipped %} · {{ hm.skipped | length }} {{ t.heatmap_skipped }}{% endif %}</p>
+    <div class="chart">{{ charts.heatmap | safe }}</div>
+  {% endif %}
+
+  {% set fm = day.sections.movers %}
+  <h2>{{ t.fast_movers }}</h2>
+  {% if fm.error %}
+    <div class="note">{{ t.section_failed }}: {{ fm.error }}</div>
+  {% else %}
+    {{ m.mover_table(fm.gainers, t.gainers) }}
+    {{ m.mover_table(fm.losers, t.losers) }}
+  {% endif %}
+
+  {% set sm = day.sections.slow_movers %}
+  <h2>{{ t.slow_movers }}</h2>
+  <p class="kv">{{ t.slow_movers_intro }}</p>
+  {% if sm.error %}
+    <div class="note">{{ t.section_failed }}: {{ sm.error }}</div>
+  {% elif not sm.flagged %}
+    <p>{{ t.no_slow_movers }}</p>
+  {% else %}
+    {% for f in sm.flagged %}
+    <div class="card" id="slow-{{ f.ticker }}">
+      <strong>{{ f.name }}</strong> <a class="src" href="{{ f.source_url }}" target="_blank" rel="noopener">{{ f.ticker }} ↗</a> <span class="pub">{{ f.sector }}</span>
+      <div class="rules">{% for r in f.rules %}<span>{{ t["rule_" ~ r] }}</span>{% endfor %}</div>
+      <div class="kv">{{ t.col_last }} {{ f.last | num }} · {{ t.col_1d }} <span class="{{ f.chg_1d | sign }}">{{ f.chg_1d | chg }}</span> · {{ t.ret_1y }} <span class="{{ f.ret_1y | sign }}">{{ f.ret_1y | chg }}</span> · {{ t.ret_5y }} <span class="{{ f.ret_5y | sign }}">{{ f.ret_5y | chg }}</span></div>
+      <div class="chart">{{ charts.slow[f.ticker] | safe }}</div>
+      <div class="kv">{{ t.why }}</div>
+      {{ m.headlines(f) }}
+    </div>
+    {% endfor %}
+  {% endif %}
+  {% if sm.suppressed %}<p class="kv">{{ sm.suppressed | length }} {{ t.suppressed }}: {% for x in sm.suppressed %}{{ x.ticker }} ({{ t["rule_" ~ x.rule] }}){% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+
   <footer>
     <p>{{ t.footer_numbers }}</p>
     <p>{{ t.footer_price_only }}</p>
-    <p>{{ t.footer_sources }}</p>
+    <p>{{ t.footer_sources }} {{ t.universe_note | capitalize }}.</p>
+    {% if day.timing %}<p>{{ t.timing }}: {% for k, v in day.timing.items() %}{{ k }}={{ v }}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
   </footer>
 </body>
 </html>

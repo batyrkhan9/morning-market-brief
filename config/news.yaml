@@ -1,0 +1,16 @@
+headlines_per_item: 3
+# Headlines from these domains get a "paywall" tag. Matched on the publisher's domain.
+paywall_domains:
+  - bloomberg.com
+  - wsj.com
+  - ft.com
+  - barrons.com
+  - economist.com
+  - theinformation.com
+  - nytimes.com
+  - washingtonpost.com
+  - seekingalpha.com
+  - marketwatch.com
+  - businessinsider.com
+  - thetimes.com
+  - telegraph.co.uk

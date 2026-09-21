@@ -30,9 +30,15 @@ brew install uv                                  # once, if uv is missing
 uv python install 3.12                           # once
 uv venv --python 3.12 .venv                      # create the venv
 uv pip install --python .venv/bin/python -r requirements.txt
-.venv/bin/python -m src.main --dry-run           # build the page locally, send nothing
+.venv/bin/python -m src.main --dry-run           # build the page locally, send nothing, state untouched
 .venv/bin/python -m src.main --date 2026-09-19   # rebuild a past day from saved JSON
+.venv/bin/python -m src.main --baseline          # one-time watchlist: every stock beyond a slow mover threshold
+.venv/bin/python -m src.backtest NKE 2022-01-01  # every date and rule the slow mover rules would have fired
+.venv/bin/python -m pytest                       # offline tests against saved API responses
+.venv/bin/python -m tests.make_fixtures          # refresh the saved responses (network)
 ```
+
+Weekly caches committed to the repo: `data/constituents.json` (Wikipedia S&P 500 table) and `data/market_caps.json`.
 
 Or activate the venv with `source .venv/bin/activate` and use `python` directly.
 

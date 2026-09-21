@@ -1,0 +1,28 @@
+{% macro headlines(item) -%}
+  {% if item.headlines %}
+    <ul class="news">
+    {% for h in item.headlines %}
+      <li><a href="{{ h.url }}" target="_blank" rel="noopener">{{ h.title }}</a> <span class="pub">· {{ h.publisher }}</span>{% if h.paywall %} <span class="tag">{{ t.paywall }}</span>{% endif %}</li>
+    {% endfor %}
+    </ul>
+  {% elif item.news_error %}
+    <div class="note small">{{ t.news_failed }}: {{ item.news_error }}</div>
+  {% else %}
+    <div class="pub">{{ t.no_headlines }}</div>
+  {% endif %}
+{%- endmacro %}
+
+{% macro mover_table(rows, title) -%}
+  <h3>{{ title }}</h3>
+  <table class="movers">
+    <tr><th>{{ t.col_item }}</th><th>{{ t.col_move }}</th><th>{{ t.col_sector_move }}</th></tr>
+    {% for m in rows %}
+    <tr>
+      <td>{{ m.name }} <a class="src" href="{{ m.source_url }}" target="_blank" rel="noopener">{{ m.ticker }} ↗</a><br><span class="pub">{{ m.sector }}</span></td>
+      <td class="{{ m.chg_1d | sign }}">{{ m.chg_1d | chg }}</td>
+      <td class="{{ m.sector_chg_1d | sign }}">{{ m.sector_chg_1d | chg }} <span class="pub">{{ m.sector_etf or "" }}</span></td>
+    </tr>
+    <tr class="sub"><td colspan="3">{{ headlines(m) }}</td></tr>
+    {% endfor %}
+  </table>
+{%- endmacro %}

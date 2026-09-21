@@ -1,4 +1,5 @@
 """Price data. The only file that touches yfinance (unofficial; expect breakage, swap here only)."""
+import time
 import warnings
 
 import pandas as pd
@@ -11,7 +12,7 @@ def _download(tickers, period):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         df = yf.download(
-            list(tickers), period=period, auto_adjust=False, progress=False, threads=False
+            list(tickers), period=period, auto_adjust=False, progress=False, threads=True
         )
     if df is None or df.empty:
         raise RuntimeError(f"yfinance returned no data for {list(tickers)}")
@@ -28,8 +29,23 @@ def _download(tickers, period):
 
 
 def get_prices(tickers, period="2y"):
-    """Return a DataFrame of daily closes: index = date, one column per ticker.
+    """Return a DataFrame of split-adjusted daily closes (Yahoo's "Close", not "Adj Close").
 
-    Tickers with no data at all are listed in DataFrame.attrs["missing"].
+    Changes computed from these match what Yahoo and Google display: price only, no dividends.
+    Index = date, one column per ticker. Tickers with no data at all are in DataFrame.attrs["missing"].
     """
     return retry(_download, tuple(tickers), period)
+
+
+def get_market_caps(tickers, pause=0.05):
+    """Return {ticker: market cap in USD or None}. One quote call per ticker, so cache the result."""
+    caps = {}
+    for t in tickers:
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                caps[t] = float(yf.Ticker(t).fast_info["marketCap"])
+        except Exception:  # noqa: BLE001 - one bad ticker must not break the batch
+            caps[t] = None
+        time.sleep(pause)
+    return caps

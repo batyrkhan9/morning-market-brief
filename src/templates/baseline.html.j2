@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t.baseline_title }} · {{ base.as_of }}</title>
+  <style>
+    :root { --pos: #1a7f37; --neg: #c0392b; --muted: #666; --line: #e3e3e3; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 56rem; margin: 2rem auto; padding: 0 1rem; color: #1b1b1b; line-height: 1.4; }
+    h2 { font-size: 1.15rem; margin-top: 1.8rem; border-bottom: 1px solid var(--line); padding-bottom: .3rem; }
+    table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+    th, td { padding: .3rem .5rem; text-align: right; border-bottom: 1px solid var(--line); }
+    th:first-child, td:first-child { text-align: left; } th { color: var(--muted); font-size: .85rem; }
+    .pos { color: var(--pos); } .neg { color: var(--neg); } .kv { color: var(--muted); font-size: .85rem; }
+    .src { font-size: .75rem; color: var(--muted); margin-left: .3rem; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>{{ t.baseline_title }}</h1>
+  <p class="kv">{{ t.as_of }} {{ base.as_of }} · {{ base.universe_size }} {{ t.universe_note }} · <a href="index.html">{{ t.back_to_brief }}</a></p>
+  <p>{{ t.baseline_intro }}</p>
+  {% for rule, rows in base.by_rule.items() %}
+  <h2>{{ t["base_" ~ rule] }} <span class="kv">({{ rows | length }})</span></h2>
+  {% if rows %}
+  <table>
+    <tr><th>{{ t.col_item }}</th><th>{{ t.col_last }}</th><th>{{ t.ret_1y }}</th><th>{{ t.ret_5y }}</th></tr>
+    {% for r in rows %}
+    <tr><td>{{ r.name }} <a class="src" href="{{ r.source_url }}" target="_blank" rel="noopener">{{ r.ticker }} ↗</a> <span class="kv">{{ r.sector }}</span></td>
+      <td>{{ r.last | num }}</td><td class="{{ r.ret_1y | sign }}">{{ r.ret_1y | chg }}</td><td class="{{ r.ret_5y | sign }}">{{ r.ret_5y | chg }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="kv">—</p>{% endif %}
+  {% endfor %}
+  {% if base.short_history %}<p class="kv">{{ t.short_history | capitalize }}: {{ base.short_history | join(", ") }}</p>{% endif %}
+</body>
+</html>

@@ -22,19 +22,24 @@ snapshot:
     - {ticker: "GC=F", label: "Gold"}
 
 sectors:
-  - {ticker: "XLK", label: "Technology"}
-  - {ticker: "XLF", label: "Financials"}
-  - {ticker: "XLV", label: "Health Care"}
-  - {ticker: "XLY", label: "Consumer Discretionary"}
-  - {ticker: "XLP", label: "Consumer Staples"}
-  - {ticker: "XLE", label: "Energy"}
-  - {ticker: "XLI", label: "Industrials"}
-  - {ticker: "XLB", label: "Materials"}
-  - {ticker: "XLU", label: "Utilities"}
-  - {ticker: "XLRE", label: "Real Estate"}
-  - {ticker: "XLC", label: "Communication Services"}
+  - {gics: "Information Technology", ticker: "XLK", label: "Technology"}
+  - {gics: "Financials", ticker: "XLF", label: "Financials"}
+  - {gics: "Health Care", ticker: "XLV", label: "Health Care"}
+  - {gics: "Consumer Discretionary", ticker: "XLY", label: "Consumer Discretionary"}
+  - {gics: "Consumer Staples", ticker: "XLP", label: "Consumer Staples"}
+  - {gics: "Energy", ticker: "XLE", label: "Energy"}
+  - {gics: "Industrials", ticker: "XLI", label: "Industrials"}
+  - {gics: "Materials", ticker: "XLB", label: "Materials"}
+  - {gics: "Utilities", ticker: "XLU", label: "Utilities"}
+  - {gics: "Real Estate", ticker: "XLRE", label: "Real Estate"}
+  - {gics: "Communication Services", ticker: "XLC", label: "Communication Services"}
 
 kazakhstan:
   - {ticker: "KZT=X", label: "USD/KZT"}
   - {ticker: "KSPI", label: "Kaspi"}
   - {ticker: "KAP.IL", label: "Kazatomprom"}  # verify working ticker
+
+universe:
+  history_period: "6y"     # at least 5 years and 1 month for the slow mover rules
+  benchmark: "^GSPC"
+  movers_count: 5          # top N gainers and losers

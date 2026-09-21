@@ -38,5 +38,35 @@ def main():
     print("prices", closes.shape, closes.index[0].date(), closes.index[-1].date())
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and "m2" not in __import__("sys").argv:
     main()
+
+
+SUBSET = ["AAPL", "MSFT", "NVDA", "NKE", "JPM", "XOM", "LLY", "GOOGL", "CAT", "COST", "NEE", "PLD", "LIN",
+          "BRK-B", "META", "AMZN", "TSLA", "UNH", "HD", "PG", "KO", "PFE", "INTC", "BA", "DIS", "GEV", "SOLV", "KVUE", "HOOD", "CEG"]
+
+
+def milestone2():
+    """Wikipedia HTML (gzipped), Google and Yahoo RSS for Nike, a 30 ticker subset of the 6 year download, caps."""
+    import gzip
+    from src.sources import constituents, news, prices
+    (FIX / "constituents").mkdir(parents=True, exist_ok=True)
+    html = constituents._fetch()
+    with gzip.open(FIX / "constituents" / "wikipedia_sp500.html.gz", "wt", encoding="utf-8") as f:
+        f.write(html)
+    print("wikipedia", len(html), "chars")
+    (FIX / "news").mkdir(exist_ok=True)
+    (FIX / "news" / "google_nike.xml").write_text(news._polite_get(news.google_url('"Nike" stock')), encoding="utf-8")
+    (FIX / "news" / "yahoo_nke.xml").write_text(news._polite_get(news.yahoo_url("NKE")), encoding="utf-8")
+    print("rss saved")
+    closes = prices.get_prices(SUBSET + ["^GSPC"], period="6y")
+    (FIX / "prices").mkdir(exist_ok=True)
+    closes.to_csv(FIX / "prices" / "subset_6y.csv", float_format="%.4f")
+    print("subset prices", closes.shape)
+    caps = prices.get_market_caps(SUBSET)
+    (FIX / "market_caps_subset.json").write_text(json.dumps(caps, indent=1) + "\n")
+    print("caps", sum(1 for v in caps.values() if v), "of", len(caps))
+
+
+if __name__ == "__main__" and "m2" in __import__("sys").argv:
+    milestone2()

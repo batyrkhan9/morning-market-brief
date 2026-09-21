@@ -87,7 +87,9 @@ def test_stale_without_fallback_is_marked(config, offline_prices, offline_fred, 
     r = _row(out, "DX-Y.NYB")
     assert r["stale"] is True and r["id"] == "DX-Y.NYB"
     html = __import__("src.render", fromlist=["render_html"]).render_html(
-        {"date": "x", "as_of": out["as_of"], "built_at": "x", "sections": {"snapshot": out, "sectors": {"error": "skip"}}}
+        {"date": "x", "as_of": out["as_of"], "built_at": "x",
+         "sections": {"snapshot": out, "sectors": {"error": "skip"}, "heatmap": {"error": "skip"},
+                      "movers": {"error": "skip"}, "slow_movers": {"error": "skip"}}}
     )
     assert ">stale<" in html and "+0.00%" not in html
 
