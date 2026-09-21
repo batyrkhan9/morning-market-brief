@@ -42,13 +42,18 @@ def build(ctx):
     ranked = sorted(moves.items(), key=lambda kv: kv[1], reverse=True)
     gainers, losers = ranked[:n], list(reversed(ranked[-n:]))
 
+    scan = ctx.get("filings_8k")
+
     def row(t, chg):
         rec = meta.loc[t]
         etf = gics_to_etf.get(rec["sector"])
         items, err = headlines_for(rec["name"], t, per_item)
+        filings = scan["by_ticker"].get(t, []) if scan else []
         return {"ticker": t, "name": rec["name"], "sector": rec["sector"], "chg_1d": chg,
                 "sector_etf": etf, "sector_chg_1d": sector_moves.get(etf),
                 "headlines": items, "news_error": err,
+                "filings": [{k: f[k] for k in ("form", "accepted_et", "items", "url", "index_url")} for f in filings],
+                "filings_error": None if scan else ctx.get("filings_error"),
                 "source_url": "https://finance.yahoo.com/quote/" + t}
 
     return {"as_of": as_of, "gainers": [row(t, c) for t, c in gainers],

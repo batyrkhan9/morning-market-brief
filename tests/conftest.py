@@ -123,3 +123,41 @@ def isolated_state(monkeypatch, tmp_path):
     sched.write_text("schedule:\n  - {week: 1, ticker: NKE, competitors: []}\nqueue: []\n")
     monkeypatch.setattr(main, "SCHEDULE", sched)
     return tmp_path
+
+
+@pytest.fixture
+def offline_edgar(monkeypatch):
+    """EDGAR answers from saved responses: submissions per subset ticker, NKE facts, sections, press release."""
+    from src.sources import edgar
+    monkeypatch.setenv("EDGAR_CONTACT_EMAIL", "test@example.com")
+    subs = {}
+    for f in (FIX / "edgar" / "submissions").glob("*.json"):
+        payload = json.loads(f.read_text())
+        subs[str(int(payload["cik"])).zfill(10)] = payload
+    facts = json.loads((FIX / "edgar" / "companyfacts_NKE.json").read_text())
+    sections = json.loads((FIX / "edgar" / "tenk_sections_NKE.json").read_text())
+    press = json.loads((FIX / "edgar" / "press_release_NKE.json").read_text())
+
+    def fake_get(url, as_json=True):
+        if "/submissions/CIK" in url:
+            cik = url.split("CIK")[1][:10]
+            if cik in subs:
+                return subs[cik]
+            raise RuntimeError("404 no saved submissions for " + cik)
+        if "/companyfacts/CIK" in url:
+            if url.split("CIK")[1][:10] == str(int(facts["cik"])).zfill(10):
+                return facts
+            raise RuntimeError("404 no saved facts")
+        if url.endswith("/index.json"):
+            return {"directory": {"item": [{"name": "nke-ex991.htm"}, {"name": "form8k.htm"}]}}
+        if url == press["url"] or "ex991" in url:
+            return "<html><body>" + "".join(f"<p>{p}</p>" for p in press["text"].split("\n\n")) + "</body></html>"
+        if url.endswith("company_tickers.json"):
+            return {"0": {"cik_str": int(facts["cik"]), "ticker": "NKE", "title": "NIKE, Inc."},
+                    "1": {"cik_str": 1000045, "ticker": "ADDYY", "title": "ADIDAS AG"}}
+        raise RuntimeError("no fixture for " + url)
+    monkeypatch.setattr(edgar, "cached_get", fake_get)
+    monkeypatch.setattr(edgar, "get_10k_sections", lambda cik, items=("1", "1A", "7"): {
+        "filing": sections["filing"], "sections": {i: sections["sections"].get(i) for i in items},
+        "errors": {i: sections["errors"][i] for i in items if i in sections["errors"]}})
+    return {"submissions": subs, "facts": facts, "sections": sections, "press": press}

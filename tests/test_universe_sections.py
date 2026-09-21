@@ -85,4 +85,4 @@ def test_page_builds_when_universe_fails(config, offline_prices, offline_fred, o
         assert "wikipedia down" in day["sections"][name]["error"]
     assert "error" not in day["sections"]["snapshot"]
     html = render.render_html(day)
-    assert html.count("This section failed to build") == 3 and "Breadth" in html
+    assert html.count("This section failed to build") == 5 and "Breadth" in html   # heatmap, movers, slow, earnings, deep dive

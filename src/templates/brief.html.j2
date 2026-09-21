@@ -101,6 +101,28 @@
     </table>
   {% endif %}
 
+  {% set er = day.sections.earnings %}
+  <h2>{{ t.earnings }}</h2>
+  {% if er.error %}
+    <div class="note">{{ t.section_failed }}: {{ er.error }}</div>
+  {% elif not er.rows %}
+    <p>{{ t.no_earnings }} <span class="kv">({{ er.scanned }} {{ t.scanned_note }}{% if er.scan_errors %}, {{ er.scan_errors }} {{ t.scan_errors }}{% endif %})</span></p>
+  {% else %}
+    <p class="kv">{{ t.earnings_intro }}</p>
+    <table>
+      <tr><th>{{ t.col_item }}</th><th>{{ t.col_1d }}</th><th>{{ t.accepted }}</th><th></th></tr>
+      {% for r in er.rows %}
+      <tr>
+        <td>{{ r.name }} <a class="src" href="{{ r.source_url }}" target="_blank" rel="noopener">{{ r.ticker }} ↗</a></td>
+        <td class="{{ r.chg_1d | sign }}">{{ r.chg_1d | chg }}</td>
+        <td class="date">{{ r.accepted_et }}</td>
+        <td><a href="{{ r.exhibit_url }}" target="_blank" rel="noopener">{{ t.press_release }} ↗</a> <a class="src" href="{{ r.index_url }}" target="_blank" rel="noopener">{{ t.filing_index }}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+    <p class="kv">{{ er.scanned }} {{ t.scanned_note }}{% if er.scan_errors %}, {{ er.scan_errors }} {{ t.scan_errors }}{% endif %}.</p>
+  {% endif %}
+
   {% set hm = day.sections.heatmap %}
   <h2>{{ t.heatmap }}</h2>
   {% if hm.error %}
@@ -142,6 +164,19 @@
     {% endif %}
   {% endif %}
   {% if sm.suppressed %}<p class="kv">{{ sm.suppressed | length }} {{ t.suppressed }}: {% for x in sm.suppressed %}{{ x.ticker }}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+
+  {% set dd = day.sections.deep_dive %}
+  <h2>{{ t.deep_dive }}</h2>
+  {% if dd.error %}
+    <div class="note">{{ t.section_failed }}: {{ dd.error }}</div>
+  {% else %}
+    <div class="card">
+      <strong>{{ t.week }} {{ dd.week }}: {{ dd.name }}</strong> <span class="pub">{{ dd.ticker }}{% if dd.sector %} · {{ dd.sector }}{% endif %}</span>
+      <div>{{ t["chunk_" ~ dd.chunk] }}</div>
+      {% for e in dd.errors %}<div class="note small">{{ t.partial_chunk }} ({{ e.where }}): {{ e.message }}</div>{% endfor %}
+      <p><a href="{{ dd.page }}">{{ t.read_chunk }} →</a></p>
+    </div>
+  {% endif %}
 
   <footer>
     <p>{{ t.footer_numbers }}</p>

@@ -67,7 +67,7 @@ def to_png(fig, path, width=1000, height=600):
 
 def static_line_svg(dates, a, b, label_a, label_b, width=640, height=200):
     """A dependency-free SVG line chart: two series indexed to 100, hairline grid, year ticks, legend."""
-    pad_l, pad_r, pad_t, pad_b = 40, 8, 22, 20
+    pad_l, pad_r, pad_t, pad_b = 40, 8, 30, 20
     w, h = width - pad_l - pad_r, height - pad_t - pad_b
     vals = [v for v in a + b if v is not None]
     lo, hi = min(vals), max(vals)
@@ -93,13 +93,65 @@ def static_line_svg(dates, a, b, label_a, label_b, width=640, height=200):
     seen = set()
     for i, d in enumerate(dates):
         yr = d[:4]
-        if yr not in seen and i > 0:
+        if yr not in seen and i > 0.06 * n:
             seen.add(yr)
             x = pad_l + i / n * w
             out.append(f'<text x="{x:.1f}" y="{height - 6}" text-anchor="middle" fill="{MUTED}">{yr}</text>')
     out.append(path(b, SERIES[1]))
     out.append(path(a, SERIES[0]))
-    out.append(f'<rect x="{pad_l}" y="4" width="14" height="3" fill="{SERIES[0]}"/><text x="{pad_l + 18}" y="9" fill="{INK}">{label_a}</text>')
-    out.append(f'<rect x="{pad_l + 90}" y="4" width="14" height="3" fill="{SERIES[1]}"/><text x="{pad_l + 108}" y="9" fill="{INK}">{label_b}</text>')
+    out.append(f'<rect x="{pad_l}" y="10" width="14" height="3" fill="{SERIES[0]}"/><text x="{pad_l + 18}" y="15" fill="{INK}">{label_a}</text>')
+    out.append(f'<rect x="{pad_l + 90}" y="10" width="14" height="3" fill="{SERIES[1]}"/><text x="{pad_l + 108}" y="15" fill="{INK}">{label_b}</text>')
     out.append("</svg>")
     return "".join(out)
+
+
+SERIES5 = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]
+
+
+def _layout(fig, height, ytitle=None):
+    fig.update_layout(
+        margin=dict(t=8, l=0, r=0, b=0), height=height, font=dict(family=FONT, color=INK, size=12),
+        paper_bgcolor="#fcfcfb", plot_bgcolor="#fcfcfb", hovermode="x unified",
+        xaxis=dict(showgrid=False, linecolor=GRID, tickfont=dict(color=MUTED)),
+        yaxis=dict(gridcolor=GRID, zeroline=False, tickfont=dict(color=MUTED), title=ytitle),
+    )
+    return fig
+
+
+def bars_figure(periods, values, unit):
+    """One metric over fiscal years. Thin bars, tabular hover, unit-aware axis."""
+    labels = [p[:4] if p else "" for p in periods]
+    if unit == "USD":
+        y = [None if v is None else v / 1e9 for v in values]
+        ytitle, fmt = "USD bn", "%{y:,.1f} bn"
+    elif unit == "shares":
+        y = [None if v is None else v / 1e6 for v in values]
+        ytitle, fmt = "million shares", "%{y:,.0f} m"
+    else:
+        y = values
+        ytitle, fmt = "%", "%{y:.1f}%"
+    fig = go.Figure(go.Bar(x=labels, y=y, marker=dict(color=SERIES[0], line=dict(width=0)),
+                           hovertemplate=fmt, customdata=periods, width=0.6))
+    _layout(fig, 220, ytitle)
+    fig.update_layout(hovermode="x", showlegend=False)
+    fig.update_xaxes(type="category")
+    return fig
+
+
+def line_figure(dates, values, label, unit=""):
+    fig = go.Figure(go.Scatter(x=dates, y=values, mode="lines", name=label,
+                               line=dict(width=2, color=SERIES[0]), hovertemplate="%{y:.2f}" + (unit if unit == "%" else "")))
+    _layout(fig, 220, unit if unit != "index" else None)
+    fig.update_layout(showlegend=False)
+    return fig
+
+
+def multi_line_figure(series, height=320):
+    """series: {label: {dates, values}} indexed to 100, at most 5 lines in fixed color order."""
+    fig = go.Figure()
+    for (label, s), color in zip(series.items(), SERIES5):
+        fig.add_trace(go.Scatter(x=s["dates"], y=s["values"], mode="lines", name=label,
+                                 line=dict(width=2, color=color), hovertemplate="%{y:.0f}"))
+    _layout(fig, height, "indexed to 100")
+    fig.update_layout(showlegend=True, legend=dict(orientation="h", y=1.08, x=0, font=dict(size=12)))
+    return fig

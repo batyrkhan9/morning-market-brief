@@ -38,7 +38,7 @@ def main():
     print("prices", closes.shape, closes.index[0].date(), closes.index[-1].date())
 
 
-if __name__ == "__main__" and "m2" not in __import__("sys").argv:
+if __name__ == "__main__" and not {"m2", "m3"} & set(__import__("sys").argv):
     main()
 
 
@@ -70,3 +70,47 @@ def milestone2():
 
 if __name__ == "__main__" and "m2" in __import__("sys").argv:
     milestone2()
+
+
+def milestone3():
+    """EDGAR: submissions for the 30 ticker subset (trimmed to recent 8-Ks and 10-Ks), NKE company facts
+    trimmed to the candidate tags, NKE 10-K sections (first 3000 chars each), NKE press release text."""
+    from src.sources import constituents, edgar
+    load_dotenv(ROOT / ".env")
+    cons = constituents.get_sp500()
+    cons = cons[cons["ticker"].isin(SUBSET)]
+    (FIX / "edgar" / "submissions").mkdir(parents=True, exist_ok=True)
+    keep_forms = {"8-K", "8-K/A", "10-K", "10-K/A"}
+    for rec in cons.to_dict(orient="records"):
+        sub = edgar.get_submissions(rec["cik"])
+        rec_f = sub["filings"]["recent"]
+        n = len(rec_f["accessionNumber"])
+        idx = [i for i in range(n) if rec_f["form"][i] in keep_forms][:60]
+        trimmed = {k: [v[i] for i in idx] for k, v in rec_f.items() if isinstance(v, list) and len(v) == n}
+        payload = {"cik": sub["cik"], "name": sub["name"], "tickers": sub.get("tickers"),
+                   "filings": {"recent": trimmed}}
+        (FIX / "edgar" / "submissions" / f"{rec['ticker']}.json").write_text(json.dumps(payload, indent=0) + "\n")
+    print("submissions", len(cons))
+    nke_cik = cons.loc[cons["ticker"] == "NKE", "cik"].item()
+    facts = edgar.get_company_facts(nke_cik)
+    cands = {t for tags in edgar.settings()["facts"].values() for t in tags}
+    trimmed = {"cik": facts["cik"], "entityName": facts["entityName"], "facts": {"us-gaap": {}, "dei": {}}}
+    for tax in ("us-gaap", "dei"):
+        for tag, entry in facts["facts"].get(tax, {}).items():
+            if tag in cands or ("dei:" + tag) in cands:
+                trimmed["facts"][tax][tag] = entry
+    (FIX / "edgar" / "companyfacts_NKE.json").write_text(json.dumps(trimmed, indent=0) + "\n")
+    print("companyfacts NKE tags", {k: len(v) for k, v in trimmed["facts"].items()})
+    secs = edgar.get_10k_sections(nke_cik)
+    secs["sections"] = {k: (v[:3000] if v else None) for k, v in secs["sections"].items()}
+    (FIX / "edgar" / "tenk_sections_NKE.json").write_text(json.dumps(secs, indent=1) + "\n")
+    print("10-K sections NKE", {k: len(v or "") for k, v in secs["sections"].items()}, secs["errors"])
+    latest = next(f for f in edgar.get_recent_filings(nke_cik, forms=("8-K",)) if "2.02" in f["items"])
+    url = edgar.get_exhibit_url(nke_cik, latest["accessionNumber"])
+    text = edgar.get_document_text(url)[:5000]
+    (FIX / "edgar" / "press_release_NKE.json").write_text(json.dumps({"url": url, "text": text}, indent=1) + "\n")
+    print("press release", url, len(text))
+
+
+if __name__ == "__main__" and "m3" in __import__("sys").argv:
+    milestone3()

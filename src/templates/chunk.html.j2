@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ dd.name }} · {{ t["chunk_" ~ dd.chunk] }}</title>
+  {% if figs %}<script src="{{ figs.cdn }}" charset="utf-8"></script>{% endif %}
+  <style>
+    :root { --pos: #1a7f37; --neg: #c0392b; --muted: #666; --line: #e3e3e3; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 56rem; margin: 2rem auto; padding: 0 1rem; color: #1b1b1b; line-height: 1.5; }
+    h1 { font-size: 1.5rem; margin-bottom: .2rem; } h2 { font-size: 1.15rem; margin-top: 1.8rem; border-bottom: 1px solid var(--line); padding-bottom: .3rem; }
+    .kv { color: var(--muted); font-size: .85rem; } .pos { color: var(--pos); } .neg { color: var(--neg); }
+    table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; margin: .6rem 0 1rem; }
+    th, td { padding: .3rem .5rem; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; } th { color: var(--muted); font-size: .85rem; font-weight: 600; }
+    .note { background: #fff4e5; border-left: 4px solid #f0b35e; padding: .5rem .8rem; margin: .6rem 0; font-size: .9rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1rem; }
+    .filing-text p { margin: 0 0 .8rem; } .filing-text { font-size: .95rem; }
+    .toc a { margin-right: .8rem; }
+  </style>
+</head>
+<body>
+  <p class="kv"><a href="../index.html">{{ t.back_to_brief }}</a> · {{ t.edition }} {{ day.date }}</p>
+  <h1>{{ dd.name }} <span class="kv">{{ dd.ticker }}{% if dd.sector %} · {{ dd.sector }}{% endif %} · {{ t.week }} {{ dd.week }}</span></h1>
+  <p><strong>{{ t["chunk_" ~ dd.chunk] }}</strong></p>
+  {% for e in dd.errors %}<div class="note">{{ t.partial_chunk }} ({{ e.where }}): {{ e.message }}</div>{% endfor %}
+  {% set d = dd.data %}
+
+  {% if dd.chunk == "macro" and d %}
+    <h2>{{ t.week_changes }}</h2>
+    <table>
+      <tr><th>{{ t.col_item }}</th><th>{{ t.col_now }}</th><th>{{ t.col_week_ago }}</th><th>{{ t.col_change }}</th><th>{{ t.col_date }}</th></tr>
+      {% for c in d.week_changes %}
+      <tr><td>{{ c.label }} <a class="kv" href="{{ c.source_url }}" target="_blank" rel="noopener">{{ c.id }} ↗</a></td>
+        <td>{{ c.now | num }}</td><td>{{ c.week_ago | num }}</td>
+        {% set delta = (c.now - c.week_ago) if c.week_ago is not none else none %}
+        <td class="{{ delta | sign }}">{% if c.unit == "%" %}{{ (delta * 100) | chg("bp") if delta is not none else "—" }}{% else %}{{ delta | num }}{% endif %}</td>
+        <td class="kv">{{ c.now_date }}</td></tr>
+      {% endfor %}
+    </table>
+    <div class="grid">
+    {% for c in d.charts %}<div><h3>{{ c.label }}</h3>{{ figs.macro[c.id] | safe }}</div>{% endfor %}
+    </div>
+    {% for n in d.notes %}<p class="kv">{{ n }}</p>{% endfor %}
+
+  {% elif dd.chunk == "numbers" and d %}
+    {% if d.metrics %}
+    <table>
+      <tr><th>{{ t.fiscal_year_end }}</th>{% for m in ["revenue", "gross_margin", "operating_margin", "net_income", "long_term_debt", "shares"] %}<th>{{ t["metric_" ~ m] }}</th>{% endfor %}</tr>
+      {% set periods = d.metrics.revenue.periods if d.metrics.revenue else (d.metrics.net_income.periods if d.metrics.net_income else []) %}
+      {% for p in periods %}
+      <tr><td>{{ p }}</td>
+        {% for m in ["revenue", "gross_margin", "operating_margin", "net_income", "long_term_debt", "shares"] %}
+          {% set mm = d.metrics[m] %}
+          <td>{% if mm and mm.periods.index(p) is defined and p in mm.periods %}{% set v = mm["values"][mm.periods.index(p)] %}{{ v | money(mm.unit) }}{% else %}—{% endif %}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+    <div class="grid">
+      {% for m in ["revenue", "gross_margin", "operating_margin", "net_income", "long_term_debt", "shares"] %}
+        <div><h3>{{ t["metric_" ~ m] }}</h3>
+        {% if d.metrics[m] %}{{ figs.metrics[m] | safe }}<p class="kv">{{ t.tags_used }}: {{ d.metrics[m].tags | join(", ") }}</p>{% else %}<p class="kv">{{ t.not_reported }}</p>{% endif %}</div>
+      {% endfor %}
+      {% if d.price %}<div><h3>{{ t.metric_price }}</h3>{{ figs.price | safe }}</div>{% endif %}
+    </div>
+    {% endif %}
+    <p class="kv">{{ t.source_edgar }} · <a href="{{ dd.filing_search_url }}" target="_blank" rel="noopener">{{ t.full_filing }} ↗</a></p>
+
+  {% elif dd.chunk == "competitors" and d %}
+    {% if d.chart %}{{ figs.competitors | safe }}{% endif %}
+    <h2>{{ t.competitor_table }}</h2>
+    <table>
+      <tr><th>{{ t.col_item }}</th><th>{{ t.revenue_growth }}</th><th>{{ t.metric_operating_margin }}</th><th>{{ t.fiscal_year_end }}</th></tr>
+      {% for r in d.table %}
+      <tr><td>{{ r.ticker }}{% if r.note %} <span class="kv">({{ r.note }})</span>{% endif %}</td>
+        <td class="{{ r.revenue_growth | sign }}">{{ r.revenue_growth | chg }}</td><td>{{ r.operating_margin | money("%") }}</td><td class="kv">{{ r.fiscal_year_end or "—" }}</td></tr>
+      {% endfor %}
+    </table>
+
+  {% elif dd.chunk == "earnings_release" and d %}
+    {% if d.filing %}<p><a href="{{ d.exhibit_url }}" target="_blank" rel="noopener">{{ t.press_release }} ↗</a> · <a href="{{ d.filing.index_url }}" target="_blank" rel="noopener">{{ t.filing_index }} {{ d.filing.date }}</a></p>{% endif %}
+    {% if d.text %}<h2>{{ t.text_from_filing }} <span class="kv">({{ d.text | length }} {{ t.chars }})</span></h2><div class="filing-text">{{ d.text | paragraphs | safe }}</div>{% endif %}
+
+  {% elif d and d.text is defined %}
+    {% if d.filing %}<p class="kv"><a href="{{ d.filing.url }}" target="_blank" rel="noopener">10-K {{ d.filing.date }} ↗</a> · <a href="{{ d.filing.index_url }}" target="_blank" rel="noopener">{{ t.filing_index }}</a></p>{% endif %}
+    {% for n in d.notes or [] %}<p class="kv">{{ n }}</p>{% endfor %}
+    {% if d.text %}<h2>{{ t.text_from_filing }} <span class="kv">({{ d.chars }} {{ t.chars }})</span></h2><div class="filing-text">{{ d.text | paragraphs | safe }}</div>
+    {% else %}<p><a href="{{ dd.filing_search_url }}" target="_blank" rel="noopener">{{ t.full_filing }} ↗</a></p>{% endif %}
+  {% endif %}
+</body>
+</html>

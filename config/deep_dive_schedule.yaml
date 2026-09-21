@@ -1,4 +1,5 @@
-# One company per week. After the schedule is exhausted, take from the queue.
+# One company per week starting on start_date (a Monday). After the schedule is exhausted, take from the queue.
+start_date: 2026-09-21
 schedule:
   - {week: 1, sector: "Consumer Discretionary", ticker: "NKE", competitors: ["ADDYY", "ONON", "DECK", "LULU"]}
   - {week: 2, sector: "Technology", ticker: "NVDA", competitors: ["AMD", "AVGO", "INTC", "TSM"]}

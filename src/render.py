@@ -26,6 +26,22 @@ def fmt_chg(v, unit="pct"):
     return f"{v:+.2f}%"
 
 
+def fmt_money(v, unit="USD"):
+    if v is None:
+        return "—"
+    if unit == "USD":
+        return f"{v / 1e9:,.2f} bn"
+    if unit == "shares":
+        return f"{v / 1e6:,.0f} m"
+    return f"{v:.1f}%"
+
+
+def paragraphs(text):
+    from markupsafe import escape
+    parts = [p.strip() for p in (text or "").split("\n\n") if p.strip()]
+    return "".join(f"<p>{escape(p)}</p>" for p in parts)
+
+
 def sign_class(v):
     if v is None or v == 0:
         return ""
@@ -37,6 +53,8 @@ def env():
     e.filters["num"] = fmt_num
     e.filters["chg"] = fmt_chg
     e.filters["sign"] = sign_class
+    e.filters["money"] = fmt_money
+    e.filters["paragraphs"] = paragraphs
     return e
 
 
@@ -69,7 +87,19 @@ def build_charts(day, docs_dir=None, lang="en"):
     return out
 
 
+SECTIONS = ["snapshot", "sectors", "breadth", "earnings", "heatmap", "movers", "slow_movers", "deep_dive"]
+
+
+def with_defaults(day):
+    """A section that was never built renders as a visible note, never as a template crash."""
+    day = dict(day, sections=dict(day.get("sections", {})))
+    for name in SECTIONS:
+        day["sections"].setdefault(name, {"error": "not built"})
+    return day
+
+
 def render_html(day, lang="en", docs_dir=None):
+    day = with_defaults(day)
     return env().get_template("brief.html.j2").render(
         day=day, t=i18n.load(lang), lang=lang, charts=build_charts(day, docs_dir, lang))
 
@@ -85,6 +115,31 @@ def render_slow_movers(day, lang="en"):
         except Exception as e:  # noqa: BLE001
             svgs[f["ticker"]] = f'<div class="note">chart: {type(e).__name__}: {e}</div>'
     return env().get_template("slow_movers.html.j2").render(day=day, t=i18n.load(lang), lang=lang, svgs=svgs)
+
+
+def build_chunk_figs(dd):
+    figs = {"cdn": charts.plotly_cdn(), "macro": {}, "metrics": {}, "price": "", "competitors": ""}
+    d = dd.get("data") or {}
+    try:
+        if dd["chunk"] == "macro":
+            for c in d.get("charts", []):
+                figs["macro"][c["id"]] = charts.to_html(charts.line_figure(c["dates"], c["values"], c["label"], c["unit"]))
+        elif dd["chunk"] == "numbers":
+            for m, mm in (d.get("metrics") or {}).items():
+                if mm:
+                    figs["metrics"][m] = charts.to_html(charts.bars_figure(mm["periods"], mm["values"], mm["unit"]))
+            if d.get("price"):
+                figs["price"] = charts.to_html(charts.line_figure(d["price"]["dates"], d["price"]["values"], dd["ticker"]))
+        elif dd["chunk"] == "competitors" and d.get("chart"):
+            figs["competitors"] = charts.to_html(charts.multi_line_figure(d["chart"]))
+    except Exception as e:  # noqa: BLE001
+        figs["error"] = f"{type(e).__name__}: {e}"
+    return figs
+
+
+def render_chunk(day, lang="en"):
+    dd = day["sections"]["deep_dive"]
+    return env().get_template("chunk.html.j2").render(day=day, dd=dd, t=i18n.load(lang), lang=lang, figs=build_chunk_figs(dd))
 
 
 def render_baseline(base, lang="en"):
@@ -109,6 +164,12 @@ def write_pages(day, docs_dir=DOCS, langs=("en",)):
         full = docs_dir / lang / "slow-movers.html"
         full.write_text(render_slow_movers(day, lang), encoding="utf-8")
         written.append(full)
+        dd = day["sections"].get("deep_dive", {})
+        if "error" not in dd and dd.get("page"):
+            chunk = docs_dir / lang / dd["page"]
+            chunk.parent.mkdir(parents=True, exist_ok=True)
+            chunk.write_text(render_chunk(day, lang), encoding="utf-8")
+            written.append(chunk)
     root = docs_dir / "index.html"
     root.write_text(REDIRECT, encoding="utf-8")
     written.append(root)

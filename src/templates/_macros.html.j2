@@ -22,7 +22,19 @@
       <td class="{{ m.chg_1d | sign }}">{{ m.chg_1d | chg }}</td>
       <td class="{{ m.sector_chg_1d | sign }}">{{ m.sector_chg_1d | chg }} <span class="pub">{{ m.sector_etf or "" }}</span></td>
     </tr>
-    <tr class="sub"><td colspan="3">{{ headlines(m) }}</td></tr>
+    <tr class="sub"><td colspan="3">{{ filings(m) }}{{ headlines(m) }}</td></tr>
     {% endfor %}
   </table>
+{%- endmacro %}
+
+{% macro filings(item) -%}
+  {% if item.filings %}
+    <ul class="news filings">
+    {% for f in item.filings %}
+      <li><a href="{{ f.url }}" target="_blank" rel="noopener">{{ f.form }}</a> <span class="pub">{{ f.accepted_et }}</span>: {% for it in f.items %}<span class="tag">{{ it.code }} {{ it.label }}</span> {% endfor %}</li>
+    {% endfor %}
+    </ul>
+  {% elif item.filings_error %}
+    <div class="pub">{{ t.filings_unavailable }}: {{ item.filings_error }}</div>
+  {% endif %}
 {%- endmacro %}

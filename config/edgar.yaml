@@ -1,0 +1,63 @@
+# Plain labels for 8-K item codes (shown next to each filing).
+items:
+  "1.01": "material agreement"
+  "1.02": "termination of agreement"
+  "1.03": "bankruptcy"
+  "1.05": "cybersecurity incident"
+  "2.01": "acquisition or disposition"
+  "2.02": "results of operations"
+  "2.03": "new debt obligation"
+  "2.04": "debt acceleration"
+  "2.05": "exit or disposal costs"
+  "2.06": "material impairment"
+  "3.01": "delisting notice"
+  "3.02": "unregistered sale of securities"
+  "3.03": "change to security holder rights"
+  "4.01": "auditor change"
+  "4.02": "restatement, do not rely on prior financials"
+  "5.01": "change in control"
+  "5.02": "executive or director change"
+  "5.03": "bylaws or fiscal year change"
+  "5.05": "code of ethics change"
+  "5.07": "shareholder vote"
+  "5.08": "shareholder nominations"
+  "7.01": "Reg FD disclosure"
+  "8.01": "other events"
+  "9.01": "exhibits"
+
+# XBRL tag candidates per metric, in priority order. Companies change tags over time; the
+# series are stitched period by period, first candidate with a value wins.
+facts:
+  revenue:
+    - Revenues
+    - RevenueFromContractWithCustomerExcludingAssessedTax
+    - SalesRevenueNet
+    - RevenueFromContractWithCustomerIncludingAssessedTax
+    - RevenuesNetOfInterestExpense
+    - InterestAndDividendIncomeOperating
+  cost_of_revenue:
+    - CostOfRevenue
+    - CostOfGoodsAndServicesSold
+    - CostOfGoodsSold
+    - CostOfServices
+  gross_profit:
+    - GrossProfit
+  operating_income:
+    - OperatingIncomeLoss
+  net_income:
+    - NetIncomeLoss
+    - ProfitLoss
+    - NetIncomeLossAvailableToCommonStockholdersBasic
+  long_term_debt:
+    - LongTermDebtNoncurrent
+    - LongTermDebtAndCapitalLeaseObligations
+    - LongTermDebt
+    - LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities
+  shares:
+    - WeightedAverageNumberOfDilutedSharesOutstanding
+    - WeightedAverageNumberOfSharesOutstandingBasic
+    - CommonStockSharesOutstanding
+    - dei:EntityCommonStockSharesOutstanding
+
+# Requests per second to EDGAR (their limit is 10).
+rate_limit_per_second: 8
