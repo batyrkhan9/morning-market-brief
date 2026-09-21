@@ -1,4 +1,8 @@
-"""Backtest the slow mover rules for one ticker: python -m src.backtest NKE 2022-01-01"""
+"""Backtest the slow mover rules for one ticker: python -m src.backtest NKE 2022-01-01 [END]
+
+Prints every raw crossing, then the alerts a live run would have sent under the per-ticker
+cooldown with escalation, for the configured cooldown and for 90 days.
+"""
 import sys
 from datetime import date
 
@@ -10,15 +14,17 @@ from src.sources import prices
 
 
 def main(ticker, start, end=None):
-    thresholds = yaml.safe_load(open(CONFIG / "thresholds.yaml", encoding="utf-8"))["slow_movers"]
+    cfg = yaml.safe_load(open(CONFIG / "thresholds.yaml", encoding="utf-8"))["slow_movers"]
     end = end or date.today().isoformat()
-    closes = prices.get_prices([ticker], period="max")
-    s = closes[ticker].dropna()
+    s = prices.get_prices([ticker], period="max")[ticker].dropna()
     print(f"{ticker}: {len(s)} closes from {s.index[0].date()} to {s.index[-1].date()}")
-    fired = rules.backtest(s, start, end, thresholds)
-    print(f"{len(fired)} flags between {start} and {end}:")
-    for d, r in fired:
-        print(f"  {d}  {r:<10} close={float(s.loc[d]):.2f}")
+    fired = rules.backtest(s, start, end, cfg)
+    print(f"\n{len(fired)} raw crossings on {len({d for d, _ in fired})} dates between {start} and {end}")
+    for cooldown in (cfg["repeat_cooldown_days"], 90):
+        alerts = rules.simulate_alerts(s, start, end, cfg, cooldown)
+        print(f"\n{len(alerts)} alerts with a {cooldown} day cooldown and escalation:")
+        for a in alerts:
+            print(f"  {a['date']}  sev {a['severity']} {a['direction']:<4} close={a['close']:>8.2f}  {', '.join(a['rules'])}")
     return fired
 
 

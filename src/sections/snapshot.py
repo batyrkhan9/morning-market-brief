@@ -29,7 +29,8 @@ def price_row(item, closes, as_of):
             alt = changes(closes[fb], as_of, "pct", detect_stale=True)
             if not alt["stale"]:
                 row.update(alt)
-                row.update({"id": fb, "source_url": yahoo_url(fb), "note": f"{t} stale, showing {fb}"})
+                row.update({"id": fb, "source_url": yahoo_url(fb), "note": f"{t} stale",
+                            "label": item.get("fallback_label") or f"{item['label']} ({fb})"})
     except Exception as e:  # noqa: BLE001
         row["error"] = _err(e)
     return row

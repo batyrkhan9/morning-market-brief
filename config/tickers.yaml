@@ -17,7 +17,7 @@ snapshot:
     - {id: "HY", label: "High yield spread", fred: "BAMLH0A0HYM2"}
   other:
     - {ticker: "^VIX", label: "VIX"}
-    - {ticker: "DX-Y.NYB", label: "Dollar index", fallback: "UUP"}  # DXY prints stale closes; UUP is the ETF
+    - {ticker: "DX-Y.NYB", label: "Dollar index", fallback: "UUP", fallback_label: "Dollar (UUP ETF)"}  # DXY prints stale closes
     - {ticker: "CL=F", label: "WTI oil"}
     - {ticker: "GC=F", label: "Gold"}
 

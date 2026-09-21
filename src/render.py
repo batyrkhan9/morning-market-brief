@@ -56,7 +56,10 @@ def build_charts(day, docs_dir=None, lang="en"):
         except Exception as e:  # noqa: BLE001
             out["heatmap"] = f'<div class="note">heatmap: {type(e).__name__}: {e}</div>'
     sm = day["sections"].get("slow_movers", {})
-    for f in sm.get("flagged", []):
+    top = set(sm.get("top", []))
+    for f in sm.get("alerts", []):
+        if f["ticker"] not in top:
+            continue
         try:
             c = f["chart"]
             fig = charts.comparison_figure(c["dates"], c["stock"], c["benchmark"], f["ticker"], "S&P 500")
@@ -69,6 +72,19 @@ def build_charts(day, docs_dir=None, lang="en"):
 def render_html(day, lang="en", docs_dir=None):
     return env().get_template("brief.html.j2").render(
         day=day, t=i18n.load(lang), lang=lang, charts=build_charts(day, docs_dir, lang))
+
+
+def render_slow_movers(day, lang="en"):
+    """Full list of today's slow mover alerts with static SVG charts (no plotly.js)."""
+    sm = day["sections"].get("slow_movers", {})
+    svgs = {}
+    for f in sm.get("alerts", []):
+        try:
+            c = f["chart"]
+            svgs[f["ticker"]] = charts.static_line_svg(c["dates"], c["stock"], c["benchmark"], f["ticker"], "S&P 500")
+        except Exception as e:  # noqa: BLE001
+            svgs[f["ticker"]] = f'<div class="note">chart: {type(e).__name__}: {e}</div>'
+    return env().get_template("slow_movers.html.j2").render(day=day, t=i18n.load(lang), lang=lang, svgs=svgs)
 
 
 def render_baseline(base, lang="en"):
@@ -90,6 +106,9 @@ def write_pages(day, docs_dir=DOCS, langs=("en",)):
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(render_html(day, lang, docs_dir), encoding="utf-8")
         written.append(out)
+        full = docs_dir / lang / "slow-movers.html"
+        full.write_text(render_slow_movers(day, lang), encoding="utf-8")
+        written.append(full)
     root = docs_dir / "index.html"
     root.write_text(REDIRECT, encoding="utf-8")
     written.append(root)

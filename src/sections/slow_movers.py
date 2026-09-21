@@ -1,12 +1,17 @@
-"""Section: slow movers. Flags computed from price history (rules.py); state.json only stops repeats."""
-from datetime import timedelta
+"""Section: slow movers. One alert per ticker per day, rules as tags, severity = most severe rule.
 
+Flags are computed from price history (rules.py). state.json only holds each ticker's last alert
+for the cooldown and escalation logic. The brief shows the top N by severity then market cap;
+the rest go to the full list page.
+"""
 import pandas as pd
 
 from src import rules
 from src.sections.common import last_on_or_before
 from src.sections.movers import headlines_for
 from src.sources import news
+
+TOP_N = 5
 
 
 def chart_data(s, bench, as_of, years=5):
@@ -25,44 +30,43 @@ def chart_data(s, bench, as_of, years=5):
 def build(ctx):
     u = ctx["universe"]
     as_of = pd.Timestamp(ctx["as_of"])
-    thresholds = ctx["config_thresholds"]["slow_movers"]
-    cooldown = timedelta(days=thresholds["repeat_cooldown_days"])
-    alerts = ctx["state"].setdefault("slow_mover_alerts", {})
+    cfg = ctx["config_thresholds"]["slow_movers"]
+    cooldown = cfg["repeat_cooldown_days"]
+    last_alerts = ctx["state"].setdefault("slow_mover_alerts", {})
     per_item = news.settings()["headlines_per_item"]
-    closes, bench = u["closes"], u["closes"][u["benchmark"]]
+    closes, bench, caps = u["closes"], u["closes"][u["benchmark"]], u["caps"]
     meta = u["constituents"].set_index("ticker")
-    flagged, suppressed, new_alerts = [], [], {}
+    alerts, suppressed, new_alerts = [], [], {}
     for t in u["constituents"]["ticker"]:
         if t not in closes.columns:
             continue
         s = closes[t].dropna()
-        fired = rules.flags_on(s, as_of, thresholds)
+        fired = rules.flags_on(s, as_of, cfg)
         if not fired:
             continue
-        keep = []
-        for r in fired:
-            key = f"{t}|{r}"
-            last = alerts.get(key)
-            if last and as_of - pd.Timestamp(last) < cooldown:
-                suppressed.append({"ticker": t, "rule": r, "last": last})
-            else:
-                keep.append(r)
-                new_alerts[key] = as_of.date().isoformat()
-        if not keep:
+        severity, direction = rules.summarize(fired, cfg)
+        last = last_alerts.get(t)
+        if not rules.should_alert(last, as_of, severity, direction, cooldown):
+            suppressed.append({"ticker": t, "rules": fired, "severity": severity, "last": last})
             continue
-        cond = rules.conditions(s, thresholds)
+        new_alerts[t] = {"date": as_of.date().isoformat(), "severity": severity, "direction": direction, "rules": fired}
+        cond = rules.conditions(s, cfg)
         d0, v0 = last_on_or_before(s, as_of)
         prev = s[s.index < d0]
         rec = meta.loc[t]
-        items, err = headlines_for(rec["name"], t, per_item)
         r1, r5 = cond.attrs["ret_1y"].iloc[-1], cond.attrs["ret_5y"].iloc[-1]
-        flagged.append({
-            "ticker": t, "name": rec["name"], "sector": rec["sector"], "rules": keep,
+        alerts.append({
+            "ticker": t, "name": rec["name"], "sector": rec["sector"], "rules": fired,
+            "severity": severity, "direction": direction, "cap": caps.get(t) or 0,
+            "escalation": bool(last and as_of - pd.Timestamp(last["date"]) < pd.Timedelta(days=cooldown)),
             "last": v0, "chg_1d": (v0 / float(prev.iloc[-1]) - 1) * 100 if not prev.empty else None,
             "ret_1y": None if pd.isna(r1) else float(r1) * 100,
             "ret_5y": None if pd.isna(r5) else float(r5) * 100,
-            "chart": chart_data(s, bench, as_of), "headlines": items, "news_error": err,
+            "chart": chart_data(s, bench, as_of), "headlines": [], "news_error": None,
             "source_url": "https://finance.yahoo.com/quote/" + t,
         })
-    flagged.sort(key=lambda f: f["ticker"])
-    return {"as_of": ctx["as_of"], "flagged": flagged, "suppressed": suppressed, "new_alerts": new_alerts}
+    alerts.sort(key=lambda a: (-a["severity"], -a["cap"], a["ticker"]))
+    for a in alerts[:TOP_N]:
+        a["headlines"], a["news_error"] = headlines_for(a["name"], a["ticker"], per_item)
+    return {"as_of": ctx["as_of"], "alerts": alerts, "top": [a["ticker"] for a in alerts[:TOP_N]],
+            "rest": [a["ticker"] for a in alerts[TOP_N:]], "suppressed": suppressed, "new_alerts": new_alerts}

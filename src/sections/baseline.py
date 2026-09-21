@@ -6,10 +6,10 @@ from src import rules
 
 def build(ctx):
     u = ctx["universe"]
-    thresholds = ctx["config_thresholds"]["slow_movers"]
+    cfg = ctx["config_thresholds"]["slow_movers"]
     as_of = pd.Timestamp(ctx["as_of"])
     meta = u["constituents"].set_index("ticker")
-    by_rule = {r: [] for r in rules.RULES}
+    by_rule = {r: [] for r in rules.rule_names(cfg)}
     short_history = []
     for t in u["constituents"]["ticker"]:
         if t not in u["closes"].columns:
@@ -18,7 +18,7 @@ def build(ctx):
         s = s[s.index <= as_of]
         if s.empty:
             continue
-        active, r1, r5 = rules.current(s, thresholds)
+        active, r1, r5 = rules.current(s, cfg)
         if r5 is None:
             short_history.append(t)
         rec = meta.loc[t]
@@ -30,4 +30,4 @@ def build(ctx):
         key = "ret_5y" if r.startswith("5y") else "ret_1y"
         by_rule[r].sort(key=lambda x: (x[key] is None, x[key] or 0))
     return {"as_of": ctx["as_of"], "by_rule": by_rule, "short_history": short_history,
-            "universe_size": int(u["constituents"].shape[0]), "thresholds": thresholds}
+            "universe_size": int(u["constituents"].shape[0]), "rules": cfg["rules"]}

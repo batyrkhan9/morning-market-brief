@@ -63,3 +63,43 @@ def to_png(fig, path, width=1000, height=600):
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.write_image(str(path), width=width, height=height, scale=2)
     return path
+
+
+def static_line_svg(dates, a, b, label_a, label_b, width=640, height=200):
+    """A dependency-free SVG line chart: two series indexed to 100, hairline grid, year ticks, legend."""
+    pad_l, pad_r, pad_t, pad_b = 40, 8, 22, 20
+    w, h = width - pad_l - pad_r, height - pad_t - pad_b
+    vals = [v for v in a + b if v is not None]
+    lo, hi = min(vals), max(vals)
+    lo, hi = (lo - (hi - lo) * 0.05, hi + (hi - lo) * 0.05) if hi > lo else (lo - 1, hi + 1)
+    n = max(len(dates) - 1, 1)
+
+    def pt(i, v):
+        return f"{pad_l + i / n * w:.1f},{pad_t + (hi - v) / (hi - lo) * h:.1f}"
+
+    def path(series, color):
+        pts = " ".join(pt(i, v) for i, v in enumerate(series) if v is not None)
+        return f'<polyline fill="none" stroke="{color}" stroke-width="2" stroke-linejoin="round" points="{pts}"/>'
+
+    out = [f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" aria-label="{label_a} vs {label_b}, 5 years indexed to 100" '
+           f'style="max-width:{width}px;font-family:{FONT};font-size:11px">']
+    step = 50 if hi - lo > 150 else 25 if hi - lo > 60 else 10
+    g = int(lo // step + 1) * step
+    while g < hi:
+        y = pad_t + (hi - g) / (hi - lo) * h
+        out.append(f'<line x1="{pad_l}" x2="{width - pad_r}" y1="{y:.1f}" y2="{y:.1f}" stroke="{GRID}" stroke-width="1"/>')
+        out.append(f'<text x="{pad_l - 4}" y="{y + 4:.1f}" text-anchor="end" fill="{MUTED}">{g}</text>')
+        g += step
+    seen = set()
+    for i, d in enumerate(dates):
+        yr = d[:4]
+        if yr not in seen and i > 0:
+            seen.add(yr)
+            x = pad_l + i / n * w
+            out.append(f'<text x="{x:.1f}" y="{height - 6}" text-anchor="middle" fill="{MUTED}">{yr}</text>')
+    out.append(path(b, SERIES[1]))
+    out.append(path(a, SERIES[0]))
+    out.append(f'<rect x="{pad_l}" y="4" width="14" height="3" fill="{SERIES[0]}"/><text x="{pad_l + 18}" y="9" fill="{INK}">{label_a}</text>')
+    out.append(f'<rect x="{pad_l + 90}" y="4" width="14" height="3" fill="{SERIES[1]}"/><text x="{pad_l + 108}" y="9" fill="{INK}">{label_b}</text>')
+    out.append("</svg>")
+    return "".join(out)

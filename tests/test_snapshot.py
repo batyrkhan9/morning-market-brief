@@ -77,6 +77,7 @@ def test_stale_close_uses_fallback_ticker(config, offline_prices, offline_fred, 
     assert dxy.iloc[-1] == dxy.iloc[-2]  # the saved response really is stale
     r = _row(out, "DX-Y.NYB")
     assert r["id"] == "UUP" and "stale" in r["note"] and not r["stale"]
+    assert r["label"] == "Dollar (UUP ETF)"                      # the row label itself changes
     assert r["last"] == float(fixture_closes["UUP"].dropna().loc[as_of])
 
 
@@ -89,7 +90,7 @@ def test_stale_without_fallback_is_marked(config, offline_prices, offline_fred, 
     html = __import__("src.render", fromlist=["render_html"]).render_html(
         {"date": "x", "as_of": out["as_of"], "built_at": "x",
          "sections": {"snapshot": out, "sectors": {"error": "skip"}, "heatmap": {"error": "skip"},
-                      "movers": {"error": "skip"}, "slow_movers": {"error": "skip"}}}
+                      "breadth": {"error": "skip"}, "movers": {"error": "skip"}, "slow_movers": {"error": "skip"}}}
     )
     assert ">stale<" in html and "+0.00%" not in html
 

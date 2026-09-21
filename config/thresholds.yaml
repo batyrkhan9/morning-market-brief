@@ -1,6 +1,23 @@
 slow_movers:
-  one_year_return_below: -0.30
-  one_year_return_above: 0.50
-  five_year_return_below: -0.50
-  new_high_low_windows_days: [252, 756, 1260]   # 52 week, 3 year, 5 year
+  # A ticker alerts at most once per cooldown, unless it reaches a higher severity than its last alert.
   repeat_cooldown_days: 30
+  # kind low/high: close beyond the extreme of the trailing calendar window (excluding today).
+  # kind return: return vs the close N years earlier crosses the threshold.
+  # severity: 1 < 2 < 3; direction down (lows, below) or up (highs, above).
+  rules:
+    52w_low:      {kind: low,    window: 365D,  severity: 1}
+    3y_low:       {kind: low,    window: 1096D, severity: 2}
+    5y_low:       {kind: low,    window: 1826D, severity: 3}
+    1y_below_30:  {kind: return, years: 1, below: -0.30, severity: 1}
+    1y_below_50:  {kind: return, years: 1, below: -0.50, severity: 2}
+    1y_below_70:  {kind: return, years: 1, below: -0.70, severity: 3}
+    5y_below_50:  {kind: return, years: 5, below: -0.50, severity: 3}
+    52w_high:     {kind: high,   window: 365D,  severity: 1}
+    3y_high:      {kind: high,   window: 1096D, severity: 2}
+    5y_high:      {kind: high,   window: 1826D, severity: 3}
+    1y_above_50:  {kind: return, years: 1, above: 0.50,  severity: 1}
+    1y_above_100: {kind: return, years: 1, above: 1.00,  severity: 2}
+    1y_above_200: {kind: return, years: 1, above: 2.00,  severity: 3}
+
+breadth:
+  window: 365D   # "at a 52 week low/high": today's close is the lowest/highest of the trailing window

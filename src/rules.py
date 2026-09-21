@@ -1,12 +1,19 @@
-"""Slow mover rules. Pure functions over a price Series, no network, no state.
+"""Slow mover rules. Pure functions over a price Series, no network.
 
-A flag means the condition was false on the previous trading day and true on the last one.
-The 30 day no-repeat rule lives in state.json and is applied by the section, not here.
+A crossing means the condition was false on the previous trading day and true on the last one.
+Alerts are per ticker per day: the rules that fired become tags, the ticker's severity is the
+highest of them. Inside the cooldown a ticker alerts again only when it reaches a higher
+severity in the same direction (escalation).
 """
 import pandas as pd
 
-WINDOWS = {"52w": "365D", "3y": "1096D", "5y": "1826D"}
-RULES = ["1y_below", "1y_above", "52w_low", "52w_high", "3y_low", "3y_high", "5y_low", "5y_high", "5y_below"]
+
+def rule_names(cfg):
+    return list(cfg["rules"].keys())
+
+
+def direction_of(rule_cfg):
+    return "up" if rule_cfg["kind"] == "high" or "above" in rule_cfg else "down"
 
 
 def _return_over(s, years):
@@ -28,24 +35,30 @@ def _prior_extreme(s, window, kind):
     return out.where(full)
 
 
-def conditions(s, thresholds):
-    """DataFrame of booleans, one column per rule, indexed like s (NaN history -> False)."""
+def conditions(s, cfg):
+    """DataFrame of booleans, one column per rule, indexed like s (NaN history -> False).
+
+    attrs["ret_1y"] and attrs["ret_5y"] carry the return series for display.
+    """
+    names = rule_names(cfg)
     s = s.dropna().astype("float64")
     if s.empty:
-        return pd.DataFrame(columns=RULES, dtype=bool)
-    t = thresholds
-    r1 = _return_over(s, 1)
-    r5 = _return_over(s, 5)
+        return pd.DataFrame(columns=names, dtype=bool)
+    returns = {}
     cond = pd.DataFrame(index=s.index)
-    cond["1y_below"] = r1 < t["one_year_return_below"]
-    cond["1y_above"] = r1 > t["one_year_return_above"]
-    cond["5y_below"] = r5 < t["five_year_return_below"]
-    for name, window in WINDOWS.items():
-        cond[f"{name}_low"] = s < _prior_extreme(s, window, "min")
-        cond[f"{name}_high"] = s > _prior_extreme(s, window, "max")
-    cond = cond[RULES].fillna(False).astype(bool)
-    cond.attrs["ret_1y"] = r1
-    cond.attrs["ret_5y"] = r5
+    for name, r in cfg["rules"].items():
+        if r["kind"] == "return":
+            y = r["years"]
+            if y not in returns:
+                returns[y] = _return_over(s, y)
+            cond[name] = returns[y] < r["below"] if "below" in r else returns[y] > r["above"]
+        elif r["kind"] == "low":
+            cond[name] = s < _prior_extreme(s, r["window"], "min")
+        else:
+            cond[name] = s > _prior_extreme(s, r["window"], "max")
+    cond = cond[names].fillna(False).astype(bool)
+    cond.attrs["ret_1y"] = returns.get(1, _return_over(s, 1))
+    cond.attrs["ret_5y"] = returns.get(5, _return_over(s, 5))
     return cond
 
 
@@ -55,28 +68,80 @@ def crossings(cond):
     return cond & (prev == False)  # noqa: E712 - NaN previous must not fire
 
 
-def flags_on(s, date, thresholds):
+def summarize(fired, cfg):
+    """(severity, direction) of a set of fired rules: the most severe rule wins, down beats up on a tie."""
+    if not fired:
+        return 0, None
+    best = max(fired, key=lambda r: (cfg["rules"][r]["severity"], direction_of(cfg["rules"][r]) == "down"))
+    return cfg["rules"][best]["severity"], direction_of(cfg["rules"][best])
+
+
+def should_alert(last, date, severity, direction, cooldown_days):
+    """Cooldown per ticker; inside it only an escalation (higher severity, same direction) or a
+    direction change alerts again. `last` is {date, severity, direction} or None."""
+    if not last:
+        return True
+    if pd.Timestamp(date) - pd.Timestamp(last["date"]) >= pd.Timedelta(days=cooldown_days):
+        return True
+    if direction != last.get("direction"):
+        return True
+    return severity > last.get("severity", 0)
+
+
+def flags_on(s, date, cfg):
     """Rule names that fired on `date` (the last trading day). Empty if date has no close."""
-    cond = conditions(s, thresholds)
+    cond = conditions(s, cfg)
     if cond.empty or pd.Timestamp(date) not in cond.index:
         return []
     x = crossings(cond).loc[pd.Timestamp(date)]
-    return [r for r in RULES if bool(x[r])]
+    return [r for r in rule_names(cfg) if bool(x[r])]
 
 
-def backtest(s, start, end, thresholds):
-    """Every (date, rule) that would have fired between start and end inclusive."""
-    x = crossings(conditions(s, thresholds))
+def backtest(s, start, end, cfg):
+    """Every (date, rule) crossing between start and end inclusive, before the cooldown logic."""
+    x = crossings(conditions(s, cfg))
     x = x[(x.index >= pd.Timestamp(start)) & (x.index <= pd.Timestamp(end))]
-    return [(d.date().isoformat(), r) for d, row in x.iterrows() for r in RULES if row[r]]
+    return [(d.date().isoformat(), r) for d, row in x.iterrows() for r in rule_names(cfg) if row[r]]
 
 
-def current(s, thresholds):
-    """Conditions that are true on the last close (for the baseline watchlist), plus the returns."""
-    cond = conditions(s, thresholds)
+def simulate_alerts(s, start, end, cfg, cooldown_days=None):
+    """Alerts a live run would have sent: one per ticker-day, after cooldown and escalation.
+
+    The state starts empty at `start`, so the first crossing after start always alerts.
+    """
+    cooldown = cfg["repeat_cooldown_days"] if cooldown_days is None else cooldown_days
+    by_date = {}
+    for d, r in backtest(s, start, end, cfg):
+        by_date.setdefault(d, []).append(r)
+    last, alerts = None, []
+    for d in sorted(by_date):
+        fired = by_date[d]
+        sev, direction = summarize(fired, cfg)
+        if should_alert(last, d, sev, direction, cooldown):
+            alerts.append({"date": d, "rules": fired, "severity": sev, "direction": direction, "close": float(s.loc[d])})
+            last = {"date": d, "severity": sev, "direction": direction}
+    return alerts
+
+
+def current(s, cfg):
+    """Conditions true on the last close (baseline watchlist), plus the 1y and 5y returns."""
+    cond = conditions(s, cfg)
     if cond.empty:
         return [], None, None
     last = cond.iloc[-1]
-    r1 = cond.attrs["ret_1y"].iloc[-1]
-    r5 = cond.attrs["ret_5y"].iloc[-1]
-    return [r for r in RULES if bool(last[r])], (None if pd.isna(r1) else float(r1)), (None if pd.isna(r5) else float(r5))
+    r1, r5 = cond.attrs["ret_1y"].iloc[-1], cond.attrs["ret_5y"].iloc[-1]
+    return ([r for r in rule_names(cfg) if bool(last[r])],
+            None if pd.isna(r1) else float(r1), None if pd.isna(r5) else float(r5))
+
+
+def at_extremes(closes, as_of, window="365D"):
+    """Breadth: tickers whose close on as_of is the lowest / highest of the trailing window (inclusive)."""
+    as_of = pd.Timestamp(as_of)
+    win = closes[(closes.index > as_of - pd.Timedelta(window)) & (closes.index <= as_of)]
+    if win.empty or as_of not in win.index:
+        return [], [], 0
+    last = win.loc[as_of]
+    valid = last.notna() & (win.notna().sum() >= 200)  # need most of a year of data
+    lows = [t for t in closes.columns if valid[t] and last[t] <= win[t].min()]
+    highs = [t for t in closes.columns if valid[t] and last[t] >= win[t].max()]
+    return sorted(lows), sorted(highs), int(valid.sum())

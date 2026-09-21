@@ -21,11 +21,18 @@ def test_sections_build_from_offline_universe(config, offline_prices, offline_fr
     assert g["sector_etf"] and g["sector_chg_1d"] is not None      # sector's move for the same day
     assert len(g["headlines"]) == 3 and all(h["publisher"] for h in g["headlines"])
     assert "error" not in sm
-    nke = next(f for f in sm["flagged"] if f["ticker"] == "NKE")    # NKE made new lows on 2026-09-18
-    assert "52w_low" in nke["rules"] and "5y_low" in nke["rules"]
+    nke = next(f for f in sm["alerts"] if f["ticker"] == "NKE")     # NKE made new lows on 2026-09-18
+    assert "52w_low" in nke["rules"] and "5y_low" in nke["rules"] and nke["severity"] == 3
     assert len(nke["chart"]["dates"]) > 200 and nke["chart"]["stock"][0] == 100.0
+    sev = [a["severity"] for a in sm["alerts"]]
+    assert sev == sorted(sev, reverse=True) and len(sm["top"]) <= 5
+    assert all(a["headlines"] for a in sm["alerts"] if a["ticker"] in sm["top"])
+    br = day["sections"]["breadth"]
+    assert "NKE" in br["lows"] and br["counted"] >= 25
     html = render.render_html(day, docs_dir=None)
-    assert 'id="heatmap"' in html and "Top gainers" in html and 'id="slow-NKE"' in html
+    assert 'id="heatmap"' in html and "Top gainers" in html and 'id="slow-NKE"' in html and "Breadth" in html
+    full = render.render_slow_movers(day)
+    assert "<svg" in full and 'id="slow-NKE"' in full and "plotly" not in full
 
 
 def test_movers_render_when_news_fails(config, offline_prices, offline_fred, offline_treasury,
@@ -47,18 +54,24 @@ def test_movers_render_when_news_fails(config, offline_prices, offline_fred, off
 def test_thirty_day_no_repeat_and_queue(config, offline_prices, offline_fred, offline_treasury,
                                         offline_universe, offline_news, no_network, isolated_state):
     day, ctx = _day(config, state={})
-    first = {f["ticker"]: f["rules"] for f in day["sections"]["slow_movers"]["flagged"]}
+    first = {f["ticker"]: f for f in day["sections"]["slow_movers"]["alerts"]}
     assert "NKE" in first
     state = {}
     apply_state(day, state)
     saved = load_state()
-    assert saved["slow_mover_alerts"]["NKE|52w_low"] == "2026-09-18"
+    assert saved["slow_mover_alerts"]["NKE"] == {"date": "2026-09-18", "severity": 3, "direction": "down",
+                                                "rules": first["NKE"]["rules"]}
     sched = (isolated_state / "schedule.yaml").read_text()
     assert "queue:" in sched and "NKE" not in sched.split("queue:")[1]  # NKE already in the schedule
     day2, _ = _day(config, state=saved)                              # same day again: every flag suppressed
     sm2 = day2["sections"]["slow_movers"]
-    assert not any(f["ticker"] == "NKE" for f in sm2["flagged"])
-    assert any(x["ticker"] == "NKE" and x["rule"] == "52w_low" for x in sm2["suppressed"])
+    assert not any(f["ticker"] == "NKE" for f in sm2["alerts"])
+    assert any(x["ticker"] == "NKE" for x in sm2["suppressed"])
+    # an escalation inside the cooldown alerts again: pretend the last alert was a severity 1 last week
+    saved["slow_mover_alerts"]["NKE"] = {"date": "2026-09-11", "severity": 1, "direction": "down", "rules": ["52w_low"]}
+    day3, _ = _day(config, state=saved)
+    nke3 = next(f for f in day3["sections"]["slow_movers"]["alerts"] if f["ticker"] == "NKE")
+    assert nke3["escalation"] is True
 
 
 def test_page_builds_when_universe_fails(config, offline_prices, offline_fred, offline_treasury, no_network, monkeypatch):
@@ -68,8 +81,8 @@ def test_page_builds_when_universe_fails(config, offline_prices, offline_fred, o
         raise RuntimeError("wikipedia down (simulated)")
     monkeypatch.setattr(constituents, "get_sp500", boom)
     day, _ = _day(config)
-    for name in ("heatmap", "movers", "slow_movers"):
+    for name in ("breadth", "heatmap", "movers", "slow_movers"):
         assert "wikipedia down" in day["sections"][name]["error"]
     assert "error" not in day["sections"]["snapshot"]
     html = render.render_html(day)
-    assert html.count("This section failed to build") == 3
+    assert html.count("This section failed to build") == 3 and "Breadth" in html

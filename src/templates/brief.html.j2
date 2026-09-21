@@ -32,6 +32,8 @@
     tr.sub td { border-bottom: 1px solid var(--line); padding-top: 0; }
     .card { border: 1px solid var(--line); border-radius: 6px; padding: .8rem 1rem; margin: .8rem 0; }
     .card .rules { margin: .2rem 0 .5rem; }
+    .breadth { margin: .2rem 0 1rem; }
+    .sev { font-size: .75rem; border: 1px solid var(--muted); border-radius: 3px; padding: 0 .3rem; color: var(--muted); }
     .card .rules span { display: inline-block; background: #eef3fb; border-radius: 3px; padding: .1rem .4rem; margin: .1rem .2rem .1rem 0; font-size: .85rem; }
     .kv { color: var(--muted); font-size: .85rem; }
     .chart { margin: .5rem 0; }
@@ -79,6 +81,15 @@
     </table>
   {% endif %}
 
+  {% set br = day.sections.breadth %}
+  {% if br.error %}
+    <div class="note">{{ t.breadth }}: {{ t.section_failed | lower }}: {{ br.error }}</div>
+  {% else %}
+    <p class="breadth"><strong>{{ t.breadth }}:</strong> {{ br.lows | length }} {{ t.at_lows }} · {{ br.highs | length }} {{ t.at_highs }} <span class="kv">({{ t.of }} {{ br.counted }})</span>
+    {% if br.lows %}<br><span class="kv">{{ t.at_lows | capitalize }}: {{ br.lows | join(", ") }}</span>{% endif %}
+    {% if br.highs %}<br><span class="kv">{{ t.at_highs | capitalize }}: {{ br.highs | join(", ") }}</span>{% endif %}</p>
+  {% endif %}
+
   {% set sec = day.sections.sectors %}
   <h2>{{ t.sectors }}</h2>
   {% if sec.error %}
@@ -113,12 +124,12 @@
   <p class="kv">{{ t.slow_movers_intro }}</p>
   {% if sm.error %}
     <div class="note">{{ t.section_failed }}: {{ sm.error }}</div>
-  {% elif not sm.flagged %}
+  {% elif not sm.alerts %}
     <p>{{ t.no_slow_movers }}</p>
   {% else %}
-    {% for f in sm.flagged %}
+    {% for f in sm.alerts if f.ticker in sm.top %}
     <div class="card" id="slow-{{ f.ticker }}">
-      <strong>{{ f.name }}</strong> <a class="src" href="{{ f.source_url }}" target="_blank" rel="noopener">{{ f.ticker }} ↗</a> <span class="pub">{{ f.sector }}</span>
+      <strong>{{ f.name }}</strong> <a class="src" href="{{ f.source_url }}" target="_blank" rel="noopener">{{ f.ticker }} ↗</a> <span class="pub">{{ f.sector }}</span> <span class="sev">{{ t.severity }} {{ f.severity }}{% if f.escalation %} · {{ t.escalation }}{% endif %}</span>
       <div class="rules">{% for r in f.rules %}<span>{{ t["rule_" ~ r] }}</span>{% endfor %}</div>
       <div class="kv">{{ t.col_last }} {{ f.last | num }} · {{ t.col_1d }} <span class="{{ f.chg_1d | sign }}">{{ f.chg_1d | chg }}</span> · {{ t.ret_1y }} <span class="{{ f.ret_1y | sign }}">{{ f.ret_1y | chg }}</span> · {{ t.ret_5y }} <span class="{{ f.ret_5y | sign }}">{{ f.ret_5y | chg }}</span></div>
       <div class="chart">{{ charts.slow[f.ticker] | safe }}</div>
@@ -126,8 +137,11 @@
       {{ m.headlines(f) }}
     </div>
     {% endfor %}
+    {% if sm.rest %}
+    <p><strong>{{ sm.rest | length }} {{ t.more_alerts }}:</strong> {% for x in sm.alerts if x.ticker in sm.rest %}<a href="slow-movers.html#slow-{{ x.ticker }}">{{ x.ticker }}</a>{% if not loop.last %}, {% endif %}{% endfor %} · <a href="slow-movers.html">{{ t.full_list }}</a></p>
+    {% endif %}
   {% endif %}
-  {% if sm.suppressed %}<p class="kv">{{ sm.suppressed | length }} {{ t.suppressed }}: {% for x in sm.suppressed %}{{ x.ticker }} ({{ t["rule_" ~ x.rule] }}){% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+  {% if sm.suppressed %}<p class="kv">{{ sm.suppressed | length }} {{ t.suppressed }}: {% for x in sm.suppressed %}{{ x.ticker }}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
 
   <footer>
     <p>{{ t.footer_numbers }}</p>

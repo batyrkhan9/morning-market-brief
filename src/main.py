@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 from src import render, sections, universe
 from src.paths import CONFIG, DATA, ROOT
-from src.sections import baseline, heatmap, movers, sectors, slow_movers, snapshot
+from src.sections import baseline, breadth, heatmap, movers, sectors, slow_movers, snapshot
 
 STATE = DATA / "state.json"
 SCHEDULE = CONFIG / "deep_dive_schedule.yaml"
@@ -69,6 +69,7 @@ def build_day(date_str, config=None, state=None, ctx=None):
     sec = day["sections"]["sectors"]
     ctx["sector_moves"] = {r["key"]: r.get("chg_1d") for r in sec.get("rows", [])}
     day["timing"] = load_universe(ctx)
+    day["sections"]["breadth"] = sections.run(needs_universe(breadth.build), ctx)
     day["sections"]["heatmap"] = sections.run(needs_universe(heatmap.build), ctx)
     day["sections"]["movers"] = sections.run(needs_universe(movers.build), ctx)
     day["sections"]["slow_movers"] = sections.run(needs_universe(slow_movers.build), ctx)
@@ -77,7 +78,7 @@ def build_day(date_str, config=None, state=None, ctx=None):
 
 
 def apply_state(day, state):
-    """Record new slow mover alerts (30 day no-repeat) and queue flagged tickers for the deep dive."""
+    """Record each ticker's last alert (cooldown and escalation) and queue alerted tickers for the deep dive."""
     sm = day["sections"].get("slow_movers", {})
     if "error" in sm:
         return
@@ -85,7 +86,7 @@ def apply_state(day, state):
     save_state(state)
     sched = load_yaml(SCHEDULE)
     queue = sched.setdefault("queue", []) or []
-    for f in sm.get("flagged", []):
+    for f in sm.get("alerts", []):
         if f["ticker"] not in queue and f["ticker"] not in [s["ticker"] for s in sched["schedule"]]:
             queue.append(f["ticker"])
     sched["queue"] = queue
