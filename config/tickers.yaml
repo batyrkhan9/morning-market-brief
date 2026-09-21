@@ -9,14 +9,15 @@ snapshot:
     - {ticker: "EWJ", label: "Japan"}
     - {ticker: "MCHI", label: "China"}
     - {ticker: "EEM", label: "Emerging markets"}
-  rates_fred:
-    - {series: "DGS2", label: "2-year"}
-    - {series: "DGS10", label: "10-year"}
-    - {series: "T10Y2Y", label: "10y minus 2y"}
-    - {series: "BAMLH0A0HYM2", label: "High yield spread"}
+  # Primary: US Treasury par yield curve (same day). Fallback: FRED (one business day lag).
+  rates:
+    - {id: "US2Y", label: "2-year", treasury: "2 Yr", fred: "DGS2"}
+    - {id: "US10Y", label: "10-year", treasury: "10 Yr", fred: "DGS10"}
+    - {id: "US10Y2Y", label: "10y minus 2y", treasury: ["10 Yr", "2 Yr"], fred: "T10Y2Y"}
+    - {id: "HY", label: "High yield spread", fred: "BAMLH0A0HYM2"}
   other:
     - {ticker: "^VIX", label: "VIX"}
-    - {ticker: "DX-Y.NYB", label: "Dollar index"}
+    - {ticker: "DX-Y.NYB", label: "Dollar index", fallback: "UUP"}  # DXY prints stale closes; UUP is the ETF
     - {ticker: "CL=F", label: "WTI oil"}
     - {ticker: "GC=F", label: "Gold"}
 

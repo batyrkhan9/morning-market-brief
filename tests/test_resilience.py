@@ -3,21 +3,21 @@ import pytest
 
 from src import render
 from src.main import build_day
-from src.sources import fred, prices
+from src.sources import fred, prices, treasury
 
 
 def _boom(*a, **k):
     raise RuntimeError("yfinance is down (simulated)")
 
 
-def test_page_builds_when_yfinance_fails(config, offline_fred, no_network, monkeypatch, tmp_path):
+def test_page_builds_when_yfinance_fails(config, offline_fred, offline_treasury, no_network, monkeypatch, tmp_path):
     monkeypatch.setattr(prices, "get_prices", _boom)
     day = build_day("2026-09-21", config)
 
     snap = day["sections"]["snapshot"]
     assert "error" not in snap  # snapshot survives, rates still present
     assert any(e["where"] == "prices" for e in snap["errors"])
-    rates = next(g for g in snap["groups"] if g["key"] == "rates_fred")
+    rates = next(g for g in snap["groups"] if g["key"] == "rates")
     assert all("error" not in r for r in rates["rows"])
     assert "yfinance is down" in day["sections"]["sectors"]["error"]
 
@@ -26,13 +26,14 @@ def test_page_builds_when_yfinance_fails(config, offline_fred, no_network, monke
     assert "yfinance is down (simulated)" in html          # visible note, not silent
     assert "Part of this section failed" in html            # snapshot partial note
     assert "This section failed to build" in html           # sectors note
-    assert "DGS10" in html and "bp" in html                 # rates table still rendered
+    assert "Treasury" in html and "bp" in html              # rates table still rendered
     assert (tmp_path / "index.html").exists()               # root redirect written too
     assert len(written) == 2
 
 
-def test_page_builds_when_fred_fails(config, offline_prices, no_network, monkeypatch, tmp_path):
+def test_page_builds_when_fred_and_treasury_fail(config, offline_prices, no_network, monkeypatch, tmp_path):
     monkeypatch.setattr(fred, "get_series", _boom)
+    monkeypatch.setattr(treasury, "get_yields", _boom)
     day = build_day("2026-09-21", config)
     snap = day["sections"]["snapshot"]
     assert any(e["where"] == "rates" for e in snap["errors"])

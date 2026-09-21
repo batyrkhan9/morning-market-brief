@@ -13,12 +13,14 @@
   "col_date": "Date",
   "group_us": "US",
   "group_world": "World",
-  "group_rates_fred": "Rates (FRED, changes in bp)",
+  "group_rates": "Rates (changes in bp)",
   "group_other": "Other",
   "source": "source",
   "section_failed": "This section failed to build",
   "partial_failed": "Part of this section failed",
   "row_failed": "no data",
+  "stale": "stale",
   "footer_numbers": "Every number comes from a data API. Nothing on this page is written by an AI.",
-  "footer_sources": "Prices: Yahoo Finance via yfinance. Rates: FRED (values lag one business day, see the date column)."
+  "footer_price_only": "Changes are price only, without dividends (split-adjusted closes), so they match what Yahoo and Google display.",
+  "footer_sources": "Prices: Yahoo Finance via yfinance. Rates: US Treasury daily par yield curve (same day), FRED as fallback (one business day lag). Each row shows its own value date."
 }

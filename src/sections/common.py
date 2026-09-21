@@ -25,11 +25,13 @@ def last_trading_day(closes, anchor=None):
     return ok.index[-1]
 
 
-def changes(s, as_of, unit):
+def changes(s, as_of, unit, detect_stale=False):
     """Last value on or before as_of, its date, and 1 day / 1 month / YTD changes.
 
     unit "pct": changes are percent (0.5 means +0.5%).
     unit "bp": the series is in percent points, changes are basis points (0.03 pp -> 3 bp).
+    detect_stale: for instruments that trade daily, an identical close on the last two dates
+    means the feed did not update; the row is marked stale instead of showing 0.00%.
     """
     s = s.dropna()
     d0, v0 = last_on_or_before(s, as_of)
@@ -54,4 +56,5 @@ def changes(s, as_of, unit):
         "chg_1m": diff(v0, vm),
         "chg_ytd": diff(v0, vy),
         "unit": unit,
+        "stale": bool(detect_stale and v1 is not None and v0 == v1),
     }

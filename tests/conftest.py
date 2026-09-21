@@ -6,7 +6,7 @@ import pytest
 import yaml
 
 from src.paths import CONFIG
-from src.sources import fred, prices
+from src.sources import fred, prices, treasury
 
 FIX = Path(__file__).parent / "fixtures"
 
@@ -50,3 +50,13 @@ def no_network(monkeypatch):
 
     monkeypatch.setattr(requests, "get", boom)
     monkeypatch.setattr(yfinance, "download", boom)
+
+
+@pytest.fixture
+def offline_treasury(monkeypatch):
+    """get_yields answers from saved Treasury CSVs, no network."""
+    def fake(start):
+        frames = [treasury.parse_csv((FIX / "treasury" / f"{y}.csv").read_text()) for y in (2025, 2026)]
+        df = pd.concat(frames).sort_index()
+        return df[df.index >= pd.Timestamp(start)]
+    monkeypatch.setattr(treasury, "get_yields", fake)

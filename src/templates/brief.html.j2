@@ -17,6 +17,7 @@
     tr.group td { text-align: left; font-weight: 600; background: #fafafa; }
     .pos { color: var(--pos); } .neg { color: var(--neg); }
     .date { color: var(--muted); font-size: .85rem; }
+    .stale { color: var(--muted); font-style: italic; }
     .src { font-size: .75rem; color: var(--muted); margin-left: .3rem; text-decoration: none; }
     .note { background: var(--note); border-left: 4px solid var(--note-line); padding: .5rem .8rem; margin: .6rem 0; font-size: .9rem; }
     footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
@@ -28,12 +29,12 @@
 
   {% macro row(r) -%}
     <tr>
-      <td>{{ r.label }} <a class="src" href="{{ r.source_url }}" target="_blank" rel="noopener">{{ r.id }} ↗</a></td>
+      <td>{{ r.label }} <a class="src" href="{{ r.source_url }}" target="_blank" rel="noopener">{{ r.id }} ↗</a>{% if r.note %} <span class="date">({{ r.note }})</span>{% endif %}</td>
       {% if r.error %}
         <td colspan="4" class="date">{{ t.row_failed }}: {{ r.error }}</td>
       {% else %}
         <td>{{ r.last | num(r.decimals) }}</td>
-        <td class="{{ r.chg_1d | sign }}">{{ r.chg_1d | chg(r.unit) }}</td>
+        {% if r.stale %}<td class="stale" title="identical close on the last two dates">{{ t.stale }}</td>{% else %}<td class="{{ r.chg_1d | sign }}">{{ r.chg_1d | chg(r.unit) }}</td>{% endif %}
         <td class="{{ r.chg_1m | sign }}">{{ r.chg_1m | chg(r.unit) }}</td>
         <td class="{{ r.chg_ytd | sign }}">{{ r.chg_ytd | chg(r.unit) }}</td>
         <td class="date">{{ r.date }}</td>
@@ -75,6 +76,7 @@
 
   <footer>
     <p>{{ t.footer_numbers }}</p>
+    <p>{{ t.footer_price_only }}</p>
     <p>{{ t.footer_sources }}</p>
   </footer>
 </body>

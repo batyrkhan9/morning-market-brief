@@ -17,6 +17,7 @@
     tr.group td { text-align: left; font-weight: 600; background: #fafafa; }
     .pos { color: var(--pos); } .neg { color: var(--neg); }
     .date { color: var(--muted); font-size: .85rem; }
+    .stale { color: var(--muted); font-style: italic; }
     .src { font-size: .75rem; color: var(--muted); margin-left: .3rem; text-decoration: none; }
     .note { background: var(--note); border-left: 4px solid var(--note-line); padding: .5rem .8rem; margin: .6rem 0; font-size: .9rem; }
     footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
@@ -24,7 +25,7 @@
 </head>
 <body>
   <h1>Morning Market Brief</h1>
-  <p class="meta">Edition 2026-09-21 · Data as of the US close on 2026-09-18 · Built 2026-09-21 07:08 UTC</p>
+  <p class="meta">Edition 2026-09-21 · Data as of the US close on 2026-09-18 · Built 2026-09-21 07:15 UTC</p>
 
   
 
@@ -115,27 +116,27 @@
       
     </tr>
       
-        <tr class="group"><td colspan="6">Rates (FRED, changes in bp)</td></tr>
+        <tr class="group"><td colspan="6">Rates (changes in bp)</td></tr>
         <tr>
-      <td>2-year <a class="src" href="https://fred.stlouisfed.org/series/DGS2" target="_blank" rel="noopener">DGS2 ↗</a></td>
+      <td>2-year <a class="src" href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&amp;field_tdr_date_value=2026" target="_blank" rel="noopener">Treasury ↗</a></td>
       
-        <td>4.67</td>
-        <td class="neg">-7 bp</td>
-        <td class="pos">+48 bp</td>
-        <td class="pos">+120 bp</td>
-        <td class="date">2026-09-17</td>
-      
-    </tr><tr>
-      <td>10-year <a class="src" href="https://fred.stlouisfed.org/series/DGS10" target="_blank" rel="noopener">DGS10 ↗</a></td>
-      
-        <td>4.94</td>
-        <td class="neg">-7 bp</td>
-        <td class="pos">+22 bp</td>
-        <td class="pos">+76 bp</td>
-        <td class="date">2026-09-17</td>
+        <td>4.76</td>
+        <td class="pos">+9 bp</td>
+        <td class="pos">+57 bp</td>
+        <td class="pos">+129 bp</td>
+        <td class="date">2026-09-18</td>
       
     </tr><tr>
-      <td>10y minus 2y <a class="src" href="https://fred.stlouisfed.org/series/T10Y2Y" target="_blank" rel="noopener">T10Y2Y ↗</a></td>
+      <td>10-year <a class="src" href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&amp;field_tdr_date_value=2026" target="_blank" rel="noopener">Treasury ↗</a></td>
+      
+        <td>5.01</td>
+        <td class="pos">+7 bp</td>
+        <td class="pos">+30 bp</td>
+        <td class="pos">+83 bp</td>
+        <td class="date">2026-09-18</td>
+      
+    </tr><tr>
+      <td>10y minus 2y <a class="src" href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&amp;field_tdr_date_value=2026" target="_blank" rel="noopener">Treasury ↗</a></td>
       
         <td>0.25</td>
         <td class="neg">-2 bp</td>
@@ -165,12 +166,12 @@
         <td class="date">2026-09-18</td>
       
     </tr><tr>
-      <td>Dollar index <a class="src" href="https://finance.yahoo.com/quote/DX-Y.NYB" target="_blank" rel="noopener">DX-Y.NYB ↗</a></td>
+      <td>Dollar index <a class="src" href="https://finance.yahoo.com/quote/UUP" target="_blank" rel="noopener">UUP ↗</a> <span class="date">(DX-Y.NYB stale, showing UUP)</span></td>
       
-        <td>100.22</td>
-        <td class="">+0.00%</td>
-        <td class="pos">+0.57%</td>
-        <td class="pos">+1.97%</td>
+        <td>28.39</td>
+        <td class="pos">+0.04%</td>
+        <td class="pos">+0.89%</td>
+        <td class="pos">+5.03%</td>
         <td class="date">2026-09-18</td>
       
     </tr><tr>
@@ -306,7 +307,8 @@
 
   <footer>
     <p>Every number comes from a data API. Nothing on this page is written by an AI.</p>
-    <p>Prices: Yahoo Finance via yfinance. Rates: FRED (values lag one business day, see the date column).</p>
+    <p>Changes are price only, without dividends (split-adjusted closes), so they match what Yahoo and Google display.</p>
+    <p>Prices: Yahoo Finance via yfinance. Rates: US Treasury daily par yield curve (same day), FRED as fallback (one business day lag). Each row shows its own value date.</p>
   </footer>
 </body>
 </html>
