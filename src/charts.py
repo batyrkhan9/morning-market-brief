@@ -31,7 +31,7 @@ def treemap_figure(rows, limit=3.0):
         marker=dict(colors=colors, colorscale=[[0, DOWN], [0.5, MID], [1, UP]], cmid=0,
                     cmin=-limit, cmax=limit, line=dict(width=2, color="#fcfcfb"),
                     colorbar=dict(title="1 day %", ticksuffix="%", thickness=12, len=0.6)),
-        pathbar=dict(visible=False), tiling=dict(pad=2),
+        pathbar=dict(visible=False), tiling=dict(pad=2), root=dict(color="#fcfcfb"),
     ))
     fig.update_layout(margin=dict(t=8, l=0, r=0, b=0), height=560, font=dict(family=FONT, color=INK),
                       paper_bgcolor="#fcfcfb")
