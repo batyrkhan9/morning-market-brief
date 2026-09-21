@@ -23,12 +23,18 @@ Python 3.11+, GitHub Actions (build and send workflows), GitHub Pages (served fr
 
 ## Local run
 
+The project uses [uv](https://docs.astral.sh/uv/) to manage Python. `.python-version` pins 3.12, and the system Python is never touched.
+
 ```
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python -m src.main --dry-run            # build the page locally, send nothing
-python -m src.main --date 2026-09-19    # rebuild a past day from saved JSON
+brew install uv                                  # once, if uv is missing
+uv python install 3.12                           # once
+uv venv --python 3.12 .venv                      # create the venv
+uv pip install --python .venv/bin/python -r requirements.txt
+.venv/bin/python -m src.main --dry-run           # build the page locally, send nothing
+.venv/bin/python -m src.main --date 2026-09-19   # rebuild a past day from saved JSON
 ```
+
+Or activate the venv with `source .venv/bin/activate` and use `python` directly.
 
 Required environment variables for a real run are listed in CLAUDE.md under "Telegram bot". A dry run needs only `FRED_API_KEY` and `EDGAR_CONTACT_EMAIL`.
 
