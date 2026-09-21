@@ -1,0 +1,39 @@
+snapshot:
+  us:
+    - {ticker: "^GSPC", label: "S&P 500"}
+    - {ticker: "^IXIC", label: "Nasdaq"}
+    - {ticker: "^DJI", label: "Dow"}
+    - {ticker: "^RUT", label: "Russell 2000"}
+  world:
+    - {ticker: "VGK", label: "Europe"}
+    - {ticker: "EWJ", label: "Japan"}
+    - {ticker: "MCHI", label: "China"}
+    - {ticker: "EEM", label: "Emerging markets"}
+  rates_fred:
+    - {series: "DGS2", label: "2-year"}
+    - {series: "DGS10", label: "10-year"}
+    - {series: "T10Y2Y", label: "10y minus 2y"}
+    - {series: "BAMLH0A0HYM2", label: "High yield spread"}
+  other:
+    - {ticker: "^VIX", label: "VIX"}
+    - {ticker: "DX-Y.NYB", label: "Dollar index"}
+    - {ticker: "CL=F", label: "WTI oil"}
+    - {ticker: "GC=F", label: "Gold"}
+
+sectors:
+  - {ticker: "XLK", label: "Technology"}
+  - {ticker: "XLF", label: "Financials"}
+  - {ticker: "XLV", label: "Health Care"}
+  - {ticker: "XLY", label: "Consumer Discretionary"}
+  - {ticker: "XLP", label: "Consumer Staples"}
+  - {ticker: "XLE", label: "Energy"}
+  - {ticker: "XLI", label: "Industrials"}
+  - {ticker: "XLB", label: "Materials"}
+  - {ticker: "XLU", label: "Utilities"}
+  - {ticker: "XLRE", label: "Real Estate"}
+  - {ticker: "XLC", label: "Communication Services"}
+
+kazakhstan:
+  - {ticker: "KZT=X", label: "USD/KZT"}
+  - {ticker: "KSPI", label: "Kaspi"}
+  - {ticker: "KAP.IL", label: "Kazatomprom"}  # verify working ticker

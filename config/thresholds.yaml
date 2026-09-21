@@ -1,0 +1,6 @@
+slow_movers:
+  one_year_return_below: -0.30
+  one_year_return_above: 0.50
+  five_year_return_below: -0.50
+  new_high_low_windows_days: [252, 756, 1260]   # 52 week, 3 year, 5 year
+  repeat_cooldown_days: 30
