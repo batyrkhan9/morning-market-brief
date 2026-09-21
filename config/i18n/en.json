@@ -1,1 +1,24 @@
-{}
+{
+  "site_title": "Morning Market Brief",
+  "edition": "Edition",
+  "as_of": "Data as of the US close on",
+  "built_at": "Built",
+  "snapshot": "Snapshot",
+  "sectors": "Sectors",
+  "col_item": "Item",
+  "col_last": "Last",
+  "col_1d": "1 day",
+  "col_1m": "1 month",
+  "col_ytd": "YTD",
+  "col_date": "Date",
+  "group_us": "US",
+  "group_world": "World",
+  "group_rates_fred": "Rates (FRED, changes in bp)",
+  "group_other": "Other",
+  "source": "source",
+  "section_failed": "This section failed to build",
+  "partial_failed": "Part of this section failed",
+  "row_failed": "no data",
+  "footer_numbers": "Every number comes from a data API. Nothing on this page is written by an AI.",
+  "footer_sources": "Prices: Yahoo Finance via yfinance. Rates: FRED (values lag one business day, see the date column)."
+}

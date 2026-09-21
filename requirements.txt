@@ -8,3 +8,4 @@ kaleido
 edgartools
 pandas-market-calendars
 pytest
+python-dotenv

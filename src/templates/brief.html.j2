@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t.site_title }} · {{ day.date }}</title>
+  <style>
+    :root { --pos: #1a7f37; --neg: #c0392b; --muted: #666; --line: #e3e3e3; --note: #fff4e5; --note-line: #f0b35e; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 56rem; margin: 2rem auto; padding: 0 1rem; color: #1b1b1b; line-height: 1.4; }
+    h1 { font-size: 1.7rem; margin-bottom: .2rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; border-bottom: 1px solid var(--line); padding-bottom: .3rem; }
+    .meta { color: var(--muted); font-size: .9rem; }
+    table { border-collapse: collapse; width: 100%; margin: .6rem 0 1rem; font-variant-numeric: tabular-nums; }
+    th, td { padding: .35rem .5rem; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; }
+    th { font-weight: 600; color: var(--muted); font-size: .85rem; }
+    tr.group td { text-align: left; font-weight: 600; background: #fafafa; }
+    .pos { color: var(--pos); } .neg { color: var(--neg); }
+    .date { color: var(--muted); font-size: .85rem; }
+    .src { font-size: .75rem; color: var(--muted); margin-left: .3rem; text-decoration: none; }
+    .note { background: var(--note); border-left: 4px solid var(--note-line); padding: .5rem .8rem; margin: .6rem 0; font-size: .9rem; }
+    footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>{{ t.site_title }}</h1>
+  <p class="meta">{{ t.edition }} {{ day.date }} · {{ t.as_of }} {{ day.as_of or "—" }} · {{ t.built_at }} {{ day.built_at }}</p>
+
+  {% macro row(r) -%}
+    <tr>
+      <td>{{ r.label }} <a class="src" href="{{ r.source_url }}" target="_blank" rel="noopener">{{ r.id }} ↗</a></td>
+      {% if r.error %}
+        <td colspan="4" class="date">{{ t.row_failed }}: {{ r.error }}</td>
+      {% else %}
+        <td>{{ r.last | num(r.decimals) }}</td>
+        <td class="{{ r.chg_1d | sign }}">{{ r.chg_1d | chg(r.unit) }}</td>
+        <td class="{{ r.chg_1m | sign }}">{{ r.chg_1m | chg(r.unit) }}</td>
+        <td class="{{ r.chg_ytd | sign }}">{{ r.chg_ytd | chg(r.unit) }}</td>
+        <td class="date">{{ r.date }}</td>
+      {% endif %}
+    </tr>
+  {%- endmacro %}
+
+  {% macro header() -%}
+    <tr><th>{{ t.col_item }}</th><th>{{ t.col_last }}</th><th>{{ t.col_1d }}</th><th>{{ t.col_1m }}</th><th>{{ t.col_ytd }}</th><th>{{ t.col_date }}</th></tr>
+  {%- endmacro %}
+
+  {% set snap = day.sections.snapshot %}
+  <h2>{{ t.snapshot }}</h2>
+  {% if snap.error %}
+    <div class="note">{{ t.section_failed }}: {{ snap.error }}</div>
+  {% else %}
+    {% for e in snap.errors %}
+      <div class="note">{{ t.partial_failed }} ({{ e.where }}): {{ e.message }}</div>
+    {% endfor %}
+    <table>
+      {{ header() }}
+      {% for g in snap.groups %}
+        <tr class="group"><td colspan="6">{{ t["group_" ~ g.key] }}</td></tr>
+        {% for r in g.rows %}{{ row(r) }}{% endfor %}
+      {% endfor %}
+    </table>
+  {% endif %}
+
+  {% set sec = day.sections.sectors %}
+  <h2>{{ t.sectors }}</h2>
+  {% if sec.error %}
+    <div class="note">{{ t.section_failed }}: {{ sec.error }}</div>
+  {% else %}
+    <table>
+      {{ header() }}
+      {% for r in sec.rows %}{{ row(r) }}{% endfor %}
+    </table>
+  {% endif %}
+
+  <footer>
+    <p>{{ t.footer_numbers }}</p>
+    <p>{{ t.footer_sources }}</p>
+  </footer>
+</body>
+</html>
