@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets and local config (never commit; see CLAUDE.md rule 7)
+.env
+.env.*
+*.secret
+users.json
+worker/.dev.vars
+worker/.wrangler/
+worker/node_modules/
+
+# Local caches
+.cache/
+data/cache/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

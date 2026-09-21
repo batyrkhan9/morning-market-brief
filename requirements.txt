@@ -1,0 +1,10 @@
+yfinance
+pandas
+requests
+pyyaml
+jinja2
+plotly
+kaleido
+edgartools
+pandas-market-calendars
+pytest
