@@ -1,0 +1,362 @@
+{
+  "date": "2026-09-21",
+  "built_at": "2026-09-21 07:08 UTC",
+  "as_of": "2026-09-18",
+  "sections": {
+    "snapshot": {
+      "as_of": "2026-09-18",
+      "groups": [
+        {
+          "key": "us",
+          "rows": [
+            {
+              "id": "^GSPC",
+              "label": "S&P 500",
+              "source_url": "https://finance.yahoo.com/quote/%5EGSPC",
+              "decimals": 2,
+              "last": 7650.5,
+              "date": "2026-09-18",
+              "chg_1d": 0.16680590599797984,
+              "chg_1m": -0.5364151622284541,
+              "chg_ytd": 11.759550069388647,
+              "unit": "pct"
+            },
+            {
+              "id": "^IXIC",
+              "label": "Nasdaq",
+              "source_url": "https://finance.yahoo.com/quote/%5EIXIC",
+              "decimals": 2,
+              "last": 26522.5390625,
+              "date": "2026-09-18",
+              "chg_1d": 0.3945684550763495,
+              "chg_1m": 0.8856245150565378,
+              "chg_ytd": 14.114750049559245,
+              "unit": "pct"
+            },
+            {
+              "id": "^DJI",
+              "label": "Dow",
+              "source_url": "https://finance.yahoo.com/quote/%5EDJI",
+              "decimals": 2,
+              "last": 51682.640625,
+              "date": "2026-09-18",
+              "chg_1d": -0.1842449795845802,
+              "chg_1m": -3.113333347979008,
+              "chg_ytd": 7.53038677355915,
+              "unit": "pct"
+            },
+            {
+              "id": "^RUT",
+              "label": "Russell 2000",
+              "source_url": "https://finance.yahoo.com/quote/%5ERUT",
+              "decimals": 2,
+              "last": 2860.39990234375,
+              "date": "2026-09-18",
+              "chg_1d": -0.4950195694350623,
+              "chg_1m": -5.218546595145468,
+              "chg_ytd": 15.24994877484076,
+              "unit": "pct"
+            }
+          ]
+        },
+        {
+          "key": "world",
+          "rows": [
+            {
+              "id": "VGK",
+              "label": "Europe",
+              "source_url": "https://finance.yahoo.com/quote/VGK",
+              "decimals": 2,
+              "last": 88.20999908447266,
+              "date": "2026-09-18",
+              "chg_1d": -1.2979787696758671,
+              "chg_1m": -3.648283840467903,
+              "chg_ytd": 5.5017323771572535,
+              "unit": "pct"
+            },
+            {
+              "id": "EWJ",
+              "label": "Japan",
+              "source_url": "https://finance.yahoo.com/quote/EWJ",
+              "decimals": 2,
+              "last": 97.0,
+              "date": "2026-09-18",
+              "chg_1d": -0.9294286876444513,
+              "chg_1m": 1.7091299218572997,
+              "chg_ytd": 20.13872004760955,
+              "unit": "pct"
+            },
+            {
+              "id": "MCHI",
+              "label": "China",
+              "source_url": "https://finance.yahoo.com/quote/MCHI",
+              "decimals": 2,
+              "last": 53.06999969482422,
+              "date": "2026-09-18",
+              "chg_1d": 0.7594485281656072,
+              "chg_1m": -3.3333365759417255,
+              "chg_ytd": -11.65307147588206,
+              "unit": "pct"
+            },
+            {
+              "id": "EEM",
+              "label": "Emerging markets",
+              "source_url": "https://finance.yahoo.com/quote/EEM",
+              "decimals": 2,
+              "last": 67.02999877929688,
+              "date": "2026-09-18",
+              "chg_1d": 0.17933808193086875,
+              "chg_1m": 2.5864746497180624,
+              "chg_ytd": 22.51873496799377,
+              "unit": "pct"
+            }
+          ]
+        },
+        {
+          "key": "rates_fred",
+          "rows": [
+            {
+              "id": "DGS2",
+              "label": "2-year",
+              "source_url": "https://fred.stlouisfed.org/series/DGS2",
+              "decimals": 2,
+              "last": 4.67,
+              "date": "2026-09-17",
+              "chg_1d": -7.000000000000028,
+              "chg_1m": 47.99999999999996,
+              "chg_ytd": 119.99999999999997,
+              "unit": "bp"
+            },
+            {
+              "id": "DGS10",
+              "label": "10-year",
+              "source_url": "https://fred.stlouisfed.org/series/DGS10",
+              "decimals": 2,
+              "last": 4.94,
+              "date": "2026-09-17",
+              "chg_1d": -6.99999999999994,
+              "chg_1m": 22.000000000000064,
+              "chg_ytd": 76.00000000000007,
+              "unit": "bp"
+            },
+            {
+              "id": "T10Y2Y",
+              "label": "10y minus 2y",
+              "source_url": "https://fred.stlouisfed.org/series/T10Y2Y",
+              "decimals": 2,
+              "last": 0.25,
+              "date": "2026-09-18",
+              "chg_1d": -2.0000000000000018,
+              "chg_1m": -27.0,
+              "chg_ytd": -46.0,
+              "unit": "bp"
+            },
+            {
+              "id": "BAMLH0A0HYM2",
+              "label": "High yield spread",
+              "source_url": "https://fred.stlouisfed.org/series/BAMLH0A0HYM2",
+              "decimals": 2,
+              "last": 2.7,
+              "date": "2026-09-17",
+              "chg_1d": 0.0,
+              "chg_1m": 0.0,
+              "chg_ytd": -10.999999999999988,
+              "unit": "bp"
+            }
+          ]
+        },
+        {
+          "key": "other",
+          "rows": [
+            {
+              "id": "^VIX",
+              "label": "VIX",
+              "source_url": "https://finance.yahoo.com/quote/%5EVIX",
+              "decimals": 2,
+              "last": 14.8100004196167,
+              "date": "2026-09-18",
+              "chg_1d": -4.080305556271013,
+              "chg_1m": -6.5025235040980345,
+              "chg_ytd": -0.9364507788265919,
+              "unit": "pct"
+            },
+            {
+              "id": "DX-Y.NYB",
+              "label": "Dollar index",
+              "source_url": "https://finance.yahoo.com/quote/DX-Y.NYB",
+              "decimals": 2,
+              "last": 100.22000122070312,
+              "date": "2026-09-18",
+              "chg_1d": 0.0,
+              "chg_1m": 0.5720016920182314,
+              "chg_ytd": 1.9739544826031574,
+              "unit": "pct"
+            },
+            {
+              "id": "CL=F",
+              "label": "WTI oil",
+              "source_url": "https://finance.yahoo.com/quote/CL=F",
+              "decimals": 2,
+              "last": 100.30000305175781,
+              "date": "2026-09-18",
+              "chg_1d": -1.5798258782225627,
+              "chg_1m": 18.083353153830295,
+              "chg_ytd": 74.67782349391203,
+              "unit": "pct"
+            },
+            {
+              "id": "GC=F",
+              "label": "Gold",
+              "source_url": "https://finance.yahoo.com/quote/GC=F",
+              "decimals": 2,
+              "last": 4424.89990234375,
+              "date": "2026-09-18",
+              "chg_1d": 0.5727596407159252,
+              "chg_1m": 0.09726744316409519,
+              "chg_ytd": 1.9303817650448307,
+              "unit": "pct"
+            }
+          ]
+        }
+      ],
+      "errors": []
+    },
+    "sectors": {
+      "as_of": "2026-09-18",
+      "rows": [
+        {
+          "id": "XLK",
+          "label": "Technology",
+          "source_url": "https://finance.yahoo.com/quote/XLK",
+          "decimals": 2,
+          "last": 189.60000610351562,
+          "date": "2026-09-18",
+          "chg_1d": 0.818892143419303,
+          "chg_1m": 2.144171474530765,
+          "chg_ytd": 31.694106060930437,
+          "unit": "pct"
+        },
+        {
+          "id": "XLI",
+          "label": "Industrials",
+          "source_url": "https://finance.yahoo.com/quote/XLI",
+          "decimals": 2,
+          "last": 169.75,
+          "date": "2026-09-18",
+          "chg_1d": 0.4378471789928007,
+          "chg_1m": -7.528466946024603,
+          "chg_ytd": 9.431411386881528,
+          "unit": "pct"
+        },
+        {
+          "id": "XLF",
+          "label": "Financials",
+          "source_url": "https://finance.yahoo.com/quote/XLF",
+          "decimals": 2,
+          "last": 55.86000061035156,
+          "date": "2026-09-18",
+          "chg_1d": -0.03579179917926334,
+          "chg_1m": -3.4232357140610015,
+          "chg_ytd": 1.9901408498772089,
+          "unit": "pct"
+        },
+        {
+          "id": "XLV",
+          "label": "Health Care",
+          "source_url": "https://finance.yahoo.com/quote/XLV",
+          "decimals": 2,
+          "last": 168.38999938964844,
+          "date": "2026-09-18",
+          "chg_1d": -0.24879934542948456,
+          "chg_1m": -0.7894870509757568,
+          "chg_ytd": 8.779067228665859,
+          "unit": "pct"
+        },
+        {
+          "id": "XLE",
+          "label": "Energy",
+          "source_url": "https://finance.yahoo.com/quote/XLE",
+          "decimals": 2,
+          "last": 64.30999755859375,
+          "date": "2026-09-18",
+          "chg_1d": -0.26365662141604185,
+          "chg_1m": 0.9893172901991321,
+          "chg_ytd": 43.838065031247076,
+          "unit": "pct"
+        },
+        {
+          "id": "XLY",
+          "label": "Consumer Discretionary",
+          "source_url": "https://finance.yahoo.com/quote/XLY",
+          "decimals": 2,
+          "last": 111.02999877929688,
+          "date": "2026-09-18",
+          "chg_1d": -0.3231893458336965,
+          "chg_1m": -4.5806134437064605,
+          "chg_ytd": -7.017841575924521,
+          "unit": "pct"
+        },
+        {
+          "id": "XLP",
+          "label": "Consumer Staples",
+          "source_url": "https://finance.yahoo.com/quote/XLP",
+          "decimals": 2,
+          "last": 82.80000305175781,
+          "date": "2026-09-18",
+          "chg_1d": -0.8264400882337819,
+          "chg_1m": -3.2484210327372143,
+          "chg_ytd": 6.591146661260883,
+          "unit": "pct"
+        },
+        {
+          "id": "XLRE",
+          "label": "Real Estate",
+          "source_url": "https://finance.yahoo.com/quote/XLRE",
+          "decimals": 2,
+          "last": 42.529998779296875,
+          "date": "2026-09-18",
+          "chg_1d": -0.9548203552039447,
+          "chg_1m": -4.705360158099237,
+          "chg_ytd": 5.40272710685219,
+          "unit": "pct"
+        },
+        {
+          "id": "XLC",
+          "label": "Communication Services",
+          "source_url": "https://finance.yahoo.com/quote/XLC",
+          "decimals": 2,
+          "last": 110.80999755859375,
+          "date": "2026-09-18",
+          "chg_1d": -1.3707173444083898,
+          "chg_1m": 0.2986913392770463,
+          "chg_ytd": -5.869863736370851,
+          "unit": "pct"
+        },
+        {
+          "id": "XLU",
+          "label": "Utilities",
+          "source_url": "https://finance.yahoo.com/quote/XLU",
+          "decimals": 2,
+          "last": 41.099998474121094,
+          "date": "2026-09-18",
+          "chg_1d": -1.4152078964327464,
+          "chg_1m": -6.633352915214674,
+          "chg_ytd": -3.7245261272815022,
+          "unit": "pct"
+        },
+        {
+          "id": "XLB",
+          "label": "Materials",
+          "source_url": "https://finance.yahoo.com/quote/XLB",
+          "decimals": 2,
+          "last": 49.9900016784668,
+          "date": "2026-09-18",
+          "chg_1d": -1.4198332064776609,
+          "chg_1m": -3.45692766131499,
+          "chg_ytd": 10.231539934876754,
+          "unit": "pct"
+        }
+      ]
+    }
+  }
+}
