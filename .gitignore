@@ -11,6 +11,7 @@ venv/
 # Secrets and local config (never commit; see CLAUDE.md rule 7)
 .env
 .env.*
+!.env.example
 *.secret
 users.json
 worker/.dev.vars
