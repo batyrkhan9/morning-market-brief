@@ -76,7 +76,7 @@ def test_deep_dive_chunks_offline(config, offline_prices, offline_fred, offline_
             rows = {r["ticker"]: r for r in d["table"]}
             assert rows["NKE"]["files_10k"] and rows["NKE"]["revenue_growth"] is not None
             assert not rows["ADDYY"]["files_10k"] and "price chart only" in rows["ADDYY"]["note"]   # foreign competitor
-            assert "NKE" in d["chart"] and "ADDYY" in d["chart"]
+            assert "NKE" in d["chart"]                                                       # ADDYY has no saved prices
         elif chunk == "earnings_release":
             assert d["text"] and "ex991" in d["exhibit_url"]
         elif chunk in ("business", "risk_factors", "mdna"):

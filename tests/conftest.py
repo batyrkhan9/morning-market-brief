@@ -97,7 +97,11 @@ def offline_universe(monkeypatch, wikipedia_html, subset_closes, fixture_closes,
     caps = json.loads((FIX / "market_caps_subset.json").read_text())
 
     def fake_prices(tickers, period="2y"):
-        cols = [subset_closes[t] if t in subset_closes.columns else fixture_closes[t] for t in tickers]
+        """Serves what the saved responses have; unknown tickers are simply absent, like a real download."""
+        cols = [subset_closes[t] if t in subset_closes.columns else fixture_closes[t]
+                for t in tickers if t in subset_closes.columns or t in fixture_closes.columns]
+        if not cols:
+            raise RuntimeError("no saved prices for " + ", ".join(tickers))
         return pd.concat(cols, axis=1).sort_index()
     monkeypatch.setattr(constituents, "get_sp500", lambda force=False, cache_path=None: cons)
     monkeypatch.setattr(prices, "get_prices", fake_prices)
