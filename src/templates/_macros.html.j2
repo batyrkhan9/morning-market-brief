@@ -31,7 +31,7 @@
   {% if item.filings %}
     <ul class="news filings">
     {% for f in item.filings %}
-      <li><a href="{{ f.url }}" target="_blank" rel="noopener">{{ f.form }}</a> <span class="pub">{{ f.accepted_et }}</span>: {% for it in f.items %}<span class="tag">{{ it.code }} {{ it.label }}</span> {% endfor %}</li>
+      <li><a href="{{ f.url }}" target="_blank" rel="noopener">{{ f.form }}</a> <span class="pub">{{ f.accepted_et }}</span>: {% for it in f["items"] %}<span class="tag">{{ it.code }} {{ it.label }}</span> {% endfor %}</li>
     {% endfor %}
     </ul>
   {% elif item.filings_error %}
