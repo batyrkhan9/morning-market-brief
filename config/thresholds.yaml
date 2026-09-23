@@ -1,6 +1,10 @@
 slow_movers:
-  # A ticker alerts at most once per cooldown, unless it reaches a higher severity than its last alert.
-  repeat_cooldown_days: 30
+  # A ticker alerts at most once per cooldown, unless it reaches a higher severity than its last alert
+  # (escalation) or has moved another price_override in the same direction since its last alert price.
+  # For no_deescalation_days after an alert it cannot alert at a lower severity unless direction changes.
+  repeat_cooldown_days: 90
+  price_override: 0.20
+  no_deescalation_days: 180
   # kind low/high: close beyond the extreme of the trailing calendar window (excluding today).
   # kind return: return vs the close N years earlier crosses the threshold.
   # severity: 1 < 2 < 3; direction down (lows, below) or up (highs, above).

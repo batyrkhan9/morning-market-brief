@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 from src import filings, render, sections, universe
 from src.paths import CONFIG, DATA, ROOT
-from src.sections import baseline, breadth, deep_dive, earnings, heatmap, movers, sectors, slow_movers, snapshot
+from src.sections import baseline, breadth, deep_dive, earnings, heatmap, movers, ongoing, sectors, slow_movers, snapshot
 
 STATE = DATA / "state.json"
 SCHEDULE = CONFIG / "deep_dive_schedule.yaml"
@@ -95,6 +95,8 @@ def build_day(date_str, config=None, state=None, ctx=None):
     day["sections"]["heatmap"] = sections.run(needs_universe(heatmap.build), ctx)
     day["sections"]["movers"] = sections.run(needs_universe(movers.build), ctx)
     day["sections"]["slow_movers"] = sections.run(needs_universe(slow_movers.build), ctx)
+    ctx["new_alerts_today"] = day["sections"]["slow_movers"].get("new_alerts", {})
+    day["sections"]["ongoing"] = sections.run(needs_universe(ongoing.build), ctx)
     day["sections"]["deep_dive"] = sections.run(needs_universe(deep_dive.build), ctx)
     day["as_of"] = ctx.get("as_of") or sec.get("as_of")
     return day

@@ -42,7 +42,7 @@
 </head>
 <body>
   <h1>{{ t.site_title }}</h1>
-  <p class="meta">{{ t.edition }} {{ day.date }} · {{ t.as_of }} {{ day.as_of or "—" }} · {{ t.built_at }} {{ day.built_at }} · <a class="more" href="baseline.html">{{ t.baseline_title }}</a></p>
+  <p class="meta">{{ t.edition }} {{ day.date }} · {{ t.as_of }} {{ day.as_of or "—" }} · {{ t.built_at }} {{ day.built_at }} · <a class="more" href="baseline.html">{{ t.baseline_title }}</a> · <a class="more" href="ongoing.html">{{ t.ongoing_title }}</a></p>
   {% import "_macros.html.j2" as m with context %}
 
   {% macro row(r) -%}
@@ -153,7 +153,7 @@
     <div class="card" id="slow-{{ f.ticker }}">
       <strong>{{ f.name }}</strong> <a class="src" href="{{ f.source_url }}" target="_blank" rel="noopener">{{ f.ticker }} ↗</a> <span class="pub">{{ f.sector }}</span> <span class="sev">{{ t.severity }} {{ f.severity }}{% if f.escalation %} · {{ t.escalation }}{% endif %}</span>
       <div class="rules">{% for r in f.rules %}<span>{{ t["rule_" ~ r] }}</span>{% endfor %}</div>
-      <div class="kv">{{ t.col_last }} {{ f.last | num }} · {{ t.col_1d }} <span class="{{ f.chg_1d | sign }}">{{ f.chg_1d | chg }}</span> · {{ t.ret_1y }} <span class="{{ f.ret_1y | sign }}">{{ f.ret_1y | chg }}</span> · {{ t.ret_5y }} <span class="{{ f.ret_5y | sign }}">{{ f.ret_5y | chg }}</span></div>
+      <div class="kv">{{ t.col_last }} {{ f.last | num }} · {{ t.col_1d }} <span class="{{ f.chg_1d | sign }}">{{ f.chg_1d | chg }}</span> · {{ t.ret_1y }} <span class="{{ f.ret_1y | sign }}">{{ f.ret_1y | chg }}</span> · {{ t.ret_5y }} <span class="{{ f.ret_5y | sign }}">{{ f.ret_5y | chg }}</span>{% if f.escalation %} · {{ f.why }}{% endif %}</div>
       <div class="chart">{{ charts.slow[f.ticker] | safe }}</div>
       <div class="kv">{{ t.why }}</div>
       {{ m.headlines(f) }}

@@ -87,7 +87,7 @@ def build_charts(day, docs_dir=None, lang="en"):
     return out
 
 
-SECTIONS = ["snapshot", "sectors", "breadth", "earnings", "heatmap", "movers", "slow_movers", "deep_dive"]
+SECTIONS = ["snapshot", "sectors", "breadth", "earnings", "heatmap", "movers", "slow_movers", "ongoing", "deep_dive"]
 
 
 def with_defaults(day):
@@ -142,6 +142,19 @@ def render_chunk(day, lang="en"):
     return env().get_template("chunk.html.j2").render(day=day, dd=dd, t=i18n.load(lang), lang=lang, figs=build_chunk_figs(dd))
 
 
+def render_ongoing(day, lang="en"):
+    og = day["sections"].get("ongoing", {})
+    svgs = {}
+    for r in og.get("rows", []):
+        if r.get("chart"):
+            try:
+                c = r["chart"]
+                svgs[r["ticker"]] = charts.static_line_svg(c["dates"], c["stock"], c["benchmark"], r["ticker"], "S&P 500")
+            except Exception as e:  # noqa: BLE001
+                svgs[r["ticker"]] = f'<div class="note">chart: {type(e).__name__}: {e}</div>'
+    return env().get_template("ongoing.html.j2").render(day=day, og=og, t=i18n.load(lang), lang=lang, svgs=svgs)
+
+
 def render_baseline(base, lang="en"):
     return env().get_template("baseline.html.j2").render(base=base, t=i18n.load(lang), lang=lang)
 
@@ -164,6 +177,9 @@ def write_pages(day, docs_dir=DOCS, langs=("en",)):
         full = docs_dir / lang / "slow-movers.html"
         full.write_text(render_slow_movers(day, lang), encoding="utf-8")
         written.append(full)
+        og = docs_dir / lang / "ongoing.html"
+        og.write_text(render_ongoing(day, lang), encoding="utf-8")
+        written.append(og)
         dd = day["sections"].get("deep_dive", {})
         if "error" not in dd and dd.get("page"):
             chunk = docs_dir / lang / dd["page"]

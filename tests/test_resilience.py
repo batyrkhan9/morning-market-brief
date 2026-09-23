@@ -28,7 +28,7 @@ def test_page_builds_when_yfinance_fails(config, offline_fred, offline_treasury,
     assert "This section failed to build" in html           # sectors note
     assert "Treasury" in html and "bp" in html              # rates table still rendered
     assert (tmp_path / "index.html").exists()               # root redirect written too
-    assert len(written) == 3                                # brief, slow movers list, redirect
+    assert len(written) == 4                                # brief, slow movers list, ongoing, redirect
 
 
 def test_page_builds_when_fred_and_treasury_fail(config, offline_prices, no_network, monkeypatch, tmp_path):

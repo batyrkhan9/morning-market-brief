@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t.ongoing_title }} · {{ day.as_of }}</title>
+  <style>
+    :root { --pos: #1a7f37; --neg: #c0392b; --muted: #666; --line: #e3e3e3; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 56rem; margin: 2rem auto; padding: 0 1rem; color: #1b1b1b; line-height: 1.4; }
+    .pos { color: var(--pos); } .neg { color: var(--neg); } .kv { color: var(--muted); font-size: .85rem; }
+    .src { font-size: .75rem; color: var(--muted); margin-left: .3rem; text-decoration: none; }
+    .card { border: 1px solid var(--line); border-radius: 6px; padding: .8rem 1rem; margin: .8rem 0; }
+    .rules span { display: inline-block; background: #eef3fb; border-radius: 3px; padding: .1rem .4rem; margin: .1rem .2rem .1rem 0; font-size: .85rem; }
+    .sev { font-size: .75rem; border: 1px solid var(--muted); border-radius: 3px; padding: 0 .3rem; color: var(--muted); }
+    .note { background: #fff4e5; border-left: 4px solid #f0b35e; padding: .5rem .8rem; margin: .6rem 0; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <h1>{{ t.ongoing_title }}</h1>
+  <p class="kv">{{ t.as_of }} {{ day.as_of }} · <a href="index.html">{{ t.back_to_brief }}</a> · <a href="baseline.html">{{ t.baseline_title }}</a></p>
+  <p>{{ t.ongoing_intro }}</p>
+  {% if og.error %}<div class="note">{{ t.section_failed }}: {{ og.error }}</div>
+  {% elif not og.rows %}<p>{{ t.no_ongoing }}</p>
+  {% else %}
+    {% for r in og.rows %}
+    <div class="card" id="ongoing-{{ r.ticker }}">
+      <strong>{{ r.name }}</strong> <a class="src" href="{{ r.source_url }}" target="_blank" rel="noopener">{{ r.ticker }} ↗</a> <span class="kv">{{ r.sector or "" }}</span> <span class="sev">{{ t.severity }} {{ r.severity }} · {{ r.direction }}</span>
+      <div class="rules">{% for x in r.rules %}<span>{{ t["rule_" ~ x] }}</span>{% endfor %}</div>
+      <div class="kv">{{ t.first_alert }}: {{ r.first_date }} @ {{ r.first_price | num }} · {{ t.last_alert }}: {{ r.last_date }} · {{ t.col_last }} {{ r.price | num }} · {{ t.since_first }}: <span class="{{ r.since_first | sign }}">{{ r.since_first | chg }}</span> · {{ r.count }} {{ t.alerts_in_streak }} · {{ r.days_left }} {{ t.days_left }}</div>
+      {% if svgs[r.ticker] %}<div>{{ svgs[r.ticker] | safe }}</div>{% endif %}
+    </div>
+    {% endfor %}
+  {% endif %}
+</body>
+</html>

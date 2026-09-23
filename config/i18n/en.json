@@ -36,9 +36,9 @@
   "no_headlines": "No headlines found",
   "news_failed": "Headlines unavailable",
   "slow_movers": "Slow movers",
-  "slow_movers_intro": "S&P 500 stocks that crossed a long-term threshold on the last trading day, computed from price history. One alert per ticker; inside 30 days a ticker returns only if it reaches a higher severity. Sorted by severity, then market cap.",
+  "slow_movers_intro": "S&P 500 stocks that crossed a long-term threshold on the last trading day, computed from price history. One alert per ticker; inside 90 days a ticker returns only on a higher severity or another 20% move. Sorted by severity, then market cap.",
   "no_slow_movers": "No stock crossed a threshold on the last trading day.",
-  "suppressed": "held back by the 30 day cooldown",
+  "suppressed": "held back (cooldown, or lower severity than the last alert)",
   "chart_vs": "5 years vs S&P 500, indexed to 100",
   "ret_1y": "1 year",
   "ret_5y": "5 years",
@@ -128,5 +128,13 @@
   "source_edgar": "Source: SEC EDGAR",
   "all_chunks": "This week's chunks",
   "previous": "previous",
-  "next": "next"
+  "next": "next",
+  "ongoing_title": "Ongoing alerts",
+  "ongoing_intro": "Every ticker inside the slow mover cooldown, with its first alert of the current streak and how far it has moved since.",
+  "first_alert": "first alert",
+  "last_alert": "last alert",
+  "since_first": "since first alert",
+  "alerts_in_streak": "alerts in streak",
+  "days_left": "days of cooldown left",
+  "no_ongoing": "No ticker is inside the cooldown."
 }

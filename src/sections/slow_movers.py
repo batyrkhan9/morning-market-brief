@@ -31,7 +31,6 @@ def build(ctx):
     u = ctx["universe"]
     as_of = pd.Timestamp(ctx["as_of"])
     cfg = ctx["config_thresholds"]["slow_movers"]
-    cooldown = cfg["repeat_cooldown_days"]
     last_alerts = ctx["state"].setdefault("slow_mover_alerts", {})
     per_item = news.settings()["headlines_per_item"]
     closes, bench, caps = u["closes"], u["closes"][u["benchmark"]], u["caps"]
@@ -46,19 +45,20 @@ def build(ctx):
             continue
         severity, direction = rules.summarize(fired, cfg)
         last = last_alerts.get(t)
-        if not rules.should_alert(last, as_of, severity, direction, cooldown):
-            suppressed.append({"ticker": t, "rules": fired, "severity": severity, "last": last})
-            continue
-        new_alerts[t] = {"date": as_of.date().isoformat(), "severity": severity, "direction": direction, "rules": fired}
-        cond = rules.conditions(s, cfg)
         d0, v0 = last_on_or_before(s, as_of)
+        ok, why = rules.should_alert(last, as_of, severity, direction, v0, cfg)
+        if not ok:
+            suppressed.append({"ticker": t, "rules": fired, "severity": severity, "last": last, "why": why})
+            continue
+        new_alerts[t] = rules.next_state(last, as_of, severity, direction, fired, v0, cfg)
+        cond = rules.conditions(s, cfg)
         prev = s[s.index < d0]
         rec = meta.loc[t]
         r1, r5 = cond.attrs["ret_1y"].iloc[-1], cond.attrs["ret_5y"].iloc[-1]
         alerts.append({
             "ticker": t, "name": rec["name"], "sector": rec["sector"], "rules": fired,
-            "severity": severity, "direction": direction, "cap": caps.get(t) or 0,
-            "escalation": bool(last and as_of - pd.Timestamp(last["date"]) < pd.Timedelta(days=cooldown)),
+            "severity": severity, "direction": direction, "cap": caps.get(t) or 0, "why": why,
+            "escalation": why not in ("first", "cooldown over"),
             "last": v0, "chg_1d": (v0 / float(prev.iloc[-1]) - 1) * 100 if not prev.empty else None,
             "ret_1y": None if pd.isna(r1) else float(r1) * 100,
             "ret_5y": None if pd.isna(r5) else float(r5) * 100,

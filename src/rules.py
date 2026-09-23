@@ -76,16 +76,43 @@ def summarize(fired, cfg):
     return cfg["rules"][best]["severity"], direction_of(cfg["rules"][best])
 
 
-def should_alert(last, date, severity, direction, cooldown_days):
-    """Cooldown per ticker; inside it only an escalation (higher severity, same direction) or a
-    direction change alerts again. `last` is {date, severity, direction} or None."""
+def should_alert(last, date, severity, direction, price, cfg):
+    """Decide whether a ticker alerts today given its last alert {date, severity, direction, price}.
+
+    - no previous alert, or a direction change: alert
+    - lower severity than the last alert within no_deescalation_days: never
+    - cooldown over: alert
+    - inside the cooldown: only an escalation (higher severity) or a price override (moved another
+      price_override in the same direction since the last alert price)
+    """
     if not last:
-        return True
-    if pd.Timestamp(date) - pd.Timestamp(last["date"]) >= pd.Timedelta(days=cooldown_days):
-        return True
+        return True, "first"
     if direction != last.get("direction"):
-        return True
-    return severity > last.get("severity", 0)
+        return True, "direction change"
+    days = (pd.Timestamp(date) - pd.Timestamp(last["date"])).days
+    if severity < last.get("severity", 0) and days < cfg["no_deescalation_days"]:
+        return False, "lower severity"
+    if days >= cfg["repeat_cooldown_days"]:
+        return True, "cooldown over"
+    if severity > last.get("severity", 0):
+        return True, "escalation"
+    last_price = last.get("price")
+    if last_price and price:
+        moved = price / last_price - 1
+        if (direction == "down" and moved <= -cfg["price_override"]) or (direction == "up" and moved >= cfg["price_override"]):
+            return True, f"price override ({moved * 100:+.0f}% since last alert)"
+    return False, "cooldown"
+
+
+def next_state(last, date, severity, direction, rules_fired, price, cfg):
+    """The state entry after an alert. The first alert of a streak is kept while alerts keep coming
+    inside no_deescalation_days, so the ongoing page can show change since the first alert."""
+    streak = bool(last and last.get("direction") == direction
+                  and (pd.Timestamp(date) - pd.Timestamp(last["date"])).days < cfg["no_deescalation_days"])
+    return {"date": str(date)[:10], "severity": severity, "direction": direction, "rules": rules_fired, "price": price,
+            "first_date": last["first_date"] if streak and last.get("first_date") else str(date)[:10],
+            "first_price": last["first_price"] if streak and last.get("first_price") else price,
+            "count": (last.get("count", 1) + 1) if streak else 1}
 
 
 def flags_on(s, date, cfg):
@@ -105,11 +132,9 @@ def backtest(s, start, end, cfg):
 
 
 def simulate_alerts(s, start, end, cfg, cooldown_days=None):
-    """Alerts a live run would have sent: one per ticker-day, after cooldown and escalation.
-
-    The state starts empty at `start`, so the first crossing after start always alerts.
-    """
-    cooldown = cfg["repeat_cooldown_days"] if cooldown_days is None else cooldown_days
+    """Alerts a live run would have sent: one per ticker-day, after cooldown, escalation, price
+    override and the no-de-escalation rule. The state starts empty at `start`."""
+    cfg = dict(cfg, repeat_cooldown_days=cfg["repeat_cooldown_days"] if cooldown_days is None else cooldown_days)
     by_date = {}
     for d, r in backtest(s, start, end, cfg):
         by_date.setdefault(d, []).append(r)
@@ -117,9 +142,11 @@ def simulate_alerts(s, start, end, cfg, cooldown_days=None):
     for d in sorted(by_date):
         fired = by_date[d]
         sev, direction = summarize(fired, cfg)
-        if should_alert(last, d, sev, direction, cooldown):
-            alerts.append({"date": d, "rules": fired, "severity": sev, "direction": direction, "close": float(s.loc[d])})
-            last = {"date": d, "severity": sev, "direction": direction}
+        price = float(s.loc[d])
+        ok, why = should_alert(last, d, sev, direction, price, cfg)
+        if ok:
+            alerts.append({"date": d, "rules": fired, "severity": sev, "direction": direction, "close": price, "why": why})
+            last = next_state(last, d, sev, direction, fired, price, cfg)
     return alerts
 
 

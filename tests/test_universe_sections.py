@@ -59,8 +59,9 @@ def test_thirty_day_no_repeat_and_queue(config, offline_prices, offline_fred, of
     state = {}
     apply_state(day, state)
     saved = load_state()
-    assert saved["slow_mover_alerts"]["NKE"] == {"date": "2026-09-18", "severity": 3, "direction": "down",
-                                                "rules": first["NKE"]["rules"]}
+    nke_state = saved["slow_mover_alerts"]["NKE"]
+    assert nke_state["date"] == "2026-09-18" and nke_state["severity"] == 3 and nke_state["direction"] == "down"
+    assert nke_state["price"] == first["NKE"]["last"] and nke_state["first_date"] == "2026-09-18" and nke_state["count"] == 1
     sched = (isolated_state / "schedule.yaml").read_text()
     assert "queue:" in sched and "NKE" not in sched.split("queue:")[1]  # NKE already in the schedule
     day2, _ = _day(config, state=saved)                              # same day again: every flag suppressed
@@ -68,10 +69,16 @@ def test_thirty_day_no_repeat_and_queue(config, offline_prices, offline_fred, of
     assert not any(f["ticker"] == "NKE" for f in sm2["alerts"])
     assert any(x["ticker"] == "NKE" for x in sm2["suppressed"])
     # an escalation inside the cooldown alerts again: pretend the last alert was a severity 1 last week
-    saved["slow_mover_alerts"]["NKE"] = {"date": "2026-09-11", "severity": 1, "direction": "down", "rules": ["52w_low"]}
+    saved["slow_mover_alerts"]["NKE"] = {"date": "2026-09-11", "severity": 1, "direction": "down", "rules": ["52w_low"],
+                                         "price": 40.0, "first_date": "2026-09-11", "first_price": 40.0, "count": 1}
     day3, _ = _day(config, state=saved)
     nke3 = next(f for f in day3["sections"]["slow_movers"]["alerts"] if f["ticker"] == "NKE")
-    assert nke3["escalation"] is True
+    assert nke3["escalation"] is True and nke3["why"] == "escalation"
+    og = day3["sections"]["ongoing"]
+    row = next(r for r in og["rows"] if r["ticker"] == "NKE")
+    assert row["first_date"] == "2026-09-11" and row["first_price"] == 40.0 and row["count"] == 2
+    assert abs(row["since_first"] - (nke3["last"] / 40.0 - 1) * 100) < 1e-9
+    assert "<svg" in render.render_ongoing(day3)
 
 
 def test_page_builds_when_universe_fails(config, offline_prices, offline_fred, offline_treasury, no_network, monkeypatch):

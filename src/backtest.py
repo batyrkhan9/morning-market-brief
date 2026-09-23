@@ -20,11 +20,12 @@ def main(ticker, start, end=None):
     print(f"{ticker}: {len(s)} closes from {s.index[0].date()} to {s.index[-1].date()}")
     fired = rules.backtest(s, start, end, cfg)
     print(f"\n{len(fired)} raw crossings on {len({d for d, _ in fired})} dates between {start} and {end}")
-    for cooldown in (cfg["repeat_cooldown_days"], 90):
-        alerts = rules.simulate_alerts(s, start, end, cfg, cooldown)
-        print(f"\n{len(alerts)} alerts with a {cooldown} day cooldown and escalation:")
-        for a in alerts:
-            print(f"  {a['date']}  sev {a['severity']} {a['direction']:<4} close={a['close']:>8.2f}  {', '.join(a['rules'])}")
+    alerts = rules.simulate_alerts(s, start, end, cfg)
+    print(f"\n{len(alerts)} alerts with cooldown {cfg['repeat_cooldown_days']}d, price override "
+          f"{cfg['price_override'] * 100:.0f}%, no de-escalation {cfg['no_deescalation_days']}d:")
+    for a in alerts:
+        print(f"  {a['date']}  sev {a['severity']} {a['direction']:<4} close={a['close']:>8.2f}  "
+              f"{', '.join(a['rules']):<45} {a['why']}")
     return fired
 
 
