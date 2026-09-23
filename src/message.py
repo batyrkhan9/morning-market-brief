@@ -10,7 +10,7 @@ PAGES_URL = "https://batyrkhan9.github.io/morning-market-brief"
 MAX = 4000  # leave headroom under Telegram's 4096
 
 
-def _row(r, width=14):
+def _row(r, width=16):
     if "error" in r:
         return f"{r['label'][:width]:<{width}} {'n/a':>9}"
     last = fmt_num(r["last"], r.get("decimals", 2))

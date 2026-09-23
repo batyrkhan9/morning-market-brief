@@ -1,0 +1,22 @@
+<b>Morning Market Brief</b> · Trading day 2026-09-22
+⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
+<pre>S&P 500         7,764.27   -0.01%
+Nasdaq         27,241.53   +0.44%
+Dow            51,866.37   -0.35%
+Russell 2000    2,890.81   +0.54%
+Europe             89.42   +0.20%
+Japan              98.77   +0.83%
+China              54.25   +0.46%
+Emerging marke     69.09   +0.38%
+2-year              4.71    -5 bp
+10-year             4.96    +0 bp
+10y minus 2y        0.25    +5 bp
+High yield spr      2.66    -2 bp
+VIX                14.21   -4.44%
+Dollar index      100.72   +0.29%
+WTI oil            94.59   -1.24%
+Gold            4,376.40   -0.17%</pre>
+Breadth: 24 at 52 week lows, 11 at 52 week highs
+<b>Today</b>: 10 fast movers (MPWR +8.06%, GEN -6.35%) · 21 slow mover alerts (DE, CCI, CHTR, CRWD, GLW) · 1 earnings filers, 15 8-K filings
+<b>Deep dive</b>: Nike, Inc. — Wednesday: the numbers, 10 fiscal years
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
