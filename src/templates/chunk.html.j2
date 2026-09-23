@@ -88,5 +88,11 @@
     {% if d.text %}<h2>{{ t.text_from_filing }} <span class="kv">({{ d.chars }} {{ t.chars }})</span></h2><div class="filing-text">{{ d.text | paragraphs | safe }}</div>
     {% else %}<p><a href="{{ dd.filing_search_url }}" target="_blank" rel="noopener">{{ t.full_filing }} ↗</a></p>{% endif %}
   {% endif %}
+  <script>
+    // Charts measure their container before the CSS grid settles; resize them once the page has loaded.
+    window.addEventListener("load", function () {
+      if (window.Plotly) { document.querySelectorAll(".js-plotly-plot").forEach(function (el) { Plotly.Plots.resize(el); }); }
+    });
+  </script>
 </body>
 </html>

@@ -184,5 +184,11 @@
     <p>{{ t.footer_sources }} {{ t.universe_note | capitalize }}.</p>
     {% if day.timing %}<p>{{ t.timing }}: {% for k, v in day.timing.items() %}{{ k }}={{ v }}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
   </footer>
+  <script>
+    // Charts measure their container before the CSS grid settles; resize them once the page has loaded.
+    window.addEventListener("load", function () {
+      if (window.Plotly) { document.querySelectorAll(".js-plotly-plot").forEach(function (el) { Plotly.Plots.resize(el); }); }
+    });
+  </script>
 </body>
 </html>

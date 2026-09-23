@@ -16,9 +16,11 @@ def plotly_cdn():
 def treemap_figure(rows, limit=3.0):
     """rows: {ticker, name, sector, cap, chg_1d}. Box size = market cap, color = 1 day change."""
     ids, labels, parents, values, colors, text, hover = [], [], [], [], [], [], []
+    root = "S&P 500"  # an explicit root renders as a neutral header; the implicit one draws a dark band
+    ids.append(root); labels.append(root); parents.append(""); values.append(0); colors.append(0); text.append(""); hover.append(root)
     sectors = sorted({r["sector"] for r in rows})
     for s in sectors:
-        ids.append(s); labels.append(s); parents.append(""); values.append(0); colors.append(0)
+        ids.append(s); labels.append(s); parents.append(root); values.append(0); colors.append(0)
         text.append(""); hover.append(s)
     for r in rows:
         ids.append(r["ticker"]); labels.append(r["ticker"]); parents.append(r["sector"])
@@ -31,7 +33,7 @@ def treemap_figure(rows, limit=3.0):
         marker=dict(colors=colors, colorscale=[[0, DOWN], [0.5, MID], [1, UP]], cmid=0,
                     cmin=-limit, cmax=limit, line=dict(width=2, color="#fcfcfb"),
                     colorbar=dict(title="1 day %", ticksuffix="%", thickness=12, len=0.6)),
-        pathbar=dict(visible=False), tiling=dict(pad=2), root=dict(color="#fcfcfb"),
+        pathbar=dict(visible=False), tiling=dict(pad=2),
     ))
     fig.update_layout(margin=dict(t=8, l=0, r=0, b=0), height=560, font=dict(family=FONT, color=INK),
                       paper_bgcolor="#fcfcfb")
