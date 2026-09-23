@@ -42,8 +42,9 @@
 </head>
 <body>
   <h1>{{ t.site_title }}</h1>
-  <p class="meta">{{ t.edition }} {{ day.date }} · {{ t.as_of }} {{ day.as_of or "—" }} · {{ t.built_at }} {{ day.built_at }} · <a class="more" href="baseline.html">{{ t.baseline_title }}</a> · <a class="more" href="ongoing.html">{{ t.ongoing_title }}</a></p>
+  <p class="meta">{{ t.edition }} {{ day.date }} · {{ t.delivered }} {{ day.delivery_date or "—" }} · {{ t.built_at }} {{ day.built_at }} · <a class="more" href="baseline.html">{{ t.baseline_title }}</a> · <a class="more" href="ongoing.html">{{ t.ongoing_title }}</a></p>
   {% import "_macros.html.j2" as m with context %}
+  {% if day.unofficial %}<div class="note"><strong>{{ t.unofficial_tag | capitalize }}.</strong> {{ t.unofficial_banner }}</div>{% endif %}
 
   {% macro row(r) -%}
     <tr>
@@ -51,7 +52,7 @@
       {% if r.error %}
         <td colspan="4" class="date">{{ t.row_failed }}: {{ r.error }}</td>
       {% else %}
-        <td>{{ r.last | num(r.decimals) }}</td>
+        <td>{{ r.last | num(r.decimals) }}{% if day.unofficial and r.unit == "pct" %} <span class="tag">{{ t.unofficial_tag }}</span>{% endif %}</td>
         {% if r.stale %}<td class="stale" title="identical close on the last two dates">{{ t.stale }}</td>{% else %}<td class="{{ r.chg_1d | sign }}">{{ r.chg_1d | chg(r.unit) }}</td>{% endif %}
         <td class="{{ r.chg_1m | sign }}">{{ r.chg_1m | chg(r.unit) }}</td>
         <td class="{{ r.chg_ytd | sign }}">{{ r.chg_ytd | chg(r.unit) }}</td>
@@ -176,6 +177,25 @@
       {% for e in dd.errors %}<div class="note small">{{ t.partial_chunk }} ({{ e.where }}): {{ e.message }}</div>{% endfor %}
       <p><a href="{{ dd.page }}">{{ t.read_chunk }} →</a></p>
     </div>
+  {% endif %}
+
+  {% set pr = day.sections.prediction %}
+  <h2>{{ t.prediction }}</h2>
+  {% if pr.error %}
+    <div class="note">{{ t.section_failed }}: {{ pr.error }}</div>
+  {% elif not pr.total %}
+    <p class="kv">{{ t.no_predictions }}</p>
+  {% else %}
+    <p class="kv">{{ t.prediction_intro }}{% if pr.hit_rate %} <strong>{{ t.hit_rate }}: {{ pr.hit_rate }}</strong>{% endif %}</p>
+    <table>
+      <tr><th>{{ t.col_prediction }}</th><th>{{ t.col_due }}</th><th>{{ t.col_result }}</th><th>{{ t.col_close }}</th></tr>
+      {% for p in pr.scored_today + pr.open + pr.recent %}
+      <tr><td>{{ p.ticker }} {{ p.direction }} {{ p.level | num }} <span class="kv">— {{ p.reason }}</span></td>
+        <td class="date">{{ p.by }}</td>
+        <td class="{{ 'pos' if p.status == 'right' else ('neg' if p.status == 'wrong' else '') }}">{{ t[p.status] if p.status in ('right', 'wrong') else t.msg_open }}</td>
+        <td>{{ p.close | num if p.close is defined else "—" }}</td></tr>
+      {% endfor %}
+    </table>
   {% endif %}
 
   <footer>

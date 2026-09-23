@@ -186,10 +186,10 @@ BUILDERS = {"macro": macro, "business": business, "numbers": numbers, "competito
 
 def build(ctx):
     schedule = ctx["schedule"]
-    week, entry = week_entry(schedule, ctx["date"])
+    week, entry = week_entry(schedule, (pd.Timestamp(ctx["date"]) + pd.Timedelta(days=1)).date().isoformat())
     weekday = ctx.get("weekday")
-    if weekday is None:
-        weekday = date.fromisoformat(ctx["date"]).weekday()
+    if weekday is None:  # the brief is read the morning after the trading day
+        weekday = (pd.Timestamp(ctx["date"]) + pd.Timedelta(days=1)).weekday()
     chunk = chunk_for(weekday)
     ticker = entry["ticker"]
     meta = ctx["universe"]["constituents"].set_index("ticker") if ctx.get("universe") else None

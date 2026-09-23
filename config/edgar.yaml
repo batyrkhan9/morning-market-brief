@@ -44,6 +44,8 @@ facts:
     - GrossProfit
   operating_income:
     - OperatingIncomeLoss
+  sga:
+    - SellingGeneralAndAdministrativeExpense
   net_income:
     - NetIncomeLoss
     - ProfitLoss

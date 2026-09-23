@@ -77,7 +77,16 @@ def metrics(facts, candidates, years=10):
     out["gross_margin"] = pack(gm, "%", {**gp_tags, **cost_tags}) if gm else None
     oi, oi_tags = stitched(facts, candidates["operating_income"])
     om = {p: oi[p] / rev[p] * 100 for p in periods if p in oi and rev.get(p)}
+    basis = "reported"
+    if not om:
+        # Computed: gross profit minus SG&A, only when both exist. Labeled as computed on the page.
+        sga, sga_tags = stitched(facts, candidates.get("sga", []))
+        gp_all = {p: gp[p] if p in gp else (rev[p] - cost[p] if p in cost else None) for p in periods if rev.get(p)}
+        om = {p: (gp_all[p] - sga[p]) / rev[p] * 100 for p in periods if gp_all.get(p) is not None and p in sga}
+        oi_tags, basis = {**gp_tags, **cost_tags, **sga_tags}, "computed"
     out["operating_margin"] = pack(om, "%", oi_tags) if om else None
+    if out["operating_margin"]:
+        out["operating_margin"]["basis"] = basis
     ni, ni_tags = stitched(facts, candidates["net_income"])
     out["net_income"] = pack(_last_n(ni, years), "USD", ni_tags, keep=periods or sorted(_last_n(ni, years)))
     debt, debt_tags = stitched(facts, candidates["long_term_debt"])

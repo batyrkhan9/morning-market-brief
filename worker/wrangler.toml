@@ -1,0 +1,12 @@
+name = "morning-market-brief-bot"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+# Secrets (wrangler secret put): TELEGRAM_TOKEN, USERS, WORKER_SHARED_SECRET
+[vars]
+PAGES_URL = "https://batyrkhan9.github.io/morning-market-brief"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "f9fc953b5f2d4ec4a00e8acd7da6a00f"

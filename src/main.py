@@ -7,9 +7,11 @@ from datetime import datetime, timezone
 import yaml
 from dotenv import load_dotenv
 
-from src import filings, render, sections, universe
-from src.paths import CONFIG, DATA, ROOT
-from src.sections import baseline, breadth, deep_dive, earnings, heatmap, movers, ongoing, sectors, slow_movers, snapshot
+from src import filings, inbox, message, render, sections, telegram, trading_days, universe, users as users_mod
+from src.paths import CONFIG, DATA, DOCS, ROOT
+from src.sections import (baseline, breadth, deep_dive, earnings, heatmap, movers, ongoing, prediction, sectors,
+                          slow_movers, snapshot)
+from src.sources import prices
 
 STATE = DATA / "state.json"
 SCHEDULE = CONFIG / "deep_dive_schedule.yaml"
@@ -32,10 +34,11 @@ def save_state(state):
     STATE.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def new_context(date_str, config=None, state=None, weekday=None):
+def new_context(date_str, config=None, state=None, weekday=None, unofficial=False, dry_run=True):
+    """date_str is the trading day the edition covers (editions are keyed by trading day, not run date)."""
     return {"config": config or load_config(), "config_thresholds": load_yaml(CONFIG / "thresholds.yaml"),
             "schedule": load_yaml(SCHEDULE), "state": state if state is not None else {}, "date": date_str,
-            "weekday": weekday}
+            "expected_trading_day": date_str, "weekday": weekday, "unofficial": unofficial, "dry_run": dry_run}
 
 
 def scan_filings(ctx):
@@ -78,7 +81,7 @@ def build_day(date_str, config=None, state=None, ctx=None):
     """Fetch every source and build the day's JSON. Never raises for a single section (rule 5)."""
     ctx = ctx or new_context(date_str, config, state)
     day = {"date": date_str, "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-           "as_of": None, "sections": {}, "timing": {}}
+           "as_of": None, "unofficial": bool(ctx.get("unofficial")), "sections": {}, "timing": {}}
     day["sections"]["snapshot"] = sections.run(snapshot.build, ctx)
     day["sections"]["sectors"] = sections.run(sectors.build, ctx)
     sec = day["sections"]["sectors"]
@@ -98,7 +101,11 @@ def build_day(date_str, config=None, state=None, ctx=None):
     ctx["new_alerts_today"] = day["sections"]["slow_movers"].get("new_alerts", {})
     day["sections"]["ongoing"] = sections.run(needs_universe(ongoing.build), ctx)
     day["sections"]["deep_dive"] = sections.run(needs_universe(deep_dive.build), ctx)
+    day["sections"]["prediction"] = sections.run(prediction.build, ctx) if ctx.get("as_of") else {"error": "no trading day"}
     day["as_of"] = ctx.get("as_of") or sec.get("as_of")
+    if day["as_of"] and day["as_of"] != day["date"]:
+        day["date"] = day["as_of"]  # the edition is keyed by the trading day actually covered
+    day["delivery_date"] = trading_days.delivery_date(day["date"]) if day["date"] else None
     return day
 
 
@@ -123,6 +130,139 @@ def save_day(day):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(day, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     return path
+
+
+def write_messages(day):
+    """Pre-render every Telegram message variant to docs/messages/<trading day>/ and docs/messages/latest/."""
+    written = []
+    for folder in (DOCS / "messages" / day["date"], DOCS / "messages" / "latest"):
+        folder.mkdir(parents=True, exist_ok=True)
+        for name, text in message.all_messages(day).items():
+            (folder / name).write_text(text, encoding="utf-8")
+            written.append(folder / name)
+    return written
+
+
+def alert_owner(text):
+    """Telegram message to the owner. Never raises: alerts are best effort."""
+    try:
+        users = users_mod.load_users()
+        o = users_mod.owner(users)
+        if o:
+            telegram.send_message(o["chat_id"], text[:4000])
+            return True
+    except Exception as e:  # noqa: BLE001
+        print(f"alert failed: {type(e).__name__}: {e}")
+    return False
+
+
+def sync_inbox(state):
+    """Pull commands and languages from the Worker. A failure is printed, never fatal."""
+    try:
+        users = users_mod.load_users()
+    except Exception:  # noqa: BLE001
+        users = None
+    try:
+        summary = inbox.sync(state, users)
+        print(f"Inbox: {summary}")
+    except Exception as e:  # noqa: BLE001
+        print(f"Inbox sync skipped: {type(e).__name__}: {e}")
+
+
+def build_and_publish(trading_day, state, dry_run, unofficial=False, weekday=None):
+    """Build the edition for a trading day, save JSON, render pages and messages. Returns the day."""
+    if unofficial:
+        prices.INTRADAY_FILL_DATE = trading_day
+    try:
+        ctx = new_context(trading_day, state=state, weekday=weekday, unofficial=unofficial, dry_run=dry_run)
+        day = build_day(trading_day, ctx=ctx)
+    finally:
+        prices.INTRADAY_FILL_DATE = None
+    path = save_day(day)
+    print(f"Saved {path.relative_to(ROOT)}  timing={day['timing']}")
+    report(day)
+    for p in render.write_pages(day):
+        print(f"Wrote {p.relative_to(ROOT)}")
+    for p in write_messages(day):
+        print(f"Wrote {p.relative_to(ROOT)}")
+    state["latest_edition"] = day["date"]
+    return day
+
+
+def report(day):
+    for name, sec in day["sections"].items():
+        status = "FAILED: " + sec["error"] if "error" in sec else "ok"
+        if sec.get("errors"):
+            status = "partial: " + "; ".join(e["message"] for e in sec["errors"])
+        print(f"  {name}: {status}")
+
+
+def run_scheduled(final=None):
+    """One hourly attempt: build the expected trading day once its official close is available.
+
+    Attempts run at 22:30, 23:30, 00:30, 01:30 and 02:30 UTC. The last attempt builds from the last
+    intraday bar when the close is still missing, marks everything unofficial and alerts the owner.
+    """
+    now = datetime.now(timezone.utc)
+    trading_day = trading_days.expected_trading_day(now)
+    state = load_state()
+    built = state.setdefault("built", {})
+    if built.get(trading_day, {}).get("official"):
+        print(f"{trading_day} already built officially, nothing to do")
+        return
+    if final is None:
+        final = now.hour >= 2 and now.hour < 12
+    sync_inbox(state)
+    available, detail = trading_days.close_available(trading_day)
+    print(f"close for {trading_day}: available={available} {detail}")
+    if not available and not final:
+        print("official close not available yet, trying again next hour")
+        save_state(state)
+        return
+    if not available and built.get(trading_day):
+        print(f"{trading_day} already built unofficially and the close is still missing, nothing to do")
+        return
+    day = build_and_publish(trading_day, state, dry_run=False, unofficial=not available)
+    apply_state(day, state)
+    built[trading_day] = {"at": now.strftime("%Y-%m-%d %H:%M UTC"), "official": available}
+    save_state(state)
+    if not available:
+        alert_owner(f"⚠️ Brief for {trading_day} built from intraday bars: the official close was not available "
+                    f"by 02:30 UTC ({detail}). All prices are marked unofficial.")
+
+
+def run_send():
+    """Hourly: send the latest edition to every user whose send hour has arrived."""
+    state = load_state()
+    edition = state.get("latest_edition")
+    if not edition:
+        print("no edition built yet")
+        return
+    day = load_day(edition)
+    users = users_mod.load_users()
+    due = users_mod.due_users(users, state, edition)
+    if not due:
+        print(f"nobody due for {edition}")
+        return
+    for u in due:
+        lang = users_mod.language_of(u, state)
+        try:
+            send_to(u, lang, day)
+            state.setdefault("sent", {})[u["id"]] = edition
+            print(f"sent {edition} to {u['id']} ({lang})")
+        except Exception as e:  # noqa: BLE001
+            print(f"send to {u['id']} failed: {type(e).__name__}: {e}")
+    save_state(state)
+
+
+def send_to(user, lang, day):
+    text = message.full_message(day, lang) if user["mode"] == "full" else message.full_message(day, "en")
+    telegram.send_message(user["chat_id"], text)
+    png = DOCS / lang / "heatmap.png"
+    if not png.exists():
+        png = DOCS / "en" / "heatmap.png"
+    if png.exists() and "error" not in day["sections"].get("heatmap", {}):
+        telegram.send_photo(user["chat_id"], png, caption=f"S&P 500 · {day['date']}")
 
 
 def load_day(date_str):
@@ -151,38 +291,53 @@ def main(argv=None):
     parser.add_argument("--date", help="rebuild a past day from saved JSON (YYYY-MM-DD)")
     parser.add_argument("--baseline", action="store_true", help="write the one-time baseline watchlist page")
     parser.add_argument("--weekday", type=int, choices=range(7), help="build the deep dive chunk for this weekday (0=Monday)")
+    parser.add_argument("--scheduled", action="store_true", help="hourly build attempt: build once the official close is available")
+    parser.add_argument("--final", action="store_true", help="with --scheduled: last attempt, build unofficially if needed")
+    parser.add_argument("--send", action="store_true", help="hourly send: deliver the latest edition to users who are due")
+    parser.add_argument("--send-now", metavar="USER_ID", help="send the latest edition to one user immediately (test)")
     args = parser.parse_args(argv)
 
     if args.baseline:
         run_baseline()
         return
+    if args.scheduled:
+        try:
+            run_scheduled(final=True if args.final else None)
+        except Exception as e:  # noqa: BLE001
+            alert_owner(f"❌ Build crashed: {type(e).__name__}: {e}")
+            raise
+        return
+    if args.send:
+        run_send()
+        return
+    if args.send_now:
+        state = load_state()
+        day = load_day(args.date or state.get("latest_edition"))
+        user = next(u for u in users_mod.load_users() if u["id"] == args.send_now)
+        send_to(user, users_mod.language_of(user, state), day)
+        print(f"sent {day['date']} to {user['id']}")
+        return
 
     state = load_state()
     if args.date:
         day = load_day(args.date)
-        print(f"Loaded saved JSON for {args.date}")
+        print(f"Loaded saved JSON for trading day {args.date}")
+        report(day)
+        for p in render.write_pages(day):
+            print(f"Wrote {p.relative_to(ROOT)}")
+        for p in write_messages(day):
+            print(f"Wrote {p.relative_to(ROOT)}")
     else:
-        date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        day = build_day(date_str, ctx=new_context(date_str, state=state, weekday=args.weekday))
-        path = save_day(day)
-        print(f"Saved {path.relative_to(ROOT)}  timing={day['timing']}")
-
-    for name, sec in day["sections"].items():
-        status = "FAILED: " + sec["error"] if "error" in sec else "ok"
-        if sec.get("errors"):
-            status = "partial: " + "; ".join(e["message"] for e in sec["errors"])
-        print(f"  {name}: {status}")
-
-    for p in render.write_pages(day):
-        print(f"Wrote {p.relative_to(ROOT)}")
-
+        trading_day = trading_days.expected_trading_day()
+        available, detail = trading_days.close_available(trading_day)
+        print(f"trading day {trading_day}: official close available={available} {detail}")
+        day = build_and_publish(trading_day, state, dry_run=args.dry_run, unofficial=not available, weekday=args.weekday)
+        if not args.dry_run:
+            apply_state(day, state)
+            save_state(state)
+            print("Updated data/state.json and the deep dive queue.")
     if args.dry_run:
         print("Dry run: nothing sent, state.json untouched.")
-    else:
-        if not args.date:
-            apply_state(day, state)
-            print("Updated data/state.json and the deep dive queue.")
-        print("Sending is not implemented yet (milestone 4). Nothing sent.")
 
 
 if __name__ == "__main__":

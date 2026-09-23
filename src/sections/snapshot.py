@@ -90,9 +90,16 @@ def build(ctx):
     closes, as_of = None, None
     try:
         closes = prices.get_prices(tickers, period="2y")
-        as_of = last_trading_day(closes, anchor=ANCHOR)
+        expected = ctx.get("expected_trading_day")
+        if expected and pd.Timestamp(expected) in closes.index and pd.notna(closes.loc[pd.Timestamp(expected), ANCHOR]):
+            as_of = pd.Timestamp(expected)
+        else:
+            as_of = last_trading_day(closes, anchor=ANCHOR)
+            if expected and as_of.date().isoformat() != expected:
+                out["errors"].append({"where": "prices", "message": f"no close for {expected} yet, showing {as_of.date().isoformat()}"})
         out["as_of"] = as_of.date().isoformat()
         ctx["as_of"] = out["as_of"]
+        out["unofficial"] = closes.attrs.get("unofficial", [])
     except Exception as e:  # noqa: BLE001
         out["errors"].append({"where": "prices", "message": _err(e)})
 

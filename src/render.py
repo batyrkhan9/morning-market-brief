@@ -87,7 +87,7 @@ def build_charts(day, docs_dir=None, lang="en"):
     return out
 
 
-SECTIONS = ["snapshot", "sectors", "breadth", "earnings", "heatmap", "movers", "slow_movers", "ongoing", "deep_dive"]
+SECTIONS = ["snapshot", "sectors", "breadth", "earnings", "heatmap", "movers", "slow_movers", "ongoing", "deep_dive", "prediction"]
 
 
 def with_defaults(day):

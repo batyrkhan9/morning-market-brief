@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  schedule:
+    # Hourly attempts after the US close. Each attempt builds only once the official close is
+    # available (Yahoo plus Stooq); the 02:30 UTC attempt builds unofficially from intraday bars.
+    - cron: "30 22 * * 1-5"
+    - cron: "30 23 * * 1-5"
+    - cron: "30 0 * * 2-6"
+    - cron: "30 1 * * 2-6"
+    - cron: "30 2 * * 2-6"
+  workflow_dispatch:
+    inputs:
+      final:
+        description: "Treat this run as the final attempt (build unofficially if the close is missing)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: brief-state
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Build the edition once the close is available
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          EDGAR_CONTACT_EMAIL: ${{ secrets.EDGAR_CONTACT_EMAIL }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          USERS: ${{ secrets.USERS }}
+          WORKER_SHARED_SECRET: ${{ secrets.WORKER_SHARED_SECRET }}
+          WORKER_URL: ${{ secrets.WORKER_URL }}
+        run: python -m src.main --scheduled ${{ inputs.final && '--final' || '' }}
+      - name: Commit data and pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data docs config/deep_dive_schedule.yaml
+          git diff --cached --quiet || git commit -m "Build $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase origin main
+          git push
+      - name: Alert on failure
+        if: failure()
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          USERS: ${{ secrets.USERS }}
+        run: python -c "from src.main import alert_owner; alert_owner('❌ Build workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"

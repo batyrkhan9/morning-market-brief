@@ -46,7 +46,7 @@
   {% elif dd.chunk == "numbers" and d %}
     {% if d.metrics %}
     <table>
-      <tr><th>{{ t.fiscal_year_end }}</th>{% for m in ["revenue", "gross_margin", "operating_margin", "net_income", "long_term_debt", "shares"] %}<th>{{ t["metric_" ~ m] }}</th>{% endfor %}</tr>
+      <tr><th>{{ t.fiscal_year_end }}</th>{% for m in ["revenue", "gross_margin", "operating_margin", "net_income", "long_term_debt", "shares"] %}<th>{{ t["metric_" ~ m] }}{% if d.metrics[m] and d.metrics[m].basis == "computed" %} <span class="kv">({{ t.computed }})</span>{% endif %}</th>{% endfor %}</tr>
       {% set periods = d.metrics.revenue.periods if d.metrics.revenue else (d.metrics.net_income.periods if d.metrics.net_income else []) %}
       {% for p in periods %}
       <tr><td>{{ p }}</td>
@@ -60,7 +60,7 @@
     <div class="grid">
       {% for m in ["revenue", "gross_margin", "operating_margin", "net_income", "long_term_debt", "shares"] %}
         <div><h3>{{ t["metric_" ~ m] }}</h3>
-        {% if d.metrics[m] %}{{ figs.metrics[m] | safe }}<p class="kv">{{ t.tags_used }}: {{ d.metrics[m].tags | join(", ") }}</p>{% else %}<p class="kv">{{ t.not_reported }}</p>{% endif %}</div>
+        {% if d.metrics[m] %}{{ figs.metrics[m] | safe }}<p class="kv">{% if d.metrics[m].basis == "computed" %}{{ t.computed_margin }} · {% endif %}{{ t.tags_used }}: {{ d.metrics[m].tags | join(", ") }}</p>{% else %}<p class="kv">{{ t.not_reported }}</p>{% endif %}</div>
       {% endfor %}
       {% if d.price %}<div><h3>{{ t.metric_price }}</h3>{{ figs.price | safe }}</div>{% endif %}
     </div>
