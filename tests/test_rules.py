@@ -54,7 +54,8 @@ def test_cooldown_escalation_price_override_and_no_deescalation(thresholds):
     assert ok("2026-02-01", 3, "down", 95.0)              # escalation
     assert ok("2026-02-01", 2, "down", 79.0)              # price override: -21% since last alert price
     assert not ok("2026-02-01", 2, "down", 81.0)          # -19% is not enough
-    assert ok("2026-02-01", 1, "up", 130.0)               # direction change
+    assert rules.should_alert(last, "2026-02-01", 1, "up", 130.0, cfg) == (True, "direction change")   # inside cooldown
+    assert rules.should_alert(last, "2026-05-01", 1, "up", 130.0, cfg) == (True, "cooldown over")      # reversal after cooldown
     assert not ok("2026-04-15", 1, "down", 70.0)          # lower severity within 180 days, even after cooldown and a big move
     assert ok("2026-04-15", 2, "down", 95.0)              # cooldown over (95 days), same severity
     assert ok("2026-07-15", 1, "down", 70.0)              # lower severity allowed after 180 days

@@ -79,21 +79,22 @@ def summarize(fired, cfg):
 def should_alert(last, date, severity, direction, price, cfg):
     """Decide whether a ticker alerts today given its last alert {date, severity, direction, price}.
 
-    - no previous alert, or a direction change: alert
-    - lower severity than the last alert within no_deescalation_days: never
+    - no previous alert: alert
+    - lower severity than the last alert in the same direction within no_deescalation_days: never
     - cooldown over: alert
-    - inside the cooldown: only an escalation (higher severity) or a price override (moved another
-      price_override in the same direction since the last alert price)
+    - inside the cooldown: a direction change, an escalation (higher severity), or a price override
+      (moved another price_override in the same direction since the last alert price)
     """
     if not last:
         return True, "first"
-    if direction != last.get("direction"):
-        return True, "direction change"
     days = (pd.Timestamp(date) - pd.Timestamp(last["date"])).days
-    if severity < last.get("severity", 0) and days < cfg["no_deescalation_days"]:
+    same_direction = direction == last.get("direction")
+    if same_direction and severity < last.get("severity", 0) and days < cfg["no_deescalation_days"]:
         return False, "lower severity"
     if days >= cfg["repeat_cooldown_days"]:
         return True, "cooldown over"
+    if not same_direction:
+        return True, "direction change"
     if severity > last.get("severity", 0):
         return True, "escalation"
     last_price = last.get("price")
