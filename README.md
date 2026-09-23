@@ -33,7 +33,11 @@ uv pip install --python .venv/bin/python -r requirements.txt
 .venv/bin/python -m src.main --dry-run           # build the page locally, send nothing, state untouched
 .venv/bin/python -m src.main --date 2026-09-19   # rebuild a past day from saved JSON
 .venv/bin/python -m src.main --baseline          # one-time watchlist: every stock beyond a slow mover threshold
-.venv/bin/python -m src.backtest NKE 2022-01-01  # every date and rule the slow mover rules would have fired
+.venv/bin/python -m src.main --weekday 2         # build today's edition with Wednesday's deep dive chunk
+.venv/bin/python -m src.backtest NKE 2022-01-01  # slow mover crossings and the alerts a live run would have sent
+.venv/bin/python -m src.simulate 2               # alert cards per day over the whole S&P 500 for the last 2 years
+.venv/bin/python -m src.seed_state 180           # run once before the first scheduled run: pre-load state.json with
+                                                 # the last 180 days of alerts so day one shows only new crossings
 .venv/bin/python -m pytest                       # offline tests against saved API responses
 .venv/bin/python -m tests.make_fixtures          # refresh the saved responses (network)
 ```
@@ -42,7 +46,7 @@ Weekly caches committed to the repo: `data/constituents.json` (Wikipedia S&P 500
 
 Or activate the venv with `source .venv/bin/activate` and use `python` directly.
 
-Required environment variables for a real run are listed in CLAUDE.md under "Telegram bot". A dry run needs only `FRED_API_KEY` and `EDGAR_CONTACT_EMAIL`.
+Required environment variables for a real run are listed in CLAUDE.md under "Telegram bot". A dry run needs `FRED_API_KEY` and `EDGAR_CONTACT_EMAIL` (the SEC requires a contact email in the User-Agent).
 
 ## Status
 
