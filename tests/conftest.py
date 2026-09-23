@@ -138,6 +138,11 @@ def offline_edgar(monkeypatch):
     sections = json.loads((FIX / "edgar" / "tenk_sections_NKE.json").read_text())
     press = json.loads((FIX / "edgar" / "press_release_NKE.json").read_text())
 
+    subs["0001000045"] = {"cik": "1000045", "name": "ADIDAS AG", "filings": {"recent": {   # foreign filer: 20-F only
+        "accessionNumber": ["0001000045-26-000001"], "filingDate": ["2026-03-10"], "reportDate": ["2025-12-31"],
+        "acceptanceDateTime": ["2026-03-10T10:00:00.000Z"], "form": ["20-F"], "primaryDocument": ["adidas20f.htm"],
+        "primaryDocDescription": ["20-F"], "items": [""]}}}
+
     def fake_get(url, as_json=True):
         if "/submissions/CIK" in url:
             cik = url.split("CIK")[1][:10]
