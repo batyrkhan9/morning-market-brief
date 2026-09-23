@@ -4,10 +4,11 @@ from datetime import datetime, timezone
 import pandas as pd
 import pandas_market_calendars as mcal
 
-from src.sources import prices, stooq
+from src.sources import fred, prices
 
 ANCHOR = "^GSPC"
-MAX_DIFF = 0.01  # Yahoo and Stooq closes must agree within 1%
+SECOND_SOURCE = "SP500"  # FRED's daily S&P 500 close; Stooq now sits behind a JavaScript browser check
+MAX_DIFF = 0.01  # the two closes must agree within 1%
 
 
 def expected_trading_day(now=None):
@@ -29,19 +30,23 @@ def next_trading_day(date):
 
 
 def close_available(trading_day):
-    """(available, detail). True when Yahoo has the anchor's close for the day and Stooq agrees."""
+    """(available, detail). True when Yahoo has the anchor's close for the day and FRED's SP500 series agrees.
+
+    Yahoo is the price source for everything else, so its daily bar must exist; FRED is the cross-check.
+    """
     detail = {}
+    d = pd.Timestamp(trading_day)
     try:
         closes = prices.get_prices([ANCHOR], period="5d")
-        d = pd.Timestamp(trading_day)
         yahoo = float(closes[ANCHOR].loc[d]) if d in closes.index and pd.notna(closes[ANCHOR].loc[d]) else None
     except Exception as e:  # noqa: BLE001
         yahoo, detail["yahoo_error"] = None, f"{type(e).__name__}: {e}"
     try:
-        second = stooq.close_on(ANCHOR, trading_day)
+        s = fred.get_series(SECOND_SOURCE, (d - pd.Timedelta(days=10)).date())
+        second = float(s.loc[d]) if d in s.index else None
     except Exception as e:  # noqa: BLE001
-        second, detail["stooq_error"] = None, f"{type(e).__name__}: {e}"
-    detail.update({"yahoo": yahoo, "stooq": second})
+        second, detail["fred_error"] = None, f"{type(e).__name__}: {e}"
+    detail.update({"yahoo": yahoo, "fred": second})
     if yahoo is None:
         return False, detail
     if second is None:
