@@ -1,1 +1,13 @@
-[]
+[
+ {
+  "id": "1790146959698-1lk3l4",
+  "user": "owner",
+  "ticker": "NKE",
+  "direction": "above",
+  "level": 40.0,
+  "by": "2026-12-31",
+  "reason": "the turnaround is priced too low",
+  "created": "2026-09-23T07:02:39.698Z",
+  "status": "open"
+ }
+]

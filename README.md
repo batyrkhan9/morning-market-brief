@@ -48,6 +48,38 @@ Or activate the venv with `source .venv/bin/activate` and use `python` directly.
 
 Required environment variables for a real run are listed in CLAUDE.md under "Telegram bot". A dry run needs `FRED_API_KEY` and `EDGAR_CONTACT_EMAIL` (the SEC requires a contact email in the User-Agent).
 
+## Setup on a new machine
+
+Everything below was done once for this repo. Secrets live in `.env` locally (git-ignored), in GitHub Actions
+secrets, and in the Worker's secrets. Nothing secret is in a tracked file.
+
+1. **Keys.** `cp .env.example .env`, then fill in `FRED_API_KEY` (https://fredaccount.stlouisfed.org/apikeys, free)
+   and `EDGAR_CONTACT_EMAIL` (any contact email; the SEC requires it in the User-Agent).
+2. **Telegram bot.** In Telegram, talk to @BotFather: `/newbot`, pick a name and a username ending in `bot`,
+   copy the token into `.env` as `TELEGRAM_TOKEN`. Send the new bot one message so it can learn your chat id.
+3. **Cloudflare Worker.** `npm i -g wrangler`, `wrangler login`, then from `worker/`:
+   `wrangler kv namespace create KV` and put the printed id into `worker/wrangler.toml`,
+   generate a secret with `openssl rand -hex 24` into `.env` as `WORKER_SHARED_SECRET`, and
+   `wrangler secret put TELEGRAM_TOKEN`, `wrangler secret put WORKER_SHARED_SECRET`, `wrangler deploy`.
+   Put the printed URL into `.env` as `WORKER_URL`. Set the Telegram webhook with the shared secret as the
+   secret token: `python -c "from src.telegram import set_webhook; import os; set_webhook(os.environ['WORKER_URL'] + '/webhook', os.environ['WORKER_SHARED_SECRET'])"`
+   (run with `.env` loaded). The Worker ignores unknown chats and remembers up to 20 of them for a week;
+   `GET $WORKER_URL/pull` with `Authorization: Bearer $WORKER_SHARED_SECRET` lists them under `seen`.
+4. **Users.** Write `USERS=[{...}]` into `.env` as one line (see CLAUDE.md for the profile fields; `chat_id`
+   comes from the step above). Then `wrangler secret put USERS` from `worker/` and
+   `gh secret set USERS < value`.
+5. **GitHub Actions secrets.** `gh secret set NAME` for `FRED_API_KEY`, `EDGAR_CONTACT_EMAIL`,
+   `TELEGRAM_TOKEN`, `WORKER_SHARED_SECRET`, `WORKER_URL`, `USERS`.
+6. **Seed the alert state** once, so the first scheduled build only reports new crossings:
+   `python -m src.seed_state 180`, then commit `data/state.json`.
+7. **Enable the workflows:** `gh workflow enable Build` and `gh workflow enable Send`. Build attempts run at
+   22:30, 23:30, 00:30, 01:30 and 02:30 UTC on trading days; Send runs hourly and delivers to each user at their
+   local send hour.
+
+Useful checks: `python -m src.main --send-now owner` sends the latest edition to one user right away;
+`curl $WORKER_URL/health` checks the Worker; `python -c "from src.telegram import get_webhook_info; print(get_webhook_info())"`
+shows the webhook state and Telegram's last delivery error.
+
 ## Status
 
 See the Milestones section of CLAUDE.md.

@@ -6,6 +6,8 @@ import { PARSERS, commandOf } from "./commands.js";
 
 const LABELS = { en, kk, ru };
 const LANG_BUTTONS = { "English": "en", "Қазақша": "kk", "Русский": "ru" };
+const MAX_SEEN = 20;               // unknown chat ids remembered at most
+const SEEN_TTL_SECONDS = 7 * 86400; // and only for a week
 
 function t(lang, key) {
   return (LABELS[lang] && LABELS[lang][key]) || LABELS.en[key] || key;
@@ -49,8 +51,12 @@ async function resendToday(env, user, lang) {
 async function handleMessage(env, msg) {
   const user = users(env).find((u) => u.chat_id === msg.chat.id);
   if (!user) {
-    // No reply to strangers. Remember the chat id so the owner can onboard a known person via /pull.
-    await env.KV.put(`seen:${msg.chat.id}`, JSON.stringify({ chat_id: msg.chat.id, name: msg.chat.first_name || "", username: msg.chat.username || "", ts: new Date().toISOString() }), { expirationTtl: 7 * 86400 });
+    // No reply to strangers. Remember at most MAX_SEEN chat ids for 7 days so the owner can onboard someone via /pull.
+    const key = `seen:${msg.chat.id}`;
+    const existing = await env.KV.get(key);
+    if (existing || (await env.KV.list({ prefix: "seen:", limit: MAX_SEEN })).keys.length < MAX_SEEN) {
+      await env.KV.put(key, JSON.stringify({ chat_id: msg.chat.id, name: msg.chat.first_name || "", username: msg.chat.username || "", ts: new Date().toISOString() }), { expirationTtl: SEEN_TTL_SECONDS });
+    }
     return { ignored: true };
   }
   const text = (msg.text || "").trim();
