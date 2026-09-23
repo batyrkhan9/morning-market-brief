@@ -56,4 +56,5 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           USERS: ${{ secrets.USERS }}
-        run: python -c "from src.main import alert_owner; alert_owner('❌ Build workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
+        run: |
+          python -c "from src.main import alert_owner; alert_owner('❌ Build workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
