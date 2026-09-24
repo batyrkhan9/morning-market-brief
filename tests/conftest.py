@@ -170,3 +170,68 @@ def offline_edgar(monkeypatch):
         "filing": sections["filing"], "sections": {i: sections["sections"].get(i) for i in items},
         "errors": {i: sections["errors"][i] for i in items if i in sections["errors"]}})
     return {"submissions": subs, "facts": facts, "sections": sections, "press": press}
+
+
+# ---- Output isolation: tests never write into docs/ or data/ ----------------------------------------
+import hashlib
+import shutil
+
+from src.paths import DATA, DOCS, ROOT
+
+GUARDED = (DOCS, DATA)
+
+
+def _snapshot():
+    """{relative path: content hash} for everything under docs/ and data/."""
+    out = {}
+    for base in GUARDED:
+        if not base.exists():
+            continue
+        for p in sorted(base.rglob("*")):
+            if p.is_file():
+                out[str(p.relative_to(ROOT))] = hashlib.md5(p.read_bytes()).hexdigest()
+    return out
+
+
+def pytest_sessionstart(session):
+    session.config._output_snapshot = _snapshot()
+
+
+def pytest_collection_modifyitems(session, config, items):
+    """Run the output guard last so it sees everything the other tests did."""
+    guard = [i for i in items if i.name == "test_docs_and_data_untouched"]
+    for g in guard:
+        items.remove(g)
+    items.extend(guard)
+
+
+@pytest.fixture(autouse=True)
+def isolated_output(tmp_path, monkeypatch):
+    """Every module-level output path points into a temp directory for the duration of each test."""
+    import src.main as main
+    import src.render as render
+    import src.scoring as scoring
+    import src.inbox as inbox
+    import src.universe as universe
+    import src.seed_state as seed_state
+    import src.sources.constituents as constituents
+    import src.paths as paths
+
+    docs, data, cfg = tmp_path / "docs", tmp_path / "data", tmp_path / "config"
+    for d in (docs, data / "daily", data / "theses", cfg):
+        d.mkdir(parents=True, exist_ok=True)
+    shutil.copy(CONFIG / "deep_dive_schedule.yaml", cfg / "deep_dive_schedule.yaml")
+    monkeypatch.setattr(paths, "DOCS", docs)
+    monkeypatch.setattr(paths, "DATA", data)
+    monkeypatch.setattr(main, "DOCS", docs)
+    monkeypatch.setattr(main, "DATA", data)
+    monkeypatch.setattr(main, "STATE", data / "state.json")
+    monkeypatch.setattr(main, "SCHEDULE", cfg / "deep_dive_schedule.yaml")
+    monkeypatch.setattr(render, "DOCS", docs)
+    monkeypatch.setattr(scoring, "PREDICTIONS", data / "predictions.json")
+    monkeypatch.setattr(inbox, "THESES", data / "theses")
+    monkeypatch.setattr(inbox, "SCHEDULE", cfg / "deep_dive_schedule.yaml")
+    monkeypatch.setattr(universe, "CAPS_CACHE", data / "market_caps.json")
+    monkeypatch.setattr(seed_state, "STATE", data / "state.json")
+    monkeypatch.setattr(constituents, "CACHE", data / "constituents.json")
+    return tmp_path

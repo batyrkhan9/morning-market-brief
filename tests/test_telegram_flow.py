@@ -19,7 +19,6 @@ def day(config, offline_prices, offline_fred, offline_treasury, offline_universe
 
 
 def test_full_message_fits_and_has_the_parts(day, monkeypatch, tmp_path):
-    monkeypatch.setattr("src.main.DOCS", tmp_path)                 # never write test messages into the real docs/
     text = message.full_message(day, "en")
     assert len(text) < 4096
     assert "<pre>" in text and "S&P 500" in text and "10-year" in text     # snapshot table
@@ -31,8 +30,8 @@ def test_full_message_fits_and_has_the_parts(day, monkeypatch, tmp_path):
         assert name == "full_en.txt" and len(txt) < 4096
     from src.main import write_messages
     written = write_messages(day)
-    assert all(str(p).startswith(str(tmp_path)) for p in written)
-    manifest = json.loads((tmp_path / "messages" / "latest" / "manifest.json").read_text())
+    assert all(str(p).startswith(str(tmp_path)) for p in written)   # autouse isolation: temp dir, never docs/
+    manifest = json.loads((tmp_path / "docs" / "messages" / "latest" / "manifest.json").read_text())
     assert manifest["edition"] == "2026-09-18" and manifest["variants"] == ["full_en"] and manifest["built_at"].endswith("Z")
 
 
