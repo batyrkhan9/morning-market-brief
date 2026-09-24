@@ -26,7 +26,7 @@ jobs:
       - name: Send to users who are due
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          USERS: ${{ secrets.USERS }}
+          OWNER_CHAT_ID: ${{ secrets.OWNER_CHAT_ID }}
           WORKER_SHARED_SECRET: ${{ secrets.WORKER_SHARED_SECRET }}
           WORKER_URL: ${{ secrets.WORKER_URL }}
         run: python -m src.main --send

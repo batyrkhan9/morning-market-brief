@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import yaml
 from dotenv import load_dotenv
 
-from src import filings, inbox, message, render, sections, telegram, trading_days, universe, users as users_mod
+from src import filings, i18n, inbox, message, render, sections, telegram, trading_days, universe, users as users_mod
 from src.paths import CONFIG, DATA, DOCS, ROOT
 from src.sections import (baseline, breadth, deep_dive, earnings, heatmap, movers, ongoing, prediction, sectors,
                           slow_movers, snapshot)
@@ -144,13 +144,13 @@ def write_messages(day):
 
 
 def alert_owner(text):
-    """Telegram message to the owner. Never raises: alerts are best effort."""
+    """Telegram message to the owner (OWNER_CHAT_ID). Never raises: alerts are best effort."""
     try:
-        users = users_mod.load_users()
-        o = users_mod.owner(users)
-        if o:
-            telegram.send_message(o["chat_id"], text[:4000])
+        chat_id = users_mod.owner_chat_id()
+        if chat_id:
+            telegram.send_message(chat_id, text[:4000])
             return True
+        print("alert skipped: OWNER_CHAT_ID is not set")
     except Exception as e:  # noqa: BLE001
         print(f"alert failed: {type(e).__name__}: {e}")
     return False
@@ -244,25 +244,38 @@ def run_send():
     if not due:
         print(f"nobody due for {edition}")
         return
+    failures = []
     for u in due:
-        lang = users_mod.language_of(u, state)
         try:
-            send_to(u, lang, day)
+            outcome = send_to(u, day, state)
             state.setdefault("sent", {})[u["id"]] = edition
-            print(f"sent {edition} to {u['id']} ({lang})")
+            print(f"{outcome} {edition} to {u['id']} ({users_mod.variant_of(u)})")
+            users_mod.report_send(True)
         except Exception as e:  # noqa: BLE001
+            failures.append(f"{u['id']}: {type(e).__name__}: {e}")
             print(f"send to {u['id']} failed: {type(e).__name__}: {e}")
+            users_mod.report_send(False)
     save_state(state)
+    if failures:
+        alert_owner("⚠️ Send failures: " + "; ".join(failures)[:3000])
 
 
-def send_to(user, lang, day):
-    text = message.full_message(day, lang) if user["mode"] == "full" else message.full_message(day, "en")
+def send_to(user, day, state=None):
+    """Send the user's variant. Simple mode is not live yet: those users get the launch note once."""
+    variant = users_mod.variant_of(user)
+    if user["mode"] == "simple":
+        noted = (state or {}).setdefault("soon_note_sent", {})
+        if noted.get(user["id"]):
+            return "skipped (launch note already sent)"
+        telegram.send_message(user["chat_id"], i18n.load(user["lang"])["simple_soon"])
+        noted[user["id"]] = day["date"]
+        return "sent launch note for"
+    text = message.full_message(day, "en")
     telegram.send_message(user["chat_id"], text)
-    png = DOCS / lang / "heatmap.png"
-    if not png.exists():
-        png = DOCS / "en" / "heatmap.png"
+    png = DOCS / "en" / "heatmap.png"
     if png.exists() and "error" not in day["sections"].get("heatmap", {}):
         telegram.send_photo(user["chat_id"], png, caption=f"S&P 500 · {day['date']}")
+    return f"sent {variant}"
 
 
 def load_day(date_str):
@@ -314,8 +327,7 @@ def main(argv=None):
         state = load_state()
         day = load_day(args.date or state.get("latest_edition"))
         user = next(u for u in users_mod.load_users() if u["id"] == args.send_now)
-        send_to(user, users_mod.language_of(user, state), day)
-        print(f"sent {day['date']} to {user['id']}")
+        print(send_to(user, day, state), day["date"], "to", user["id"])
         return
 
     state = load_state()

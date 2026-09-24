@@ -52,7 +52,7 @@ def test_inbox_validation_and_writes(tmp_path, monkeypatch):
         {"id": "e", "type": "queue", "user": "owner", "data": {"ticker": "ZTS"}},
         {"id": "f", "type": "queue", "user": "owner", "data": {"ticker": "NKE"}},          # already scheduled: accepted, not duplicated
         {"id": "g", "type": "queue", "user": "owner", "data": {"ticker": "../etc"}},
-    ], "languages": {"father": "ru"}}
+    ]}
     state = {}
     applied, rejected = inbox.apply(payload, state, users=[{"id": "owner"}, {"id": "father"}])
     assert applied == ["a", "d", "e", "f"] and rejected == ["b", "c", "g"]
@@ -60,7 +60,6 @@ def test_inbox_validation_and_writes(tmp_path, monkeypatch):
     assert len(preds) == 1 and preds[0]["status"] == "open" and preds[0]["user"] == "owner"
     assert "Five sentences" in (tmp_path / "theses" / "NKE.md").read_text()
     assert "ZTS" in sched.read_text() and sched.read_text().count("NKE") == 1
-    assert state["languages"] == {"father": "ru"}
 
 
 def test_scoring_right_wrong_and_open():
@@ -92,18 +91,40 @@ def test_close_lookup_uses_saved_prices(subset_closes):
     assert on == "2026-09-11" and close == float(subset_closes["NKE"].loc["2026-09-11"])
 
 
-def test_due_users_by_local_send_hour(monkeypatch):
-    monkeypatch.setenv("USERS", json.dumps([
-        {"id": "owner", "chat_id": 1, "mode": "full", "languages": ["en"], "timezone": "America/Los_Angeles", "send_hour": 6, "is_owner": True},
-        {"id": "father", "chat_id": 2, "mode": "simple", "languages": ["kk", "ru"], "default_language": "kk", "timezone": "Asia/Almaty", "send_hour": 8},
-    ]))
-    us = users.load_users()
-    now = datetime(2026, 9, 22, 13, 30, tzinfo=timezone.utc)      # 06:30 in LA, 18:30 in Almaty
-    assert [u["id"] for u in users.due_users(us, {}, "2026-09-21", now)] == ["owner", "father"]
-    assert [u["id"] for u in users.due_users(us, {"sent": {"owner": "2026-09-21"}}, "2026-09-21", now)] == ["father"]
-    early = datetime(2026, 9, 22, 12, 30, tzinfo=timezone.utc)    # 05:30 in LA: not yet
-    assert [u["id"] for u in users.due_users(us, {}, "2026-09-21", early)] == ["father"]
-    sunday = datetime(2026, 9, 20, 13, 30, tzinfo=timezone.utc)
-    assert [u["id"] for u in users.due_users(us, {}, "2026-09-18", sunday)] == ["owner"]   # simple mode gets nothing on Sunday
-    assert users.language_of(us[1], {"languages": {"father": "ru"}}) == "ru"
-    assert users.language_of(us[1], {"languages": {"father": "en"}}) == "kk"               # not enabled: default
+def test_due_users_by_local_send_hour_across_zones_and_dst(monkeypatch):
+    us = [
+        {"id": "owner", "chat_id": 1, "mode": "full", "lang": "en", "tz": "America/Los_Angeles", "send_hour": 6, "paused": False},
+        {"id": "father", "chat_id": 2, "mode": "simple", "lang": "kk", "tz": "Asia/Almaty", "send_hour": 8, "paused": False},
+        {"id": "sleeper", "chat_id": 3, "mode": "full", "lang": "en", "tz": "Europe/Berlin", "send_hour": 7, "paused": True},
+    ]
+    ids = lambda now, state={}: [u["id"] for u in users.due_users(us, state, "2026-09-21", now)]
+    now = datetime(2026, 9, 22, 13, 30, tzinfo=timezone.utc)       # 06:30 PDT, 18:30 Almaty, 15:30 Berlin (paused)
+    assert ids(now) == ["owner", "father"]
+    assert ids(now, {"sent": {"owner": "2026-09-21"}}) == ["father"]
+    assert ids(datetime(2026, 9, 22, 12, 30, tzinfo=timezone.utc)) == ["father"]   # 05:30 PDT: owner not yet
+    assert ids(datetime(2026, 9, 20, 13, 30, tzinfo=timezone.utc)) == ["owner"]    # Sunday: simple mode gets nothing
+    # DST: Los Angeles leaves PDT on 2026-11-01. 13:30 UTC is 06:30 PDT the day before and 05:30 PST the day after.
+    assert "owner" in ids(datetime(2026, 10, 31, 13, 30, tzinfo=timezone.utc))
+    assert "owner" not in ids(datetime(2026, 11, 2, 13, 30, tzinfo=timezone.utc))
+    assert "owner" in ids(datetime(2026, 11, 2, 14, 30, tzinfo=timezone.utc))
+    # Almaty has no DST: 03:00 UTC is 08:00 all year.
+    assert "father" in ids(datetime(2026, 1, 15, 3, 0, tzinfo=timezone.utc)) and "father" in ids(datetime(2026, 7, 15, 3, 0, tzinfo=timezone.utc))
+    assert "father" not in ids(datetime(2026, 7, 15, 2, 59, tzinfo=timezone.utc))
+    assert users.variant_of(us[0]) == "full_en" and users.variant_of(us[1]) == "simple_kk"
+    bad = dict(us[0], tz="Mars/Olympus")
+    assert users.due_users([bad], {}, "2026-09-21", now) == []                     # unknown zone: skipped, no crash
+
+
+def test_load_users_from_worker(monkeypatch):
+    monkeypatch.setenv("WORKER_URL", "https://w")
+    monkeypatch.setenv("WORKER_SHARED_SECRET", "s")
+    payload = {"users": [
+        {"id": "owner", "chat_id": 1, "mode": "full", "lang": "en", "tz": "America/Los_Angeles", "send_hour": 12, "paused": False},
+        {"id": "broken", "chat_id": 2, "mode": "weird", "lang": "en", "tz": "UTC", "send_hour": 6},
+    ]}
+    class R:
+        def raise_for_status(self): pass
+        def json(self): return payload
+    monkeypatch.setattr(users.requests, "get", lambda url, headers, timeout: R())
+    got = users.load_users()
+    assert [u["id"] for u in got] == ["owner"]

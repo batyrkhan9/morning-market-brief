@@ -39,7 +39,7 @@ jobs:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
           EDGAR_CONTACT_EMAIL: ${{ secrets.EDGAR_CONTACT_EMAIL }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          USERS: ${{ secrets.USERS }}
+          OWNER_CHAT_ID: ${{ secrets.OWNER_CHAT_ID }}
           WORKER_SHARED_SECRET: ${{ secrets.WORKER_SHARED_SECRET }}
           WORKER_URL: ${{ secrets.WORKER_URL }}
         run: python -m src.main --scheduled ${{ inputs.final && '--final' || '' }}
@@ -55,6 +55,6 @@ jobs:
         if: failure()
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          USERS: ${{ secrets.USERS }}
+          OWNER_CHAT_ID: ${{ secrets.OWNER_CHAT_ID }}
         run: |
           python -c "from src.main import alert_owner; alert_owner('❌ Build workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"

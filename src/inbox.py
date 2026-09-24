@@ -79,9 +79,6 @@ def apply(payload, state, users=None):
     scoring.save(preds)
     sched["queue"] = queue
     SCHEDULE.write_text(yaml.safe_dump(sched, sort_keys=False, allow_unicode=True), encoding="utf-8")
-    langs = payload.get("languages") or {}
-    if langs:
-        state.setdefault("languages", {}).update(langs)
     return applied, rejected
 
 
@@ -90,4 +87,4 @@ def sync(state, users=None):
     payload = retry(pull)
     applied, rejected = apply(payload, state, users)
     ack(applied + rejected)
-    return {"applied": len(applied), "rejected": len(rejected), "languages": payload.get("languages") or {}}
+    return {"applied": len(applied), "rejected": len(rejected)}

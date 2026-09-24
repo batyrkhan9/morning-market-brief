@@ -63,20 +63,24 @@ secrets, and in the Worker's secrets. Nothing secret is in a tracked file.
    `wrangler secret put TELEGRAM_TOKEN`, `wrangler secret put WORKER_SHARED_SECRET`, `wrangler deploy`.
    Put the printed URL into `.env` as `WORKER_URL`. Set the Telegram webhook with the shared secret as the
    secret token: `python -c "from src.telegram import set_webhook; import os; set_webhook(os.environ['WORKER_URL'] + '/webhook', os.environ['WORKER_SHARED_SECRET'])"`
-   (run with `.env` loaded). The Worker ignores unknown chats and remembers up to 20 of them for a week;
-   `GET $WORKER_URL/pull` with `Authorization: Bearer $WORKER_SHARED_SECRET` lists them under `seen`.
-4. **Users.** Write `USERS=[{...}]` into `.env` as one line (see CLAUDE.md for the profile fields; `chat_id`
-   comes from the step above). Then `wrangler secret put USERS` from `worker/` and
-   `gh secret set USERS < value`.
+   (run with `.env` loaded). The Worker ignores unknown chats that do not send `/start` and remembers up to 20 of
+   them for a week; `GET $WORKER_URL/pull` with `Authorization: Bearer $WORKER_SHARED_SECRET` lists them under `seen`.
+   Worker tests: `cd worker && npm install && node --test test/*.test.js`.
+4. **Users** register themselves: anyone sends `/start` to the bot and walks through language, mode, send hour
+   and timezone (share location, tap a city, or type one). Records live in Workers KV; `/settings`, `/pause`,
+   `/resume` and `/stop` manage them. Put your own chat id into `.env` as `OWNER_CHAT_ID` (find it under `seen`
+   at `GET $WORKER_URL/pull` after messaging the bot, or from `/users` once registered), then
+   `wrangler secret put OWNER_CHAT_ID` from `worker/`. The owner gets crash alerts and can send `/stats`.
 5. **GitHub Actions secrets.** `gh secret set NAME` for `FRED_API_KEY`, `EDGAR_CONTACT_EMAIL`,
-   `TELEGRAM_TOKEN`, `WORKER_SHARED_SECRET`, `WORKER_URL`, `USERS`.
+   `TELEGRAM_TOKEN`, `WORKER_SHARED_SECRET`, `WORKER_URL`, `OWNER_CHAT_ID`.
 6. **Seed the alert state** once, so the first scheduled build only reports new crossings:
    `python -m src.seed_state 180`, then commit `data/state.json`.
 7. **Enable the workflows:** `gh workflow enable Build` and `gh workflow enable Send`. Build attempts run at
    22:30, 23:30, 00:30, 01:30 and 02:30 UTC on trading days; Send runs hourly and delivers to each user at their
    local send hour.
 
-Useful checks: `python -m src.main --send-now owner` sends the latest edition to one user right away;
+Useful checks: `python -m src.main --send-now owner` sends the latest edition to one user right away
+(the user id is the `id` field from `GET $WORKER_URL/users`);
 `curl $WORKER_URL/health` checks the Worker; `python -c "from src.telegram import get_webhook_info; print(get_webhook_info())"`
 shows the webhook state and Telegram's last delivery error.
 
