@@ -28,6 +28,12 @@ def test_full_message_fits_and_has_the_parts(day):
     assert day["date"] == "2026-09-18" and day["delivery_date"] == "2026-09-19"
     for name, txt in message.all_messages(day).items():
         assert name == "full_en.txt" and len(txt) < 4096
+    from src.main import write_messages
+    import src.main as m
+    from src.paths import DOCS
+    written = write_messages(day)
+    manifest = json.loads((DOCS / "messages" / "latest" / "manifest.json").read_text())
+    assert manifest["edition"] == "2026-09-18" and manifest["variants"] == ["full_en"] and manifest["built_at"].endswith("Z")
 
 
 def test_message_marks_unofficial_and_failed_sections(day):
@@ -91,28 +97,9 @@ def test_close_lookup_uses_saved_prices(subset_closes):
     assert on == "2026-09-11" and close == float(subset_closes["NKE"].loc["2026-09-11"])
 
 
-def test_due_users_by_local_send_hour_across_zones_and_dst(monkeypatch):
-    us = [
-        {"id": "owner", "chat_id": 1, "mode": "full", "lang": "en", "tz": "America/Los_Angeles", "send_hour": 6, "paused": False},
-        {"id": "father", "chat_id": 2, "mode": "simple", "lang": "kk", "tz": "Asia/Almaty", "send_hour": 8, "paused": False},
-        {"id": "sleeper", "chat_id": 3, "mode": "full", "lang": "en", "tz": "Europe/Berlin", "send_hour": 7, "paused": True},
-    ]
-    ids = lambda now, state={}: [u["id"] for u in users.due_users(us, state, "2026-09-21", now)]
-    now = datetime(2026, 9, 22, 13, 30, tzinfo=timezone.utc)       # 06:30 PDT, 18:30 Almaty, 15:30 Berlin (paused)
-    assert ids(now) == ["owner", "father"]
-    assert ids(now, {"sent": {"owner": "2026-09-21"}}) == ["father"]
-    assert ids(datetime(2026, 9, 22, 12, 30, tzinfo=timezone.utc)) == ["father"]   # 05:30 PDT: owner not yet
-    assert ids(datetime(2026, 9, 20, 13, 30, tzinfo=timezone.utc)) == ["owner"]    # Sunday: simple mode gets nothing
-    # DST: Los Angeles leaves PDT on 2026-11-01. 13:30 UTC is 06:30 PDT the day before and 05:30 PST the day after.
-    assert "owner" in ids(datetime(2026, 10, 31, 13, 30, tzinfo=timezone.utc))
-    assert "owner" not in ids(datetime(2026, 11, 2, 13, 30, tzinfo=timezone.utc))
-    assert "owner" in ids(datetime(2026, 11, 2, 14, 30, tzinfo=timezone.utc))
-    # Almaty has no DST: 03:00 UTC is 08:00 all year.
-    assert "father" in ids(datetime(2026, 1, 15, 3, 0, tzinfo=timezone.utc)) and "father" in ids(datetime(2026, 7, 15, 3, 0, tzinfo=timezone.utc))
-    assert "father" not in ids(datetime(2026, 7, 15, 2, 59, tzinfo=timezone.utc))
-    assert users.variant_of(us[0]) == "full_en" and users.variant_of(us[1]) == "simple_kk"
-    bad = dict(us[0], tz="Mars/Olympus")
-    assert users.due_users([bad], {}, "2026-09-21", now) == []                     # unknown zone: skipped, no crash
+def test_variants():
+    assert users.variant_of({"mode": "full", "lang": "kk"}) == "full_en"
+    assert users.variant_of({"mode": "simple", "lang": "kk"}) == "simple_kk"
 
 
 def test_load_users_from_worker(monkeypatch):

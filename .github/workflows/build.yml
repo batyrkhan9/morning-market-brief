@@ -1,14 +1,11 @@
 name: Build
 
 on:
+  # The Cloudflare Worker dispatches this workflow at 22:30, 23:30, 00:30, 01:30 and 02:30 UTC (its cron is
+  # reliable; GitHub's is not). Each attempt builds only once the official close is available; the 02:30
+  # attempt builds unofficially from intraday bars. The GitHub cron below is a backup only.
   schedule:
-    # Hourly attempts after the US close. Each attempt builds only once the official close is
-    # available (Yahoo plus Stooq); the 02:30 UTC attempt builds unofficially from intraday bars.
-    - cron: "30 22 * * 1-5"
-    - cron: "30 23 * * 1-5"
-    - cron: "30 0 * * 2-6"
-    - cron: "30 1 * * 2-6"
-    - cron: "30 2 * * 2-6"
+    - cron: "0 3 * * 2-6"
   workflow_dispatch:
     inputs:
       final:
@@ -42,7 +39,7 @@ jobs:
           OWNER_CHAT_ID: ${{ secrets.OWNER_CHAT_ID }}
           WORKER_SHARED_SECRET: ${{ secrets.WORKER_SHARED_SECRET }}
           WORKER_URL: ${{ secrets.WORKER_URL }}
-        run: python -m src.main --scheduled ${{ inputs.final && '--final' || '' }}
+        run: python -m src.main --scheduled ${{ inputs.final == true && '--final' || '' }}
       - name: Commit data and pages
         run: |
           git config user.name "github-actions[bot]"

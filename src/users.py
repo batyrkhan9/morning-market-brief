@@ -1,4 +1,4 @@
-"""User profiles from the Worker's KV store (GET /users), and who is due for a send.
+"""User profiles from the Worker's KV store (GET /users). The Worker's cron decides who is due.
 
 Records: id, chat_id, mode (full|simple), lang (en|kk|ru), tz (IANA), send_hour, paused, created.
 """
@@ -57,25 +57,3 @@ def variant_of(user):
     """Which pre-rendered message a user gets: full_en, simple_en, simple_kk, simple_ru."""
     lang = user["lang"] if user["mode"] == "simple" else "en"
     return f"{user['mode']}_{lang}"
-
-
-def due_users(users, state, edition, now=None):
-    """Users whose local time has reached their send hour and who have not received this edition."""
-    now = now or datetime.now(timezone.utc)
-    sent = state.get("sent", {})
-    due = []
-    for u in users:
-        if u.get("paused"):
-            continue
-        try:
-            local = now.astimezone(ZoneInfo(u["tz"]))
-        except Exception:  # noqa: BLE001 - unknown zone: skip, never crash
-            continue
-        if local.hour < u["send_hour"]:
-            continue
-        if sent.get(u["id"]) == edition:
-            continue
-        if u["mode"] == "simple" and local.weekday() == 6:  # Sunday: nothing for simple mode
-            continue
-        due.append(u)
-    return due

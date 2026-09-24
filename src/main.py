@@ -80,7 +80,8 @@ def needs_universe(build_fn):
 def build_day(date_str, config=None, state=None, ctx=None):
     """Fetch every source and build the day's JSON. Never raises for a single section (rule 5)."""
     ctx = ctx or new_context(date_str, config, state)
-    day = {"date": date_str, "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+    now = datetime.now(timezone.utc)
+    day = {"date": date_str, "built_at": now.strftime("%Y-%m-%d %H:%M UTC"), "built_at_iso": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
            "as_of": None, "unofficial": bool(ctx.get("unofficial")), "sections": {}, "timing": {}}
     day["sections"]["snapshot"] = sections.run(snapshot.build, ctx)
     day["sections"]["sectors"] = sections.run(sectors.build, ctx)
@@ -133,13 +134,19 @@ def save_day(day):
 
 
 def write_messages(day):
-    """Pre-render every Telegram message variant to docs/messages/<trading day>/ and docs/messages/latest/."""
+    """Pre-render every Telegram message variant to docs/messages/<trading day>/ and docs/messages/latest/,
+    plus manifest.json (edition, built_at, variants) that the Worker's send cron reads."""
     written = []
+    variants = message.all_messages(day)
+    manifest = {"edition": day["date"], "built_at": day.get("built_at_iso"), "unofficial": bool(day.get("unofficial")),
+                "variants": sorted(v[:-4] for v in variants), "heatmap": f"en/heatmap.png?v={day['date']}"}
     for folder in (DOCS / "messages" / day["date"], DOCS / "messages" / "latest"):
         folder.mkdir(parents=True, exist_ok=True)
-        for name, text in message.all_messages(day).items():
+        for name, text in variants.items():
             (folder / name).write_text(text, encoding="utf-8")
             written.append(folder / name)
+        (folder / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+        written.append(folder / "manifest.json")
     return written
 
 
@@ -231,35 +238,6 @@ def run_scheduled(final=None):
                     f"by 02:30 UTC ({detail}). All prices are marked unofficial.")
 
 
-def run_send():
-    """Hourly: send the latest edition to every user whose send hour has arrived."""
-    state = load_state()
-    edition = state.get("latest_edition")
-    if not edition:
-        print("no edition built yet")
-        return
-    day = load_day(edition)
-    users = users_mod.load_users()
-    due = users_mod.due_users(users, state, edition)
-    if not due:
-        print(f"nobody due for {edition}")
-        return
-    failures = []
-    for u in due:
-        try:
-            outcome = send_to(u, day, state)
-            state.setdefault("sent", {})[u["id"]] = edition
-            print(f"{outcome} {edition} to {u['id']} ({users_mod.variant_of(u)})")
-            users_mod.report_send(True)
-        except Exception as e:  # noqa: BLE001
-            failures.append(f"{u['id']}: {type(e).__name__}: {e}")
-            print(f"send to {u['id']} failed: {type(e).__name__}: {e}")
-            users_mod.report_send(False)
-    save_state(state)
-    if failures:
-        alert_owner("⚠️ Send failures: " + "; ".join(failures)[:3000])
-
-
 def send_to(user, day, state=None):
     """Send the user's variant. Simple mode is not live yet: those users get the launch note once."""
     variant = users_mod.variant_of(user)
@@ -306,7 +284,6 @@ def main(argv=None):
     parser.add_argument("--weekday", type=int, choices=range(7), help="build the deep dive chunk for this weekday (0=Monday)")
     parser.add_argument("--scheduled", action="store_true", help="hourly build attempt: build once the official close is available")
     parser.add_argument("--final", action="store_true", help="with --scheduled: last attempt, build unofficially if needed")
-    parser.add_argument("--send", action="store_true", help="hourly send: deliver the latest edition to users who are due")
     parser.add_argument("--send-now", metavar="USER_ID", help="send the latest edition to one user immediately (test)")
     args = parser.parse_args(argv)
 
@@ -319,9 +296,6 @@ def main(argv=None):
         except Exception as e:  # noqa: BLE001
             alert_owner(f"❌ Build crashed: {type(e).__name__}: {e}")
             raise
-        return
-    if args.send:
-        run_send()
         return
     if args.send_now:
         state = load_state()

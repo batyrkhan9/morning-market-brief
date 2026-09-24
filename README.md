@@ -75,9 +75,16 @@ secrets, and in the Worker's secrets. Nothing secret is in a tracked file.
    `TELEGRAM_TOKEN`, `WORKER_SHARED_SECRET`, `WORKER_URL`, `OWNER_CHAT_ID`.
 6. **Seed the alert state** once, so the first scheduled build only reports new crossings:
    `python -m src.seed_state 180`, then commit `data/state.json`.
-7. **Enable the workflows:** `gh workflow enable Build` and `gh workflow enable Send`. Build attempts run at
-   22:30, 23:30, 00:30, 01:30 and 02:30 UTC on trading days; Send runs hourly and delivers to each user at their
-   local send hour.
+7. **Scheduling.** The Worker's cron (in `worker/wrangler.toml`) does the timing: every 15 minutes it sends the
+   latest edition to users whose local send hour has arrived, and at 22:30, 23:30, 00:30, 01:30 and 02:30 UTC it
+   dispatches the GitHub Build workflow. For that, create a fine-grained GitHub token (Settings > Developer settings
+   > Fine-grained tokens) limited to this repository with **Actions: read and write**, put it in `.env` as
+   `GH_DISPATCH_TOKEN` and `wrangler secret put GH_DISPATCH_TOKEN` from `worker/`. **Token expiry: see the
+   "Token expiry" line below; make a new one before that date or builds stop and the owner gets an alert.**
+   `gh workflow enable Build` turns on the GitHub-side backup cron at 03:00 UTC.
+
+Manual triggers (bearer secret): `curl -X POST -H "Authorization: Bearer $WORKER_SHARED_SECRET" $WORKER_URL/run-send`
+runs one send pass now, and `$WORKER_URL/dispatch-build` (add `?final=1` for the unofficial fallback) dispatches a build.
 
 Useful checks: `python -m src.main --send-now owner` sends the latest edition to one user right away
 (the user id is the `id` field from `GET $WORKER_URL/users`);

@@ -5,6 +5,10 @@ import ru from "../../config/i18n/ru.json" with { type: "json" };
 import { PARSERS, commandOf } from "./commands.js";
 import { LANG_BUTTONS, keyboardFor, persistentKeyboard, settingsField, startFlow, step, summary, t as tl } from "./onboarding.js";
 import { clearDraft, deleteUser, getDraft, getUser, listUsers, putDraft, putUser } from "./users.js";
+import { dueForSend } from "./schedule.js";
+
+const BUILD_CRONS = { "30 22 * * 1-5": false, "30 23 * * 1-5": false, "30 0 * * 2-6": false, "30 1 * * 2-6": false, "30 2 * * 2-6": true };
+const SEND_CRON = "*/15 * * * *";
 
 const LABELS = { en, kk, ru };
 const t = (lang, key) => tl(LABELS, lang, key);
@@ -40,14 +44,91 @@ async function bumpStat(env, field) {
   await env.KV.put(key, JSON.stringify(cur), { expirationTtl: 40 * 86400 });
 }
 
-async function resendToday(env, user, lang) {
-  // Full mode has a pre-rendered page message; simple mode is not live yet, so it gets the launch note.
-  if (user.mode === "simple") {
-    return say(env, user.chat_id, t(lang, "simple_soon"), persistentKeyboard(user, LABELS, lang));
+async function fetchManifest(env) {
+  const r = await fetch(`${env.PAGES_URL}/messages/latest/manifest.json?t=${Date.now()}`, { cf: { cacheTtl: 0 } });
+  if (!r.ok) throw new Error(`manifest ${r.status}`);
+  return r.json();
+}
+
+function variantOf(user) {
+  return user.mode === "simple" ? `simple_${user.lang}` : "full_en";
+}
+
+// Deliver the latest edition (or the simple-mode launch note) to one user. Returns a description.
+async function deliver(env, user, manifest, { force = false } = {}) {
+  const lang = user.lang;
+  if (user.mode === "simple" && !manifest.variants.includes(variantOf(user))) {
+    const key = `soon:${user.id}`;
+    if (!force && (await env.KV.get(key))) return "launch note already sent";
+    await say(env, user.chat_id, t(lang, "simple_soon"), persistentKeyboard(user, LABELS, lang));
+    await env.KV.put(key, manifest.edition);
+    return "sent launch note";
   }
-  const r = await fetch(`${env.PAGES_URL}/messages/latest/${user.mode}_${lang}.txt`, { cf: { cacheTtl: 60 } });
-  if (!r.ok) return null;
-  return say(env, user.chat_id, await r.text(), persistentKeyboard(user, LABELS, lang));
+  const r = await fetch(`${env.PAGES_URL}/messages/latest/${variantOf(user)}.txt?t=${Date.now()}`, { cf: { cacheTtl: 0 } });
+  if (!r.ok) throw new Error(`variant ${variantOf(user)} ${r.status}`);
+  await say(env, user.chat_id, await r.text(), persistentKeyboard(user, LABELS, lang));
+  if (manifest.heatmap && user.mode === "full") {
+    try { await tg(env, "sendPhoto", { chat_id: user.chat_id, photo: `${env.PAGES_URL}/${manifest.heatmap}`, caption: `S&P 500 · ${manifest.edition}` }); } catch (e) { /* the text went out; the picture is optional */ }
+  }
+  return `sent ${variantOf(user)}`;
+}
+
+async function resendToday(env, user, lang) {
+  // Language buttons: re-send today's message in the new language right away.
+  try {
+    const manifest = await fetchManifest(env);
+    return await deliver(env, { ...user, lang }, manifest, { force: true });
+  } catch (e) {
+    return null;
+  }
+}
+
+async function alertOwnerOnce(env, key, text) {
+  // One alert per distinct error per day, so a broken night does not spam the owner every 15 minutes.
+  if (!env.OWNER_CHAT_ID) return;
+  const k = `alerted:${key}`;
+  if (await env.KV.get(k)) return;
+  await env.KV.put(k, "1", { expirationTtl: 86400 });
+  try { await tg(env, "sendMessage", { chat_id: env.OWNER_CHAT_ID, text: text.slice(0, 3500) }); } catch {}
+}
+
+export async function runSend(env, now = new Date()) {
+  let manifest;
+  try { manifest = await fetchManifest(env); } catch (e) {
+    await alertOwnerOnce(env, "manifest", `⚠️ Send cron: cannot read the latest edition manifest: ${e.message}`);
+    return { error: String(e) };
+  }
+  const users = await listUsers(env.KV);
+  const out = { edition: manifest.edition, sent: [], skipped: [], failed: [] };
+  for (const user of users) {
+    const sentEdition = await env.KV.get(`sent:${user.id}`);
+    const { due, reason } = dueForSend(user, manifest, now, sentEdition);
+    if (!due) { out.skipped.push(`${user.id}: ${reason}`); continue; }
+    try {
+      const what = await deliver(env, user, manifest);
+      await env.KV.put(`sent:${user.id}`, manifest.edition);
+      await bumpStat(env, "sends");
+      out.sent.push(`${user.id}: ${what}`);
+    } catch (e) {
+      await bumpStat(env, "failures");
+      out.failed.push(`${user.id}: ${e.message}`);
+      await alertOwnerOnce(env, `send:${user.id}:${manifest.edition}`, `⚠️ Send to ${user.id} failed for ${manifest.edition}: ${e.message}`);
+    }
+  }
+  return out;
+}
+
+export async function dispatchBuild(env, final) {
+  const r = await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/build.yml/dispatches`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`, accept: "application/vnd.github+json", "user-agent": "morning-market-brief-bot", "content-type": "application/json" },
+    body: JSON.stringify({ ref: "main", inputs: { final: final ? "true" : "false" } }),
+  });
+  if (r.status !== 204) {
+    const body = await r.text();
+    throw new Error(`dispatch ${r.status}: ${body.slice(0, 200)}`);
+  }
+  return { dispatched: true, final };
 }
 
 function isOwner(env, chatId) {
@@ -170,6 +251,23 @@ function authorized(request, env) {
 }
 
 export default {
+  async scheduled(event, env, ctx) {
+    if (event.cron === SEND_CRON) {
+      const res = await runSend(env, new Date(event.scheduledTime));
+      console.log(JSON.stringify({ send: res }));
+      return;
+    }
+    if (event.cron in BUILD_CRONS) {
+      try {
+        const res = await dispatchBuild(env, BUILD_CRONS[event.cron]);
+        console.log(JSON.stringify({ build: res, cron: event.cron }));
+      } catch (e) {
+        console.log(JSON.stringify({ build_error: String(e), cron: event.cron }));
+        await alertOwnerOnce(env, `dispatch:${new Date(event.scheduledTime).toISOString().slice(0, 13)}`, `❌ Build dispatch failed (${event.cron} UTC): ${e.message}`);
+      }
+    }
+  },
+
   async fetch(request, env) {
     const url = new URL(request.url);
     if (request.method === "POST" && url.pathname === "/webhook") {
@@ -185,6 +283,12 @@ export default {
     }
     if (url.pathname === "/health") return Response.json({ ok: true });
     if (!authorized(request, env)) return new Response("forbidden", { status: 403 });
+    if (url.pathname === "/run-send" && request.method === "POST") {
+      return Response.json(await runSend(env));
+    }
+    if (url.pathname === "/dispatch-build" && request.method === "POST") {
+      try { return Response.json(await dispatchBuild(env, url.searchParams.get("final") === "1")); } catch (e) { return Response.json({ error: String(e) }, { status: 502 }); }
+    }
     if (url.pathname === "/users" && request.method === "GET") {
       return Response.json({ users: await listUsers(env.KV) });
     }
