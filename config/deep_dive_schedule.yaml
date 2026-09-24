@@ -1,17 +1,82 @@
-# One company per week starting on start_date (a Monday). After the schedule is exhausted, take from the queue.
 start_date: 2026-09-21
 schedule:
-  - {week: 1, sector: "Consumer Discretionary", ticker: "NKE", competitors: ["ADDYY", "ONON", "DECK", "LULU"]}
-  - {week: 2, sector: "Technology", ticker: "NVDA", competitors: ["AMD", "AVGO", "INTC", "TSM"]}
-  - {week: 3, sector: "Financials", ticker: "JPM", competitors: ["BAC", "GS", "WFC"]}
-  - {week: 4, sector: "Health Care", ticker: "LLY", competitors: ["NVO", "PFE", "MRK"]}
-  - {week: 5, sector: "Energy", ticker: "XOM", competitors: ["CVX", "COP", "SHEL"]}
-  - {week: 6, sector: "Communication Services", ticker: "GOOGL", competitors: ["META", "NFLX", "DIS"]}
-  - {week: 7, sector: "Industrials", ticker: "CAT", competitors: ["DE", "HON", "GE"]}
-  - {week: 8, sector: "Consumer Staples", ticker: "COST", competitors: ["WMT", "TGT", "PG"]}
-  - {week: 9, sector: "Utilities", ticker: "NEE", competitors: ["DUK", "SO", "CEG"]}
-  - {week: 10, sector: "Real Estate", ticker: "PLD", competitors: ["AMT", "EQIX", "SPG"]}
-  - {week: 11, sector: "Materials", ticker: "LIN", competitors: ["SHW", "FCX", "NUE"]}
-
-# Manual queue (/queue TICKER) plus slow mover flags, appended by the build job.
+- week: 1
+  sector: Consumer Discretionary
+  ticker: NKE
+  competitors:
+  - ADDYY
+  - ONON
+  - DECK
+  - LULU
+- week: 2
+  sector: Technology
+  ticker: NVDA
+  competitors:
+  - AMD
+  - AVGO
+  - INTC
+  - TSM
+- week: 3
+  sector: Financials
+  ticker: JPM
+  competitors:
+  - BAC
+  - GS
+  - WFC
+- week: 4
+  sector: Health Care
+  ticker: LLY
+  competitors:
+  - NVO
+  - PFE
+  - MRK
+- week: 5
+  sector: Energy
+  ticker: XOM
+  competitors:
+  - CVX
+  - COP
+  - SHEL
+- week: 6
+  sector: Communication Services
+  ticker: GOOGL
+  competitors:
+  - META
+  - NFLX
+  - DIS
+- week: 7
+  sector: Industrials
+  ticker: CAT
+  competitors:
+  - DE
+  - HON
+  - GE
+- week: 8
+  sector: Consumer Staples
+  ticker: COST
+  competitors:
+  - WMT
+  - TGT
+  - PG
+- week: 9
+  sector: Utilities
+  ticker: NEE
+  competitors:
+  - DUK
+  - SO
+  - CEG
+- week: 10
+  sector: Real Estate
+  ticker: PLD
+  competitors:
+  - AMT
+  - EQIX
+  - SPG
+- week: 11
+  sector: Materials
+  ticker: LIN
+  competitors:
+  - SHW
+  - FCX
+  - NUE
 queue: []
