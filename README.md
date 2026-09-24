@@ -79,9 +79,10 @@ secrets, and in the Worker's secrets. Nothing secret is in a tracked file.
    latest edition to users whose local send hour has arrived, and at 22:30, 23:30, 00:30, 01:30 and 02:30 UTC it
    dispatches the GitHub Build workflow. For that, create a fine-grained GitHub token (Settings > Developer settings
    > Fine-grained tokens) limited to this repository with **Actions: read and write**, put it in `.env` as
-   `GH_DISPATCH_TOKEN` and `wrangler secret put GH_DISPATCH_TOKEN` from `worker/`. **Token expiry: see the
-   "Token expiry" line below; make a new one before that date or builds stop and the owner gets an alert.**
-   `gh workflow enable Build` turns on the GitHub-side backup cron at 03:00 UTC.
+   `GH_DISPATCH_TOKEN` and `wrangler secret put GH_DISPATCH_TOKEN` from `worker/`.
+   **Token expiry: the current token expires on 2027-09-23.** Make a new one before that date and put it in
+   `.env` and the Worker again; otherwise the dispatches fail, the owner gets one alert per slot, and only the
+   GitHub backup cron at 03:00 UTC keeps building. `gh workflow enable Build` turns that backup on.
 
 Manual triggers (bearer secret): `curl -X POST -H "Authorization: Bearer $WORKER_SHARED_SECRET" $WORKER_URL/run-send`
 runs one send pass now, and `$WORKER_URL/dispatch-build` (add `?final=1` for the unofficial fallback) dispatches a build.
