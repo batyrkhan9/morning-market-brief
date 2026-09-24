@@ -7,7 +7,8 @@ import { LANG_BUTTONS, keyboardFor, persistentKeyboard, settingsField, startFlow
 import { clearDraft, deleteUser, getDraft, getUser, listUsers, putDraft, putUser } from "./users.js";
 import { dueForSend } from "./schedule.js";
 
-const BUILD_CRONS = { "30 22 * * 1-5": false, "30 23 * * 1-5": false, "30 0 * * 2-6": false, "30 1 * * 2-6": false, "30 2 * * 2-6": true };
+const BUILD_CRONS = ["30 22,23 * * 1-5", "30 0-2 * * 2-6"];
+const FINAL_ATTEMPT_UTC_HOUR = 2;   // the 02:30 UTC run builds unofficially if the close is still missing
 const SEND_CRON = "*/15 * * * *";
 
 const LABELS = { en, kk, ru };
@@ -257,9 +258,10 @@ export default {
       console.log(JSON.stringify({ send: res }));
       return;
     }
-    if (event.cron in BUILD_CRONS) {
+    if (BUILD_CRONS.includes(event.cron)) {
+      const final = new Date(event.scheduledTime).getUTCHours() === FINAL_ATTEMPT_UTC_HOUR;
       try {
-        const res = await dispatchBuild(env, BUILD_CRONS[event.cron]);
+        const res = await dispatchBuild(env, final);
         console.log(JSON.stringify({ build: res, cron: event.cron }));
       } catch (e) {
         console.log(JSON.stringify({ build_error: String(e), cron: event.cron }));

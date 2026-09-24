@@ -138,7 +138,10 @@ def write_messages(day):
     plus manifest.json (edition, built_at, variants) that the Worker's send cron reads."""
     written = []
     variants = message.all_messages(day)
-    manifest = {"edition": day["date"], "built_at": day.get("built_at_iso"), "unofficial": bool(day.get("unofficial")),
+    built_iso = day.get("built_at_iso")
+    if not built_iso and day.get("built_at"):  # editions saved before built_at_iso existed
+        built_iso = datetime.strptime(day["built_at"], "%Y-%m-%d %H:%M UTC").strftime("%Y-%m-%dT%H:%M:%SZ")
+    manifest = {"edition": day["date"], "built_at": built_iso, "unofficial": bool(day.get("unofficial")),
                 "variants": sorted(v[:-4] for v in variants), "heatmap": f"en/heatmap.png?v={day['date']}"}
     for folder in (DOCS / "messages" / day["date"], DOCS / "messages" / "latest"):
         folder.mkdir(parents=True, exist_ok=True)

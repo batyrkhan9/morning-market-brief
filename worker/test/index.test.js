@@ -130,9 +130,18 @@ test("dispatch failure alerts the owner once per hour slot", async () => {
     return { status: 401, text: async () => "Bad credentials" };
   };
   env.GH_DISPATCH_TOKEN = "bad"; env.GITHUB_REPO = "o/r";
-  const ev = { cron: "30 22 * * 1-5", scheduledTime: Date.parse("2026-09-24T22:30:00Z") };
+  const ev = { cron: "30 22,23 * * 1-5", scheduledTime: Date.parse("2026-09-24T22:30:00Z") };
   await worker.scheduled(ev, env, {});
   await worker.scheduled(ev, env, {});
   const alerts = sent.filter((m) => /Build dispatch failed/.test(m.text));
   assert.equal(alerts.length, 1); assert.equal(alerts[0].chat_id, "1");
+  // the 02:30 slot is the final attempt
+  const calls = [];
+  globalThis.fetch = async (url, opts) => {
+    if (String(url).includes("api.telegram.org")) return { json: async () => ({ ok: true, result: {} }) };
+    calls.push(JSON.parse(opts.body)); return { status: 204, text: async () => "" };
+  };
+  await worker.scheduled({ cron: "30 0-2 * * 2-6", scheduledTime: Date.parse("2026-09-25T02:30:00Z") }, env, {});
+  await worker.scheduled({ cron: "30 0-2 * * 2-6", scheduledTime: Date.parse("2026-09-25T01:30:00Z") }, env, {});
+  assert.deepEqual(calls.map((c) => c.inputs.final), ["true", "false"]);
 });
