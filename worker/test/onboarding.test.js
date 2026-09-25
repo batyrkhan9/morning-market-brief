@@ -54,6 +54,7 @@ test("settings flow edits one field and keeps the rest", () => {
   assert.equal(tz.user.tz, "Asia/Tokyo"); assert.equal(tz.user.send_hour, 12);
   const lang = step({ ...startFlow("settings", "lang"), lang: "en" }, msg("Қазақша"), labels, existing);
   assert.equal(lang.user.lang, "kk"); assert.match(lang.reply, /Жаңартылды/);
+  assert.match(lang.reply, /Шолу: English/); assert.match(lang.reply, /тек ағылшын тілінде/);   // full mode: brief stays English, said in Kazakh
   assert.match(summary(existing, labels), /Send hour: 12:00/);
 });
 

@@ -36,8 +36,12 @@ export function persistentKeyboard(user, labels, lang) {
 
 export function summary(user, labels) {
   const lang = user.lang;
-  return [t(labels, lang, "onb_summary"),
-    `${t(labels, lang, "lbl_language")}: ${Object.keys(LANG_BUTTONS).find((k) => LANG_BUTTONS[k] === user.lang)}`,
+  const langName = Object.keys(LANG_BUTTONS).find((k) => LANG_BUTTONS[k] === user.lang);
+  // Full mode: the brief is English only; the language setting drives the bot's replies. Say so plainly.
+  const langLines = user.mode === "full"
+    ? [`${t(labels, lang, "lbl_brief_language")}: English`, `${t(labels, lang, "lbl_bot_language")}: ${langName}`]
+    : [`${t(labels, lang, "lbl_language")}: ${langName}`];
+  return [t(labels, lang, "onb_summary"), ...langLines,
     `${t(labels, lang, "lbl_mode")}: ${t(labels, lang, "btn_mode_" + user.mode)}`,
     `${t(labels, lang, "lbl_send_hour")}: ${String(user.send_hour).padStart(2, "0")}:00`,
     `${t(labels, lang, "lbl_timezone")}: ${user.tz}`,
@@ -103,7 +107,8 @@ function advance(draft, labels, next, existing) {
   if (!validUser(user)) {
     return { reply: prompt("lang", labels, user.lang || "en"), keyboard: keyboardFor("lang", labels, "en"), draft: { step: "lang", flow: draft.flow } };
   }
-  const reply = (existing ? t(labels, user.lang, "onb_updated") : t(labels, user.lang, "onb_saved")) + "\n\n" + summary(user, labels);
+  const note = user.mode === "full" && user.lang !== "en" ? "\n\n" + t(labels, user.lang, "full_lang_note") : "";
+  const reply = (existing ? t(labels, user.lang, "onb_updated") : t(labels, user.lang, "onb_saved")) + "\n\n" + summary(user, labels) + note;
   return { reply, keyboard: persistentKeyboard(user, labels, user.lang), draft: null, user, deleteDraft: true };
 }
 

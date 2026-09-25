@@ -51,34 +51,45 @@ async function fetchManifest(env) {
   return r.json();
 }
 
-function variantOf(user) {
-  return user.mode === "simple" ? `simple_${user.lang}` : "full_en";
+// Preferred variant is mode_lang. Full mode falls back to full_en (the brief is English only for now);
+// simple mode has no fallback and gets the launch note instead.
+function variantOf(user, manifest) {
+  const preferred = `${user.mode}_${user.lang}`;
+  if (!manifest || (manifest.variants || []).includes(preferred)) return preferred;
+  return user.mode === "full" ? "full_en" : preferred;
 }
 
 // Deliver the latest edition (or the simple-mode launch note) to one user. Returns a description.
 async function deliver(env, user, manifest, { force = false } = {}) {
   const lang = user.lang;
-  if (user.mode === "simple" && !manifest.variants.includes(variantOf(user))) {
+  const variant = variantOf(user, manifest);
+  if (user.mode === "simple" && !manifest.variants.includes(variant)) {
     const key = `soon:${user.id}`;
     if (!force && (await env.KV.get(key))) return "launch note already sent";
     await say(env, user.chat_id, t(lang, "simple_soon"), persistentKeyboard(user, LABELS, lang));
     await env.KV.put(key, manifest.edition);
     return "sent launch note";
   }
-  const r = await fetch(`${env.PAGES_URL}/messages/latest/${variantOf(user)}.txt?t=${Date.now()}`, { cf: { cacheTtl: 0 } });
-  if (!r.ok) throw new Error(`variant ${variantOf(user)} ${r.status}`);
+  const r = await fetch(`${env.PAGES_URL}/messages/latest/${variant}.txt?t=${Date.now()}`, { cf: { cacheTtl: 0 } });
+  if (!r.ok) throw new Error(`variant ${variant} ${r.status}`);
   await say(env, user.chat_id, await r.text(), persistentKeyboard(user, LABELS, lang));
   if (manifest.heatmap && user.mode === "full") {
     try { await tg(env, "sendPhoto", { chat_id: user.chat_id, photo: `${env.PAGES_URL}/${manifest.heatmap}`, caption: `S&P 500 · ${manifest.edition}` }); } catch (e) { /* the text went out; the picture is optional */ }
   }
-  return `sent ${variantOf(user)}`;
+  return `sent ${variant}`;
 }
 
 async function resendToday(env, user, lang) {
-  // Language buttons: re-send today's message in the new language right away.
+  // Language buttons: re-send today's message in the new language right away, but only when a version in
+  // that language exists. Full mode is English only, so switching it to kk/ru re-sends nothing and says why.
   try {
     const manifest = await fetchManifest(env);
-    return await deliver(env, { ...user, lang }, manifest, { force: true });
+    const target = { ...user, lang };
+    if (user.mode === "full" && !(manifest.variants || []).includes(`full_${lang}`)) {
+      await say(env, user.chat_id, t(lang, "no_variant_for_lang") + "\n" + t(lang, "full_lang_note"), persistentKeyboard(user, LABELS, lang));
+      return null;
+    }
+    return await deliver(env, target, manifest, { force: true });
   } catch (e) {
     return null;
   }
@@ -171,7 +182,7 @@ async function handleMessage(env, msg) {
       await putDraft(env.KV, chatId, out.draft);
     }
     const res = await say(env, chatId, out.reply, out.keyboard);
-    if (out.user && user && out.user.lang !== user.lang) await resendToday(env, out.user, out.user.lang);
+    if (out.user && user && out.user.lang !== user.lang && out.user.mode === "simple") await resendToday(env, out.user, out.user.lang);
     return res;
   }
   if (draft && draft.step === "menu") {

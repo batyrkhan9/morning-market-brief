@@ -57,10 +57,13 @@ test("/start onboarding end to end, then /settings, /pause, /stats and /stop", a
   r = await post(2, "/stats"); assert.equal(r.ignored, true);     // stranger: nothing, but remembered
   assert.ok(env.KV.store.has("seen:2"));
 
-  r = await post(1, "Русский");                                   // language switch re-sends today's message
-  assert.equal(r.resent, true);
-  assert.equal(sent.at(-1).text, "TODAY'S BRIEF");
+  r = await post(1, "Русский");                                   // full mode: no Russian brief exists, say so, no re-send
+  assert.equal(r.resent, false);
+  assert.match(sent.at(-1).text, /Версии сегодняшней сводки на этом языке пока нет/);
+  assert.match(sent.at(-1).text, /только на английском/);
   assert.equal(JSON.parse(env.KV.store.get("user:1")).lang, "ru");
+  r = await post(1, "/start");                                    // summary separates the brief's language from the bot's
+  assert.match(r.replied, /Сводка: English/); assert.match(r.replied, /Ответы бота: Русский/);
 
   r = await post(1, "/stop"); assert.match(r.replied, /удалены/);
   assert.equal(env.KV.store.has("user:1"), false);
