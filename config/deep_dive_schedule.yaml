@@ -79,4 +79,8 @@ schedule:
   - SHW
   - FCX
   - NUE
-queue: []
+queue:
+- AAPL
+- CMCSA
+- CHTR
+- EXE

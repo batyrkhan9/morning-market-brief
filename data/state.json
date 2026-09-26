@@ -7,12 +7,16 @@
     "2026-09-24": {
       "at": "2026-09-25 00:31 UTC",
       "official": true
+    },
+    "2026-09-25": {
+      "at": "2026-09-26 08:21 UTC",
+      "official": true
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-09-24",
+  "latest_edition": "2026-09-25",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -35,12 +39,12 @@
       "severity": 2
     },
     "AAPL": {
-      "count": 2,
-      "date": "2026-05-06",
+      "count": 3,
+      "date": "2026-09-25",
       "direction": "up",
       "first_date": "2026-04-08",
       "first_price": 258.8999938964844,
-      "price": 287.510009765625,
+      "price": 341.07000732421875,
       "rules": [
         "52w_high",
         "3y_high",
@@ -1065,12 +1069,12 @@
       "severity": 3
     },
     "CHTR": {
-      "count": 3,
-      "date": "2026-05-13",
+      "count": 4,
+      "date": "2026-09-25",
       "direction": "down",
       "first_date": "2026-04-17",
       "first_price": 236.6199951171875,
-      "price": 143.05999755859375,
+      "price": 112.91000366210938,
       "rules": [
         "52w_low",
         "3y_low",
@@ -1122,14 +1126,16 @@
       "severity": 3
     },
     "CMCSA": {
-      "count": 1,
-      "date": "2026-05-06",
+      "count": 2,
+      "date": "2026-09-25",
       "direction": "down",
       "first_date": "2026-05-06",
       "first_price": 26.440000534057617,
-      "price": 26.440000534057617,
+      "price": 21.90999984741211,
       "rules": [
-        "5y_below_50"
+        "52w_low",
+        "3y_low",
+        "5y_low"
       ],
       "severity": 3
     },
@@ -2027,12 +2033,12 @@
       "severity": 1
     },
     "EXE": {
-      "count": 1,
-      "date": "2026-05-27",
+      "count": 2,
+      "date": "2026-09-25",
       "direction": "down",
       "first_date": "2026-05-27",
       "first_price": 92.63999938964844,
-      "price": 92.63999938964844,
+      "price": 86.83999633789062,
       "rules": [
         "52w_low"
       ],
