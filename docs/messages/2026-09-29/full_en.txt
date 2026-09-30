@@ -3,20 +3,20 @@
 Nasdaq           26,797.54   -0.09%
 Dow              51,349.92   -0.26%
 Russell 2000      2,807.92   -0.35%
-Europe               88.38   -0.28%
-Japan                96.83   -1.12%
-China                52.54   -0.15%
-Emerging markets     67.20   -1.15%
+Europe               87.85   -0.60%
+Japan                96.51   -0.33%
+China                52.10   -0.84%
+Emerging markets     67.40   +0.30%
 2-year                4.89    -3 bp
 10-year               5.26    +2 bp
 10y minus 2y          0.37    +5 bp
 High yield sprea      3.02    +9 bp
 VIX                  16.04   -0.19%
-Dollar index        101.42   +0.22%
-WTI oil              89.23   -3.64%
-Gold              4,214.50   -2.47%</pre>
-Breadth: 0 at 52 week lows, 0 at 52 week highs
-<b>Today</b>: 10 fast movers (PANW +4.63%, BE -8.95%) · 0 slow mover alerts · 2 earnings filers, 21 8-K filings
+Dollar index        101.37   +0.17%
+WTI oil              89.38   -3.48%
+Gold              4,179.70   +0.27%</pre>
+Breadth: 22 at 52 week lows, 8 at 52 week highs
+<b>Today</b>: 10 fast movers (CCL +13.41%, FICO -26.52%) · 5 slow mover alerts (NTAP, CPRT, FICO, ROP, HSY) · 2 earnings filers, 21 8-K filings
 <b>Deep dive</b>: Nvidia — Wednesday: the numbers, 10 fiscal years
-<b>Predictions</b>: 1 open, 0 scored, hit rate None
+<b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
