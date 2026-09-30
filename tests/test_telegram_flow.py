@@ -26,13 +26,36 @@ def test_full_message_fits_and_has_the_parts(day, monkeypatch, tmp_path):
     assert "Deep dive" in text and "Nike" in text
     assert "https://batyrkhan9.github.io/morning-market-brief/en/" in text
     assert day["date"] == "2026-09-18" and day["delivery_date"] == "2026-09-19"
-    for name, txt in message.all_messages(day).items():
-        assert name == "full_en.txt" and len(txt) < 4096
+    variants = message.all_messages(day)
+    assert sorted(variants) == ["full_en.txt", "full_kk.txt", "full_ru.txt"]
+    assert all(len(txt) < 4096 for txt in variants.values())
     from src.main import write_messages
     written = write_messages(day)
     assert all(str(p).startswith(str(tmp_path)) for p in written)   # autouse isolation: temp dir, never docs/
     manifest = json.loads((tmp_path / "docs" / "messages" / "latest" / "manifest.json").read_text())
-    assert manifest["edition"] == "2026-09-18" and manifest["variants"] == ["full_en"] and manifest["built_at"].endswith("Z")
+    assert manifest["edition"] == "2026-09-18" and manifest["variants"] == ["full_en", "full_kk", "full_ru"] and manifest["built_at"].endswith("Z")
+
+
+def test_kazakh_and_russian_full_messages(day):
+    kk, ru, en = (message.full_message(day, lang) for lang in ("kk", "ru", "en"))
+    assert "Таңғы нарық шолуы" in kk and "Сауда күні 2026-09-18" in kk
+    assert "Еуропа" in kk and "Алтын" in kk and "10 жылдық" in kk and "Europe" not in kk and "Gold" not in kk
+    assert "Терең талдау" in kk and "Сәрсенбі: сандар" in kk and "Толық шолуды ашу" in kk
+    assert "Утренний обзор рынка" in ru and "Золото" in ru and "Глубокий разбор" in ru
+    # numbers: space for thousands, comma for decimals; the same digits as the English message
+    assert "7\u00a0650,50" in kk and "7,650.50" in en and "+0,17%" in kk and "+0.17%" in en
+    assert "morning-market-brief/en/" in kk                       # the page itself is English only
+    import re
+    digits = lambda s: re.sub(r"\D", "", s.split("<pre>")[1].split("</pre>")[0])
+    assert digits(kk) == digits(en) == digits(ru)                 # translation never touches a number
+
+
+def test_message_hides_hit_rate_until_something_is_scored(day):
+    day["sections"]["prediction"] = {"open": [{"ticker": "NKE"}], "scored_today": [], "hit_rate": None, "total": 1}
+    text = message.full_message(day, "en")
+    assert "1 open, 0 scored" in text and "None" not in text and "hit rate" not in text
+    day["sections"]["prediction"]["hit_rate"] = "50% (1/2)"
+    assert "hit rate 50% (1/2)" in message.full_message(day, "en")
 
 
 def test_message_marks_unofficial_and_failed_sections(day):

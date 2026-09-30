@@ -57,15 +57,27 @@ test("/start onboarding end to end, then /settings, /pause, /stats and /stop", a
   r = await post(2, "/stats"); assert.equal(r.ignored, true);     // stranger: nothing, but remembered
   assert.ok(env.KV.store.has("seen:2"));
 
-  r = await post(1, "Русский");                                   // full mode: no Russian brief exists, say so, no re-send
+  r = await post(1, "Русский");                                   // this manifest has no full_ru: say so, no re-send
   assert.equal(r.resent, false);
   assert.match(sent.at(-1).text, /Версии сегодняшней сводки на этом языке пока нет/);
-  assert.match(sent.at(-1).text, /только на английском/);
   assert.equal(JSON.parse(env.KV.store.get("user:1")).lang, "ru");
-  r = await post(1, "/start");                                    // summary separates the brief's language from the bot's
-  assert.match(r.replied, /Сводка: English/); assert.match(r.replied, /Ответы бота: Русский/);
+  r = await post(1, "/start");                                    // summary: message language, page and sources English
+  assert.match(r.replied, /Язык: Русский/); assert.match(r.replied, /Веб-страница и источники: English/);
+  const fetched = [];
+  const prev = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {                         // now a manifest that has the Kazakh variant
+    const u = String(url); fetched.push(u);
+    if (u.includes("manifest.json")) return { ok: true, json: async () => ({ edition: "2026-09-29", built_at: "2026-09-30T00:30:00Z", variants: ["full_en", "full_kk", "full_ru"] }) };
+    if (u.includes("full_kk.txt")) return { ok: true, text: async () => "ҚАЗАҚША ШОЛУ" };
+    return prev(url, opts);
+  };
+  r = await post(1, "Қазақша");
+  assert.equal(r.resent, true);
+  assert.ok(fetched.some((u) => u.includes("/messages/latest/full_kk.txt")));
+  assert.equal(sent.filter((m) => m.text === "ҚАЗАҚША ШОЛУ").length, 1);
+  globalThis.fetch = prev;
 
-  r = await post(1, "/stop"); assert.match(r.replied, /удалены/);
+  r = await post(1, "/stop"); assert.match(r.replied, /өшірілді/);      // the user is on Kazakh by now
   assert.equal(env.KV.store.has("user:1"), false);
 });
 

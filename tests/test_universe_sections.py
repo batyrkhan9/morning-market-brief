@@ -93,3 +93,44 @@ def test_page_builds_when_universe_fails(config, offline_prices, offline_fred, o
     assert "error" not in day["sections"]["snapshot"]
     html = render.render_html(day)
     assert html.count("This section failed to build") == 5 and "Breadth" in html   # heatmap, movers, slow, earnings, deep dive
+
+
+def test_stock_sections_refuse_a_day_the_stocks_have_not_closed(config, offline_prices, offline_fred, offline_treasury,
+                                                                offline_universe, offline_news, no_network, monkeypatch):
+    """Index close present, stock closes missing for the day: notes instead of yesterday's moves."""
+    import pandas as pd
+    from src.sources import prices
+    real = prices.get_prices
+
+    def lagging(tickers, period="2y"):
+        df = real(tickers, period)
+        late = [t for t in df.columns if not t.startswith("^")]
+        df.loc[pd.Timestamp("2026-09-18"), [t for t in late if t in offline_universe["caps"]]] = float("nan")
+        return df
+    monkeypatch.setattr(prices, "get_prices", lagging)
+    day, ctx = _day(config)
+    assert day["as_of"] == "2026-09-18" and day["universe_coverage"] == 0.0
+    for name in ("breadth", "heatmap", "movers", "slow_movers"):
+        assert "not showing stale moves" in day["sections"][name]["error"], name
+    assert "error" not in day["sections"]["snapshot"]
+    html = render.render_html(day)
+    assert "not showing stale moves" in html
+
+
+def test_a_single_late_ticker_is_skipped_not_shown_stale(config, offline_prices, offline_fred, offline_treasury,
+                                                         offline_universe, offline_news, no_network, monkeypatch):
+    import pandas as pd
+    from src.sources import prices
+    real = prices.get_prices
+
+    def one_late(tickers, period="2y"):
+        df = real(tickers, period)
+        if "NKE" in df.columns:
+            df.loc[pd.Timestamp("2026-09-18"), "NKE"] = float("nan")
+        return df
+    monkeypatch.setattr(prices, "get_prices", one_late)
+    day, _ = _day(config)
+    hm, fm = day["sections"]["heatmap"], day["sections"]["movers"]
+    assert "error" not in hm and "NKE" in hm["skipped"] and all(r["ticker"] != "NKE" for r in hm["rows"])
+    assert all(m["ticker"] != "NKE" for m in fm["gainers"] + fm["losers"])
+    assert not any(a["ticker"] == "NKE" for a in day["sections"]["slow_movers"]["alerts"])

@@ -1,6 +1,6 @@
 """Section: fast movers. Top N gainers and losers in the S&P 500 by 1 day change, with the sector's
 move on the same day and 3 headlines each. (8-K items come in milestone 3.)"""
-from src.sections.common import last_on_or_before
+from src.sections.common import close_pair_on
 from src.sources import news
 
 
@@ -19,14 +19,10 @@ def one_day_moves(u, as_of):
     for t in u["constituents"]["ticker"]:
         if t not in closes.columns:
             continue
-        s = closes[t].dropna()
-        d0, v0 = last_on_or_before(s, as_of)
-        if d0 is None:
+        v0, v1 = close_pair_on(closes[t], as_of)
+        if v0 is None:
             continue
-        prev = s[s.index < d0]
-        if prev.empty:
-            continue
-        out[t] = (v0 / float(prev.iloc[-1]) - 1) * 100
+        out[t] = (v0 / v1 - 1) * 100
     return out
 
 

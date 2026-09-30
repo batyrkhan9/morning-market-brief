@@ -4,9 +4,10 @@ from datetime import datetime, timezone
 import pandas as pd
 import pandas_market_calendars as mcal
 
-from src.sources import fred, prices
+from src.sources import constituents, fred, prices
 
 ANCHOR = "^GSPC"
+MIN_COVERAGE = 0.98  # share of S&P 500 stocks that must have the day's close before an official build
 SECOND_SOURCE = "SP500"  # FRED's daily S&P 500 close; Stooq now sits behind a JavaScript browser check
 MAX_DIFF = 0.01  # the two closes must agree within 1%
 
@@ -47,12 +48,23 @@ def close_available(trading_day):
     except Exception as e:  # noqa: BLE001
         second, detail["fred_error"] = None, f"{type(e).__name__}: {e}"
     detail.update({"yahoo": yahoo, "fred": second})
+    # Yahoo publishes the index close before the individual stocks. Building then would show the
+    # previous day's stock moves, so the whole universe must have the day's close too.
+    try:
+        tickers = constituents.get_sp500()["ticker"].tolist()
+        uni = prices.get_prices(tickers, period="5d")
+        have = int(uni.loc[d].notna().sum()) if d in uni.index else 0
+        detail["coverage"] = round(have / len(tickers), 3)
+    except Exception as e:  # noqa: BLE001
+        detail["coverage"], detail["coverage_error"] = 0.0, f"{type(e).__name__}: {e}"
     if yahoo is None:
         return False, detail
     if second is None:
         return False, detail
     if abs(yahoo / second - 1) > MAX_DIFF:
         detail["disagree"] = True
+        return False, detail
+    if detail["coverage"] < MIN_COVERAGE:
         return False, detail
     return True, detail
 

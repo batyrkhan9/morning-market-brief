@@ -58,3 +58,25 @@ def changes(s, as_of, unit, detect_stale=False):
         "unit": unit,
         "stale": bool(detect_stale and v1 is not None and v0 == v1),
     }
+
+
+def close_pair_on(s, as_of):
+    """(close on as_of, previous close) or (None, None) when the series has no close exactly on as_of.
+    Stock-level sections use this so a ticker whose bar is late is skipped, never shown with yesterday's move."""
+    s = s.dropna()
+    d = pd.Timestamp(as_of)
+    if d not in s.index:
+        return None, None
+    prev = s[s.index < d]
+    if prev.empty:
+        return None, None
+    return float(s.loc[d]), float(prev.iloc[-1])
+
+
+def coverage(closes, tickers, as_of):
+    """Share of tickers that have a close exactly on as_of."""
+    d = pd.Timestamp(as_of)
+    cols = [t for t in tickers if t in closes.columns]
+    if d not in closes.index or not cols:
+        return 0.0
+    return float(closes.loc[d, cols].notna().sum()) / len(tickers)

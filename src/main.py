@@ -66,10 +66,17 @@ def load_universe(ctx):
         return {}
 
 
-def needs_universe(build_fn):
+MIN_UNIVERSE_COVERAGE = 0.9   # below this the stock sections show a note instead of stale moves
+
+
+def needs_universe(build_fn, stock_level=True):
     def wrapped(ctx):
         if ctx.get("universe") is None:
             raise RuntimeError("universe unavailable: " + (ctx.get("universe_error") or "unknown"))
+        cov = ctx.get("universe_coverage")
+        if stock_level and cov is not None and cov < MIN_UNIVERSE_COVERAGE:
+            raise RuntimeError(f"only {cov * 100:.0f}% of S&P 500 stocks have a close for {ctx.get('as_of')} so far; "
+                               "not showing stale moves")
         if not ctx.get("as_of"):
             from src.sections.common import last_trading_day
             ctx["as_of"] = last_trading_day(ctx["universe"]["closes"], anchor=ctx["universe"]["benchmark"]).date().isoformat()
@@ -88,20 +95,25 @@ def build_day(date_str, config=None, state=None, ctx=None):
     sec = day["sections"]["sectors"]
     ctx["sector_moves"] = {r["key"]: r.get("chg_1d") for r in sec.get("rows", [])}
     day["timing"] = load_universe(ctx)
-    day["sections"]["breadth"] = sections.run(needs_universe(breadth.build), ctx)
     t0 = time.time()
     if ctx.get("universe") is not None and not ctx.get("as_of"):
         from src.sections.common import last_trading_day
         ctx["as_of"] = last_trading_day(ctx["universe"]["closes"], anchor=ctx["universe"]["benchmark"]).date().isoformat()
+    if ctx.get("universe") is not None and ctx.get("as_of"):
+        from src.sections.common import coverage
+        u = ctx["universe"]
+        ctx["universe_coverage"] = coverage(u["closes"], u["constituents"]["ticker"].tolist(), ctx["as_of"])
+        day["universe_coverage"] = round(ctx["universe_coverage"], 3)
     scan_filings(ctx)
     day["timing"]["filings_s"] = round(time.time() - t0, 1)
-    day["sections"]["earnings"] = sections.run(needs_universe(earnings.build), ctx)
+    day["sections"]["breadth"] = sections.run(needs_universe(breadth.build), ctx)
+    day["sections"]["earnings"] = sections.run(needs_universe(earnings.build, stock_level=False), ctx)
     day["sections"]["heatmap"] = sections.run(needs_universe(heatmap.build), ctx)
     day["sections"]["movers"] = sections.run(needs_universe(movers.build), ctx)
     day["sections"]["slow_movers"] = sections.run(needs_universe(slow_movers.build), ctx)
     ctx["new_alerts_today"] = day["sections"]["slow_movers"].get("new_alerts", {})
     day["sections"]["ongoing"] = sections.run(needs_universe(ongoing.build), ctx)
-    day["sections"]["deep_dive"] = sections.run(needs_universe(deep_dive.build), ctx)
+    day["sections"]["deep_dive"] = sections.run(needs_universe(deep_dive.build, stock_level=False), ctx)
     day["sections"]["prediction"] = sections.run(prediction.build, ctx) if ctx.get("as_of") else {"error": "no trading day"}
     day["as_of"] = ctx.get("as_of") or sec.get("as_of")
     if day["as_of"] and day["as_of"] != day["date"]:

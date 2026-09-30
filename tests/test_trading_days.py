@@ -14,24 +14,41 @@ def test_expected_trading_day_and_delivery():
     assert trading_days.next_trading_day("2026-09-18") == "2026-09-21"
 
 
-def _fake_prices(value):
-    idx = pd.DatetimeIndex(["2026-09-21", "2026-09-22"])
-    return lambda tickers, period="5d": pd.DataFrame({"^GSPC": [7764.70, value]}, index=idx)
+STOCKS = ["AAA", "BBB", "CCC", "DDD", "EEE"]
+IDX = pd.DatetimeIndex(["2026-09-21", "2026-09-22"])
+
+
+def _fake_prices(index_close, stocks_with_close=5):
+    """Yahoo as seen right after the bell: the index may have its close before the stocks do."""
+    def get(tickers, period="5d"):
+        data = {}
+        for t in tickers:
+            if t == "^GSPC":
+                data[t] = [7764.70, index_close]
+            else:
+                data[t] = [10.0, 11.0 if STOCKS.index(t) < stocks_with_close else float("nan")]
+        return pd.DataFrame(data, index=IDX)
+    return get
+
+
+def _setup(monkeypatch, index_close=7764.27, stocks_with_close=5, fred_value=7764.64, fred_day="2026-09-22"):
+    from src.sources import constituents
+    monkeypatch.setattr(constituents, "get_sp500", lambda force=False, cache_path=None: pd.DataFrame({"ticker": STOCKS}))
+    monkeypatch.setattr(fred, "get_series", lambda sid, start: pd.Series([fred_value], index=pd.DatetimeIndex([fred_day])))
+    monkeypatch.setattr(prices, "get_prices", _fake_prices(index_close, stocks_with_close))
 
 
 def test_close_available_requires_both_sources_to_agree(monkeypatch):
-    monkeypatch.setattr(fred, "get_series", lambda sid, start: pd.Series([7764.64], index=pd.DatetimeIndex(["2026-09-22"])))
-    monkeypatch.setattr(prices, "get_prices", _fake_prices(7764.27))
+    _setup(monkeypatch)
     ok, detail = trading_days.close_available("2026-09-22")
-    assert ok and detail["yahoo"] == 7764.27 and detail["fred"] == 7764.64
-    monkeypatch.setattr(prices, "get_prices", _fake_prices(float("nan")))            # Yahoo not published yet
+    assert ok and detail["yahoo"] == 7764.27 and detail["fred"] == 7764.64 and detail["coverage"] == 1.0
+    _setup(monkeypatch, index_close=float("nan"))                                    # Yahoo index not published yet
     assert trading_days.close_available("2026-09-22")[0] is False
-    monkeypatch.setattr(prices, "get_prices", _fake_prices(7000.0))                  # disagreement > 1%
+    _setup(monkeypatch, index_close=7000.0)                                          # disagreement > 1%
     ok, detail = trading_days.close_available("2026-09-22")
     assert ok is False and detail.get("disagree")
-    monkeypatch.setattr(prices, "get_prices", _fake_prices(7764.27))
-    monkeypatch.setattr(fred, "get_series", lambda sid, start: pd.Series([7764.70], index=pd.DatetimeIndex(["2026-09-21"])))
-    assert trading_days.close_available("2026-09-22")[0] is False                    # FRED lacks the day: no cross-check yet
+    _setup(monkeypatch, fred_value=7764.70, fred_day="2026-09-21")                   # FRED lacks the day: no cross-check yet
+    assert trading_days.close_available("2026-09-22")[0] is False
 
     def boom(sid, start):
         raise RuntimeError("fred down")
@@ -39,3 +56,14 @@ def test_close_available_requires_both_sources_to_agree(monkeypatch):
     monkeypatch.setattr("src.retry.BACKOFF_SECONDS", 0)
     ok, detail = trading_days.close_available("2026-09-22")
     assert ok is False and "fred down" in detail["fred_error"]
+
+
+def test_close_not_available_until_the_stocks_have_closes_too(monkeypatch):
+    """The 2026-09-29 bug: the index close was there, the stocks were not, and the brief showed yesterday's moves."""
+    _setup(monkeypatch, stocks_with_close=0)
+    ok, detail = trading_days.close_available("2026-09-22")
+    assert ok is False and detail["yahoo"] == 7764.27 and detail["coverage"] == 0.0
+    _setup(monkeypatch, stocks_with_close=4)                                         # 80% is still below the 98% bar
+    assert trading_days.close_available("2026-09-22")[0] is False
+    _setup(monkeypatch, stocks_with_close=5)
+    assert trading_days.close_available("2026-09-22")[0] is True

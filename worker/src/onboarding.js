@@ -37,10 +37,9 @@ export function persistentKeyboard(user, labels, lang) {
 export function summary(user, labels) {
   const lang = user.lang;
   const langName = Object.keys(LANG_BUTTONS).find((k) => LANG_BUTTONS[k] === user.lang);
-  // Full mode: the brief is English only; the language setting drives the bot's replies. Say so plainly.
-  const langLines = user.mode === "full"
-    ? [`${t(labels, lang, "lbl_brief_language")}: English`, `${t(labels, lang, "lbl_bot_language")}: ${langName}`]
-    : [`${t(labels, lang, "lbl_language")}: ${langName}`];
+  // Full mode in kk/ru: the daily message is translated, the page and the sources are English. Say so plainly.
+  const langLines = [`${t(labels, lang, "lbl_language")}: ${langName}`];
+  if (user.mode === "full" && lang !== "en") langLines.push(`${t(labels, lang, "lbl_page_language")}: English`);
   return [t(labels, lang, "onb_summary"), ...langLines,
     `${t(labels, lang, "lbl_mode")}: ${t(labels, lang, "btn_mode_" + user.mode)}`,
     `${t(labels, lang, "lbl_send_hour")}: ${String(user.send_hour).padStart(2, "0")}:00`,

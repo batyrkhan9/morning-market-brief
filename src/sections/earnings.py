@@ -1,6 +1,6 @@
 """Section: earnings. S&P 500 companies whose 8-K with Item 2.02 (results of operations) belongs to
 the last trading day, with the stock's move and a link to the press release exhibit."""
-from src.sections.common import last_on_or_before
+from src.sections.common import close_pair_on
 from src.sources import edgar
 
 
@@ -17,11 +17,9 @@ def build(ctx):
                 continue
             chg = None
             if t in closes.columns:
-                s = closes[t].dropna()
-                d0, v0 = last_on_or_before(s, as_of)
-                prev = s[s.index < d0] if d0 is not None else s.iloc[0:0]
-                if d0 is not None and not prev.empty:
-                    chg = (v0 / float(prev.iloc[-1]) - 1) * 100
+                v0, v1 = close_pair_on(closes[t], as_of)
+                if v0 is not None:
+                    chg = (v0 / v1 - 1) * 100
             try:
                 exhibit = edgar.get_exhibit_url(f["cik"], f["accession"])
             except Exception:  # noqa: BLE001

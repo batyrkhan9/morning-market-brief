@@ -10,16 +10,33 @@ PAGES_URL = "https://batyrkhan9.github.io/morning-market-brief"
 MAX = 4000  # leave headroom under Telegram's 4096
 
 
-def _row(r, width=16):
+LANGS = ("en", "kk", "ru")
+
+
+def labels(lang):
+    """Labels for a language with English as the fallback for anything not translated yet."""
+    return {**i18n.load("en"), **(i18n.load(lang) if lang != "en" else {})}
+
+
+def localize(text, lang):
+    """kk and ru write numbers with a space for thousands and a comma for decimals."""
+    if lang == "en":
+        return text
+    return text.replace(",", "\u00a0").replace(".", ",")
+
+
+def _row(r, t, lang, width=16):
+    key = ("row_fallback_" + r["key"]) if r.get("id") and r["id"] != r.get("key") and ("row_fallback_" + r.get("key", "")) in t else "row_" + r.get("key", "")
+    label = t.get(key, r["label"]) if lang != "en" else r["label"]
     if "error" in r:
-        return f"{r['label'][:width]:<{width}} {'n/a':>9}"
-    last = fmt_num(r["last"], r.get("decimals", 2))
-    chg = "stale" if r.get("stale") else fmt_chg(r["chg_1d"], r["unit"])
-    return f"{r['label'][:width]:<{width}} {last:>9} {chg:>8}"
+        return f"{label[:width]:<{width}} {'n/a':>9}"
+    last = localize(fmt_num(r["last"], r.get("decimals", 2)), lang)
+    chg = t["stale"] if r.get("stale") else localize(fmt_chg(r["chg_1d"], r["unit"]), lang)
+    return f"{label[:width]:<{width}} {last:>9} {chg:>8}"
 
 
 def full_message(day, lang="en"):
-    t = i18n.load(lang)
+    t = labels(lang)
     s = day["sections"]
     lines = [f"<b>{t['site_title']}</b> · {t['edition']} {day['date']}"]
     if day.get("unofficial"):
@@ -31,7 +48,7 @@ def full_message(day, lang="en"):
         rows = []
         for g in snap.get("groups", []):
             rows.extend(g["rows"])
-        lines.append("<pre>" + "\n".join(_row(r) for r in rows) + "</pre>")
+        lines.append("<pre>" + "\n".join(_row(r, t, lang) for r in rows) + "</pre>")
     br = s.get("breadth", {})
     if "error" not in br:
         lines.append(f"{t['breadth']}: {len(br.get('lows', []))} {t['at_lows']}, {len(br.get('highs', []))} {t['at_highs']}")
@@ -40,7 +57,7 @@ def full_message(day, lang="en"):
     if "error" not in fm:
         top = fm["gainers"][:1] + fm["losers"][:1]
         counts.append(f"{len(fm['gainers']) + len(fm['losers'])} {t['msg_fast_movers']} ("
-                      + ", ".join(f"{m['ticker']} {fmt_chg(m['chg_1d'])}" for m in top) + ")")
+                      + ", ".join(f"{m['ticker']} {localize(fmt_chg(m['chg_1d']), lang)}" for m in top) + ")")
     if "error" not in sm:
         n = len(sm.get("alerts", []))
         counts.append(f"{n} {t['msg_slow_movers']}" + (f" ({', '.join(sm['top'])})" if sm.get("top") else ""))
@@ -53,14 +70,16 @@ def full_message(day, lang="en"):
         lines.append(f"<b>{t['msg_deep_dive']}</b>: {dd['name']} — {t['chunk_' + dd['chunk']]}")
     pr = s.get("prediction", {})
     if "error" not in pr and pr.get("total"):
-        lines.append(f"<b>{t['msg_predictions']}</b>: {len(pr.get('open', []))} {t['msg_open']}, "
-                     f"{len(pr.get('scored_today', []))} {t['msg_scored']}, {t['msg_hit_rate']} {pr['hit_rate']}")
+        line = f"<b>{t['msg_predictions']}</b>: {len(pr.get('open', []))} {t['msg_open']}, {len(pr.get('scored_today', []))} {t['msg_scored']}"
+        if pr.get("hit_rate"):  # nothing scored yet: no hit rate to show
+            line += f", {t['msg_hit_rate']} {pr['hit_rate']}"
+        lines.append(line)
     for e in [x for name in ("snapshot", "movers", "slow_movers", "earnings", "deep_dive") for x in [s.get(name, {})] if "error" in x]:
         pass
     failed = [name for name in ("snapshot", "sectors", "heatmap", "movers", "slow_movers", "earnings", "deep_dive") if "error" in s.get(name, {})]
     if failed:
         lines.append(f"⚠️ {t['section_failed']}: {', '.join(failed)}")
-    lines.append(f'<a href="{PAGES_URL}/{lang}/">{t["msg_open_page"]}</a>')
+    lines.append(f'<a href="{PAGES_URL}/en/">{t["msg_open_page"]}</a>')   # the full page exists in English only
     text = "\n".join(lines)
     if len(text) > MAX:
         text = text[: MAX - 20] + "…\n" + lines[-1]
@@ -68,5 +87,14 @@ def full_message(day, lang="en"):
 
 
 def all_messages(day):
-    """{filename: text} for every user mode and language that exists today."""
-    return {"full_en.txt": full_message(day, "en")}
+    """{filename: text} for every user mode and language that exists today. A variant that fails to
+    render is left out (the Worker then falls back to full_en) instead of breaking the build."""
+    out = {}
+    for lang in LANGS:
+        try:
+            out[f"full_{lang}.txt"] = full_message(day, lang)
+        except Exception as e:  # noqa: BLE001
+            if lang == "en":
+                raise
+            print(f"message variant full_{lang} failed: {type(e).__name__}: {e}")
+    return out

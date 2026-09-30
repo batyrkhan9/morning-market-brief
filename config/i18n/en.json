@@ -216,6 +216,7 @@
   "owner_only": "This command is for the owner.",
   "lbl_brief_language": "Brief",
   "lbl_bot_language": "Bot replies",
-  "full_lang_note": "The full brief itself is only available in English. This setting changes the bot's menus and replies.",
-  "no_variant_for_lang": "There is no version of today's brief in this language yet, so nothing was re-sent."
+  "full_lang_note": "The daily message is in your language. Headlines, filings and the web page stay in English.",
+  "no_variant_for_lang": "There is no version of today's brief in this language yet, so nothing was re-sent.",
+  "lbl_page_language": "Web page and sources"
 }
