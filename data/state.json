@@ -23,12 +23,16 @@
     "2026-09-30": {
       "at": "2026-10-01 02:30 UTC",
       "official": true
+    },
+    "2026-10-01": {
+      "at": "2026-10-02 02:31 UTC",
+      "official": true
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-09-30",
+  "latest_edition": "2026-10-01",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -414,12 +418,12 @@
       "severity": 1
     },
     "AMT": {
-      "count": 1,
-      "date": "2026-06-30",
+      "count": 2,
+      "date": "2026-10-01",
       "direction": "down",
       "first_date": "2026-06-30",
       "first_price": 163.57000732421875,
-      "price": 163.57000732421875,
+      "price": 161.05999755859375,
       "rules": [
         "52w_low"
       ],
@@ -1466,16 +1470,20 @@
       "severity": 3
     },
     "CTVA": {
-      "count": 2,
-      "date": "2026-07-02",
-      "direction": "up",
-      "first_date": "2026-03-30",
-      "first_price": 82.94999694824219,
-      "price": 85.80000305175781,
+      "count": 1,
+      "date": "2026-10-01",
+      "direction": "down",
+      "first_date": "2026-10-01",
+      "first_price": 12.569999694824219,
+      "price": 12.569999694824219,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "52w_low",
+        "3y_low",
+        "5y_low",
+        "1y_below_30",
+        "1y_below_50",
+        "1y_below_70",
+        "5y_below_50"
       ],
       "severity": 3
     },
@@ -3182,12 +3190,12 @@
       "severity": 2
     },
     "KEYS": {
-      "count": 2,
-      "date": "2026-04-08",
+      "count": 3,
+      "date": "2026-10-01",
       "direction": "up",
       "first_date": "2026-04-06",
       "first_price": 292.9200134277344,
-      "price": 318.3299865722656,
+      "price": 373.8800048828125,
       "rules": [
         "52w_high",
         "3y_high",
@@ -3425,16 +3433,16 @@
       "severity": 1
     },
     "LOW": {
-      "count": 2,
-      "date": "2026-09-01",
+      "count": 3,
+      "date": "2026-10-01",
       "direction": "down",
       "first_date": "2026-06-01",
       "first_price": 207.6999969482422,
-      "price": 200.0500030517578,
+      "price": 182.3800048828125,
       "rules": [
-        "52w_low"
+        "3y_low"
       ],
-      "severity": 1
+      "severity": 2
     },
     "LRCX": {
       "count": 4,
@@ -3478,14 +3486,14 @@
       "severity": 1
     },
     "LVS": {
-      "count": 1,
-      "date": "2026-07-07",
+      "count": 2,
+      "date": "2026-10-01",
       "direction": "down",
       "first_date": "2026-07-07",
       "first_price": 46.060001373291016,
-      "price": 46.060001373291016,
+      "price": 36.689998626708984,
       "rules": [
-        "52w_low"
+        "1y_below_30"
       ],
       "severity": 1
     },
@@ -3620,28 +3628,30 @@
       "severity": 1
     },
     "MGM": {
-      "count": 2,
-      "date": "2026-06-01",
-      "direction": "up",
-      "first_date": "2026-04-27",
-      "first_price": 40.54999923706055,
-      "price": 50.689998626708984,
+      "count": 1,
+      "date": "2026-10-01",
+      "direction": "down",
+      "first_date": "2026-10-01",
+      "first_price": 30.469999313354492,
+      "price": 30.469999313354492,
       "rules": [
-        "1y_above_50"
+        "52w_low"
       ],
       "severity": 1
     },
     "MKC": {
-      "count": 1,
-      "date": "2026-09-30",
+      "count": 2,
+      "date": "2026-10-01",
       "direction": "down",
       "first_date": "2026-09-30",
       "first_price": 46.400001525878906,
-      "price": 46.400001525878906,
+      "price": 44.13999938964844,
       "rules": [
-        "1y_below_30"
+        "52w_low",
+        "3y_low",
+        "5y_low"
       ],
-      "severity": 1
+      "severity": 3
     },
     "MLM": {
       "count": 2,
@@ -5208,6 +5218,18 @@
       "first_date": "2026-08-27",
       "first_price": 134.22000122070312,
       "price": 134.22000122070312,
+      "rules": [
+        "52w_low"
+      ],
+      "severity": 1
+    },
+    "TKO": {
+      "count": 1,
+      "date": "2026-10-01",
+      "direction": "down",
+      "first_date": "2026-10-01",
+      "first_price": 176.0399932861328,
+      "price": 176.0399932861328,
       "rules": [
         "52w_low"
       ],
