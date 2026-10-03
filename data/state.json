@@ -27,12 +27,16 @@
     "2026-10-01": {
       "at": "2026-10-02 02:31 UTC",
       "official": true
+    },
+    "2026-10-02": {
+      "at": "2026-10-03 08:53 UTC",
+      "official": true
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-10-01",
+  "latest_edition": "2026-10-02",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -856,15 +860,15 @@
       "severity": 2
     },
     "BSX": {
-      "count": 2,
-      "date": "2026-05-27",
+      "count": 3,
+      "date": "2026-10-02",
       "direction": "down",
       "first_date": "2026-03-30",
       "first_price": 62.93000030517578,
-      "price": 50.459999084472656,
+      "price": 42.599998474121094,
       "rules": [
         "52w_low",
-        "1y_below_50"
+        "3y_low"
       ],
       "severity": 2
     },
@@ -1246,12 +1250,12 @@
       "severity": 3
     },
     "COIN": {
-      "count": 2,
-      "date": "2026-06-24",
+      "count": 3,
+      "date": "2026-10-02",
       "direction": "down",
       "first_date": "2026-05-22",
       "first_price": 184.99000549316406,
-      "price": 150.11000061035156,
+      "price": 183.0,
       "rules": [
         "1y_below_50"
       ],
@@ -2594,15 +2598,15 @@
     },
     "GPN": {
       "count": 1,
-      "date": "2026-08-13",
-      "direction": "up",
-      "first_date": "2026-08-13",
-      "first_price": 94.83000183105469,
-      "price": 94.83000183105469,
+      "date": "2026-10-02",
+      "direction": "down",
+      "first_date": "2026-10-02",
+      "first_price": 78.37999725341797,
+      "price": 78.37999725341797,
       "rules": [
-        "52w_high"
+        "5y_below_50"
       ],
-      "severity": 1
+      "severity": 3
     },
     "GRMN": {
       "count": 2,
@@ -3392,12 +3396,12 @@
       "severity": 3
     },
     "LITE": {
-      "count": 2,
-      "date": "2026-05-11",
+      "count": 3,
+      "date": "2026-10-02",
       "direction": "up",
       "first_date": "2026-04-02",
       "first_price": 826.8800048828125,
-      "price": 1053.0899658203125,
+      "price": 1085.4200439453125,
       "rules": [
         "52w_high",
         "3y_high",
@@ -3959,14 +3963,14 @@
       "severity": 3
     },
     "NFLX": {
-      "count": 1,
-      "date": "2026-06-02",
+      "count": 2,
+      "date": "2026-10-02",
       "direction": "down",
       "first_date": "2026-06-02",
       "first_price": 83.33000183105469,
-      "price": 83.33000183105469,
+      "price": 67.05999755859375,
       "rules": [
-        "1y_below_30"
+        "52w_low"
       ],
       "severity": 1
     },
@@ -5188,12 +5192,12 @@
       "severity": 1
     },
     "TER": {
-      "count": 3,
-      "date": "2026-09-17",
+      "count": 4,
+      "date": "2026-10-02",
       "direction": "up",
       "first_date": "2026-04-08",
       "first_price": 358.2900085449219,
-      "price": 353.1300048828125,
+      "price": 449.0400085449219,
       "rules": [
         "1y_above_200"
       ],
