@@ -31,12 +31,16 @@
     "2026-10-02": {
       "at": "2026-10-03 08:53 UTC",
       "official": true
+    },
+    "2026-10-05": {
+      "at": "2026-10-06 02:30 UTC",
+      "official": true
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-10-02",
+  "latest_edition": "2026-10-05",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -2942,12 +2946,12 @@
       "severity": 1
     },
     "ILMN": {
-      "count": 1,
-      "date": "2026-09-16",
+      "count": 2,
+      "date": "2026-10-05",
       "direction": "up",
       "first_date": "2026-09-16",
       "first_price": 228.92999267578125,
-      "price": 228.92999267578125,
+      "price": 293.69000244140625,
       "rules": [
         "52w_high",
         "3y_high"
@@ -4094,12 +4098,12 @@
       "severity": 3
     },
     "NVDA": {
-      "count": 2,
-      "date": "2026-04-24",
+      "count": 3,
+      "date": "2026-10-05",
       "direction": "up",
       "first_date": "2026-04-21",
       "first_price": 199.8800048828125,
-      "price": 208.27000427246094,
+      "price": 238.89999389648438,
       "rules": [
         "52w_high",
         "3y_high",
@@ -4827,13 +4831,14 @@
       "severity": 3
     },
     "RVTY": {
-      "count": 2,
-      "date": "2026-08-27",
+      "count": 3,
+      "date": "2026-10-05",
       "direction": "up",
       "first_date": "2026-08-12",
       "first_price": 117.87999725341797,
-      "price": 129.7100067138672,
+      "price": 157.36000061035156,
       "rules": [
+        "52w_high",
         "3y_high"
       ],
       "severity": 2
