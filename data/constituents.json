@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-10-06T01:30:56+00:00",
+ "fetched_at": "2026-10-13T01:31:39+00:00",
  "source": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
  "rows": [
   {
@@ -769,12 +769,6 @@
    "name": "Corpay",
    "sector": "Financials",
    "cik": "0001175454"
-  },
-  {
-   "ticker": "CTVA",
-   "name": "Corteva",
-   "sector": "Materials",
-   "cik": "0001755672"
   },
   {
    "ticker": "CSGP",
@@ -2151,12 +2145,6 @@
    "cik": "0001327567"
   },
   {
-   "ticker": "PSKY",
-   "name": "Paramount Skydance Corporation",
-   "sector": "Communication Services",
-   "cik": "0002041610"
-  },
-  {
    "ticker": "PH",
    "name": "Parker Hannifin",
    "sector": "Industrials",
@@ -2475,6 +2463,12 @@
    "cik": "0001063761"
   },
   {
+   "ticker": "SKYD",
+   "name": "Skydance Corporation",
+   "sector": "Communication Services",
+   "cik": "0002041610"
+  },
+  {
    "ticker": "SWKS",
    "name": "Skyworks Solutions",
    "sector": "Information Technology",
@@ -2709,6 +2703,12 @@
    "cik": "0000092230"
   },
   {
+   "ticker": "TWLO",
+   "name": "Twilio",
+   "sector": "Information Technology",
+   "cik": "0001447669"
+  },
+  {
    "ticker": "TYL",
    "name": "Tyler Technologies",
    "sector": "Information Technology",
@@ -2871,6 +2871,12 @@
    "cik": "0001396009"
   },
   {
+   "ticker": "VYLR",
+   "name": "Vylor",
+   "sector": "Consumer Staples",
+   "cik": "0002128626"
+  },
+  {
    "ticker": "WRB",
    "name": "W. R. Berkley Corporation",
    "sector": "Financials",
@@ -2899,12 +2905,6 @@
    "name": "Walt Disney Company (The)",
    "sector": "Communication Services",
    "cik": "0001744489"
-  },
-  {
-   "ticker": "WBD",
-   "name": "Warner Bros. Discovery",
-   "sector": "Communication Services",
-   "cik": "0001437107"
   },
   {
    "ticker": "WM",
