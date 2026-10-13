@@ -51,12 +51,16 @@
     "2026-10-09": {
       "at": "2026-10-10 09:28 UTC",
       "official": true
+    },
+    "2026-10-12": {
+      "at": "2026-10-13 02:31 UTC",
+      "official": true
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-10-09",
+  "latest_edition": "2026-10-12",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -3628,13 +3632,14 @@
       "severity": 1
     },
     "MET": {
-      "count": 2,
-      "date": "2026-06-12",
+      "count": 3,
+      "date": "2026-10-12",
       "direction": "up",
       "first_date": "2026-05-21",
       "first_price": 84.30000305175781,
-      "price": 88.83999633789062,
+      "price": 100.16999816894531,
       "rules": [
+        "52w_high",
         "3y_high",
         "5y_high"
       ],
@@ -5996,16 +6001,19 @@
       "severity": 1
     },
     "XOM": {
-      "count": 2,
-      "date": "2026-08-11",
+      "count": 3,
+      "date": "2026-10-12",
       "direction": "up",
       "first_date": "2026-04-06",
       "first_price": 163.3699951171875,
-      "price": 159.8000030517578,
+      "price": 172.14999389648438,
       "rules": [
+        "52w_high",
+        "3y_high",
+        "5y_high",
         "1y_above_50"
       ],
-      "severity": 1
+      "severity": 3
     },
     "XYL": {
       "count": 2,
