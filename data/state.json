@@ -55,12 +55,16 @@
     "2026-10-12": {
       "at": "2026-10-13 02:31 UTC",
       "official": true
+    },
+    "2026-10-13": {
+      "at": "2026-10-14 02:31 UTC",
+      "official": true
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-10-12",
+  "latest_edition": "2026-10-13",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -3753,12 +3757,12 @@
       "severity": 3
     },
     "MPC": {
-      "count": 4,
-      "date": "2026-08-28",
+      "count": 5,
+      "date": "2026-10-13",
       "direction": "up",
       "first_date": "2026-04-07",
       "first_price": 245.4199981689453,
-      "price": 368.8299865722656,
+      "price": 476.9800109863281,
       "rules": [
         "52w_high",
         "3y_high",
@@ -3860,15 +3864,17 @@
     },
     "MSFT": {
       "count": 1,
-      "date": "2026-06-25",
-      "direction": "down",
-      "first_date": "2026-06-25",
-      "first_price": 352.8299865722656,
-      "price": 352.8299865722656,
+      "date": "2026-10-13",
+      "direction": "up",
+      "first_date": "2026-10-13",
+      "first_price": 543.4500122070312,
+      "price": 543.4500122070312,
       "rules": [
-        "52w_low"
+        "52w_high",
+        "3y_high",
+        "5y_high"
       ],
-      "severity": 1
+      "severity": 3
     },
     "MSI": {
       "count": 1,
@@ -5605,16 +5611,16 @@
       "severity": 3
     },
     "VEEV": {
-      "count": 3,
-      "date": "2026-06-18",
-      "direction": "down",
-      "first_date": "2026-04-08",
-      "first_price": 166.57000732421875,
-      "price": 153.3000030517578,
+      "count": 1,
+      "date": "2026-10-13",
+      "direction": "up",
+      "first_date": "2026-10-13",
+      "first_price": 301.6300048828125,
+      "price": 301.6300048828125,
       "rules": [
-        "5y_below_50"
+        "52w_high"
       ],
-      "severity": 3
+      "severity": 1
     },
     "VICI": {
       "count": 2,
