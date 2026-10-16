@@ -63,12 +63,16 @@
     "2026-10-14": {
       "at": "2026-10-15 02:31 UTC",
       "official": true
+    },
+    "2026-10-15": {
+      "at": "2026-10-16 02:30 UTC",
+      "official": true
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-10-14",
+  "latest_edition": "2026-10-15",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -944,12 +948,12 @@
       "severity": 3
     },
     "CAH": {
-      "count": 1,
-      "date": "2026-06-24",
+      "count": 2,
+      "date": "2026-10-15",
       "direction": "up",
       "first_date": "2026-06-24",
       "first_price": 233.00999450683594,
-      "price": 233.00999450683594,
+      "price": 253.7100067138672,
       "rules": [
         "52w_high",
         "3y_high",
@@ -1069,14 +1073,14 @@
       "severity": 3
     },
     "CEG": {
-      "count": 1,
-      "date": "2026-06-10",
+      "count": 2,
+      "date": "2026-10-15",
       "direction": "down",
       "first_date": "2026-06-10",
       "first_price": 242.3000030517578,
-      "price": 242.3000030517578,
+      "price": 275.0,
       "rules": [
-        "52w_low"
+        "1y_below_30"
       ],
       "severity": 1
     },
@@ -1857,12 +1861,12 @@
       "severity": 1
     },
     "EBAY": {
-      "count": 2,
-      "date": "2026-04-16",
+      "count": 1,
+      "date": "2026-10-15",
       "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 97.70999908447266,
-      "price": 101.95999908447266,
+      "first_date": "2026-10-15",
+      "first_price": 122.91000366210938,
+      "price": 122.91000366210938,
       "rules": [
         "52w_high",
         "3y_high",
@@ -2508,13 +2512,27 @@
     },
     "GEV": {
       "count": 1,
-      "date": "2026-04-06",
+      "date": "2026-10-15",
       "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 897.3599853515625,
-      "price": 897.3599853515625,
+      "first_date": "2026-10-15",
+      "first_price": 926.4400024414062,
+      "price": 926.4400024414062,
       "rules": [
-        "1y_above_200"
+        "1y_above_50"
+      ],
+      "severity": 1
+    },
+    "GILD": {
+      "count": 1,
+      "date": "2026-10-15",
+      "direction": "up",
+      "first_date": "2026-10-15",
+      "first_price": 157.3699951171875,
+      "price": 157.3699951171875,
+      "rules": [
+        "52w_high",
+        "3y_high",
+        "5y_high"
       ],
       "severity": 3
     },
@@ -3212,6 +3230,18 @@
       ],
       "severity": 3
     },
+    "KDP": {
+      "count": 1,
+      "date": "2026-10-15",
+      "direction": "up",
+      "first_date": "2026-10-15",
+      "first_price": 34.18000030517578,
+      "price": 34.18000030517578,
+      "rules": [
+        "52w_high"
+      ],
+      "severity": 1
+    },
     "KEY": {
       "count": 2,
       "date": "2026-06-25",
@@ -3621,6 +3651,20 @@
       "first_price": 67.22000122070312,
       "price": 102.91999816894531,
       "rules": [
+        "3y_high",
+        "5y_high"
+      ],
+      "severity": 3
+    },
+    "MCK": {
+      "count": 1,
+      "date": "2026-10-15",
+      "direction": "up",
+      "first_date": "2026-10-15",
+      "first_price": 998.6400146484375,
+      "price": 998.6400146484375,
+      "rules": [
+        "52w_high",
         "3y_high",
         "5y_high"
       ],
@@ -5641,16 +5685,17 @@
       "severity": 3
     },
     "VEEV": {
-      "count": 1,
-      "date": "2026-10-13",
+      "count": 2,
+      "date": "2026-10-15",
       "direction": "up",
       "first_date": "2026-10-13",
       "first_price": 301.6300048828125,
-      "price": 301.6300048828125,
+      "price": 313.0299987792969,
       "rules": [
-        "52w_high"
+        "52w_high",
+        "3y_high"
       ],
-      "severity": 1
+      "severity": 2
     },
     "VICI": {
       "count": 2,
@@ -5959,12 +6004,12 @@
       "severity": 1
     },
     "WSM": {
-      "count": 1,
-      "date": "2026-06-12",
+      "count": 2,
+      "date": "2026-10-15",
       "direction": "up",
       "first_date": "2026-06-12",
       "first_price": 223.5399932861328,
-      "price": 223.5399932861328,
+      "price": 252.02999877929688,
       "rules": [
         "52w_high",
         "3y_high",
