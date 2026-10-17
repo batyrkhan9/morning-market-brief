@@ -1,0 +1,22 @@
+<b>Morning Market Brief</b> · Trading day 2026-10-16
+<pre>S&P 500           7,659.44   -1.09%
+Nasdaq           26,140.03   -2.15%
+Dow              52,002.41   -0.34%
+Russell 2000      2,721.37   -1.66%
+Europe               87.29   +0.09%
+Japan                94.88   -0.58%
+China                51.20   -0.95%
+Emerging markets     62.85   -1.74%
+2-year                4.74    -3 bp
+10-year               5.09    -1 bp
+10y minus 2y          0.35    +2 bp
+High yield sprea      3.23    -2 bp
+VIX                  19.99  +21.45%
+Dollar index        101.84   -0.16%
+WTI oil             101.41   +3.51%
+Gold              4,181.10   +0.26%</pre>
+Breadth: 2 at 52 week lows, 21 at 52 week highs
+<b>Today</b>: 10 fast movers (TRGP +4.37%, TWLO -10.62%) · 3 slow mover alerts (MO, ADP, OXY) · 9 earnings filers, 26 8-K filings
+<b>Deep dive</b>: Lilly (Eli) — Saturday: risk factors (10-K Item 1A)
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
