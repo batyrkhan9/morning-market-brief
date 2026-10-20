@@ -1,22 +1,22 @@
-<b>Morning Market Brief</b> · Trading day 2026-10-16
-<pre>S&P 500           7,659.44   -1.09%
-Nasdaq           26,140.03   -2.15%
-Dow              52,002.41   -0.34%
-Russell 2000      2,721.37   -1.66%
-Europe               87.29   +0.09%
-Japan                94.88   -0.58%
-China                51.20   -0.95%
-Emerging markets     62.85   -1.74%
-2-year                4.74    -3 bp
-10-year               5.09    -1 bp
-10y minus 2y          0.35    +2 bp
-High yield sprea      3.23    -2 bp
-VIX                  19.99  +21.45%
-Dollar index        101.84   -0.16%
-WTI oil             101.41   +3.51%
-Gold              4,181.10   +0.26%</pre>
-Breadth: 2 at 52 week lows, 21 at 52 week highs
-<b>Today</b>: 10 fast movers (TRGP +4.37%, TWLO -10.62%) · 3 slow mover alerts (MO, ADP, OXY) · 9 earnings filers, 26 8-K filings
-<b>Deep dive</b>: Lilly (Eli) — Saturday: risk factors (10-K Item 1A)
+<b>Morning Market Brief</b> · Trading day 2026-10-19
+<pre>S&P 500           7,690.73   +0.41%
+Nasdaq           26,430.89   +1.11%
+Dow              51,966.03   -0.07%
+Russell 2000      2,728.30   +0.25%
+Europe               86.43   -0.99%
+Japan                94.99   +0.12%
+China                50.87   -0.64%
+Emerging markets     63.31   +0.73%
+2-year                4.77    +3 bp
+10-year               5.15    +6 bp
+10y minus 2y          0.38    +3 bp
+High yield sprea      3.31    +8 bp
+VIX                  18.44   -7.75%
+Dollar index        101.91   +0.07%
+WTI oil              98.40   -2.97%
+Gold              4,156.00   -0.60%</pre>
+Breadth: 4 at 52 week lows, 7 at 52 week highs
+<b>Today</b>: 10 fast movers (WDC +6.09%, MOS -4.78%) · 0 slow mover alerts · 1 earnings filers, 14 8-K filings
+<b>Deep dive</b>: ExxonMobil — Tuesday: how the company makes money (10-K Item 1)
 <b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
