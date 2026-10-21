@@ -1,11 +1,11 @@
 {
- "edition": "2026-10-19",
- "built_at": "2026-10-20T02:31:29Z",
+ "edition": "2026-10-20",
+ "built_at": "2026-10-21T02:31:26Z",
  "unofficial": false,
  "variants": [
   "full_en",
   "full_kk",
   "full_ru"
  ],
- "heatmap": "en/heatmap.png?v=2026-10-19"
+ "heatmap": "en/heatmap.png?v=2026-10-20"
 }

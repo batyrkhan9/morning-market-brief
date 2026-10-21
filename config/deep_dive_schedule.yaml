@@ -139,3 +139,11 @@ queue:
 - MO
 - ADP
 - OXY
+- BRK-B
+- STX
+- HLT
+- HAS
+- MAR
+- CTAS
+- RSG
+- CHD
