@@ -1,0 +1,23 @@
+<b>Morning Market Brief</b> · Trading day 2026-10-22
+⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
+<pre>S&P 500           7,663.43   -1.21%
+Nasdaq           26,008.86   -2.60%
+Dow              52,867.98   +0.02%
+Russell 2000      2,784.03   +0.11%
+Europe               86.80   -0.89%
+Japan                94.60   -1.17%
+China                49.02   -2.06%
+Emerging markets     61.72   -2.91%
+2-year                4.65   -16 bp
+10-year               4.96   -17 bp
+10y minus 2y          0.31    -1 bp
+High yield sprea      3.27    -6 bp
+VIX                  19.03  +14.09%
+Dollar index        101.65   -0.12%
+WTI oil             100.36   +3.30%
+Gold              4,029.40   -2.91%</pre>
+Breadth: 3 at 52 week lows, 43 at 52 week highs
+<b>Today</b>: 10 fast movers (ALLE +11.02%, MRNA -17.57%) · 12 slow mover alerts (CB, NDAQ, ED, MRSH, MDLZ) · 36 earnings filers, 44 8-K filings
+<b>Deep dive</b>: ExxonMobil — Friday: latest earnings press release
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
