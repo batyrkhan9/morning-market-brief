@@ -87,12 +87,16 @@
     "2026-10-22": {
       "at": "2026-10-23 02:30 UTC",
       "official": false
+    },
+    "2026-10-23": {
+      "at": "2026-10-24 07:55 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-10-22",
+  "latest_edition": "2026-10-23",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -543,18 +547,18 @@
       "severity": 2
     },
     "APA": {
-      "count": 3,
-      "date": "2026-09-09",
+      "count": 4,
+      "date": "2026-10-23",
       "direction": "up",
       "first_date": "2026-04-06",
       "first_price": 43.02000045776367,
-      "price": 44.84000015258789,
+      "price": 51.900001525878906,
       "rules": [
         "52w_high",
         "3y_high",
-        "1y_above_100"
+        "5y_high"
       ],
-      "severity": 2
+      "severity": 3
     },
     "APD": {
       "count": 1,
@@ -1037,6 +1041,18 @@
       ],
       "severity": 3
     },
+    "CBRE": {
+      "count": 1,
+      "date": "2026-10-23",
+      "direction": "down",
+      "first_date": "2026-10-23",
+      "first_price": 123.30000305175781,
+      "price": 123.30000305175781,
+      "rules": [
+        "52w_low"
+      ],
+      "severity": 1
+    },
     "CCI": {
       "count": 2,
       "date": "2026-09-15",
@@ -1291,14 +1307,13 @@
       "severity": 1
     },
     "CNC": {
-      "count": 2,
-      "date": "2026-07-02",
+      "count": 3,
+      "date": "2026-10-23",
       "direction": "up",
       "first_date": "2026-05-29",
       "first_price": 59.599998474121094,
-      "price": 67.86000061035156,
+      "price": 70.16999816894531,
       "rules": [
-        "1y_above_50",
         "1y_above_100"
       ],
       "severity": 2
@@ -1444,13 +1459,14 @@
       "severity": 1
     },
     "CRL": {
-      "count": 2,
-      "date": "2026-08-10",
+      "count": 3,
+      "date": "2026-10-23",
       "direction": "up",
       "first_date": "2026-06-29",
       "first_price": 225.57000732421875,
-      "price": 277.0,
+      "price": 345.3699951171875,
       "rules": [
+        "52w_high",
         "3y_high"
       ],
       "severity": 2
@@ -2962,18 +2978,16 @@
       "severity": 1
     },
     "HWM": {
-      "count": 3,
-      "date": "2026-08-05",
-      "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 236.57000732421875,
-      "price": 291.4200134277344,
+      "count": 1,
+      "date": "2026-10-23",
+      "direction": "down",
+      "first_date": "2026-10-23",
+      "first_price": 185.91000366210938,
+      "price": 185.91000366210938,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "52w_low"
       ],
-      "severity": 3
+      "severity": 1
     },
     "IBKR": {
       "count": 2,
@@ -3383,12 +3397,12 @@
       "severity": 3
     },
     "KMI": {
-      "count": 1,
-      "date": "2026-05-19",
+      "count": 2,
+      "date": "2026-10-23",
       "direction": "up",
       "first_date": "2026-05-19",
       "first_price": 34.310001373291016,
-      "price": 34.310001373291016,
+      "price": 34.43000030517578,
       "rules": [
         "52w_high",
         "3y_high",
@@ -5468,12 +5482,12 @@
       "severity": 3
     },
     "TRGP": {
-      "count": 2,
-      "date": "2026-07-08",
+      "count": 3,
+      "date": "2026-10-23",
       "direction": "up",
       "first_date": "2026-03-31",
       "first_price": 250.72999572753906,
-      "price": 277.8599853515625,
+      "price": 302.3699951171875,
       "rules": [
         "52w_high",
         "3y_high",
@@ -5765,17 +5779,16 @@
       "severity": 3
     },
     "VEEV": {
-      "count": 2,
-      "date": "2026-10-15",
+      "count": 3,
+      "date": "2026-10-23",
       "direction": "up",
       "first_date": "2026-10-13",
       "first_price": 301.6300048828125,
-      "price": 313.0299987792969,
+      "price": 323.0400085449219,
       "rules": [
-        "52w_high",
-        "3y_high"
+        "5y_high"
       ],
-      "severity": 2
+      "severity": 3
     },
     "VICI": {
       "count": 2,
