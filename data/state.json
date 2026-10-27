@@ -91,12 +91,16 @@
     "2026-10-23": {
       "at": "2026-10-24 07:55 UTC",
       "official": false
+    },
+    "2026-10-26": {
+      "at": "2026-10-27 02:31 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-10-23",
+  "latest_edition": "2026-10-26",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -831,12 +835,12 @@
       "severity": 1
     },
     "BKNG": {
-      "count": 1,
-      "date": "2026-05-14",
+      "count": 2,
+      "date": "2026-10-26",
       "direction": "down",
       "first_date": "2026-05-14",
       "first_price": 154.47999572753906,
-      "price": 154.47999572753906,
+      "price": 153.13999938964844,
       "rules": [
         "52w_low"
       ],
@@ -1343,16 +1347,17 @@
       "severity": 3
     },
     "COIN": {
-      "count": 3,
-      "date": "2026-10-02",
+      "count": 4,
+      "date": "2026-10-26",
       "direction": "down",
       "first_date": "2026-05-22",
       "first_price": 184.99000549316406,
-      "price": 183.0,
+      "price": 159.60000610351562,
       "rules": [
-        "1y_below_50"
+        "1y_below_50",
+        "5y_below_50"
       ],
-      "severity": 2
+      "severity": 3
     },
     "COO": {
       "count": 3,
@@ -2863,16 +2868,16 @@
       "severity": 3
     },
     "HOOD": {
-      "count": 2,
-      "date": "2026-04-16",
-      "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 69.77999877929688,
-      "price": 86.8499984741211,
+      "count": 1,
+      "date": "2026-10-26",
+      "direction": "down",
+      "first_date": "2026-10-26",
+      "first_price": 92.83999633789062,
+      "price": 92.83999633789062,
       "rules": [
-        "1y_above_100"
+        "1y_below_30"
       ],
-      "severity": 2
+      "severity": 1
     },
     "HPE": {
       "count": 5,

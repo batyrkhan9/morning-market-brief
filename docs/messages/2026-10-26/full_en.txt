@@ -1,0 +1,23 @@
+<b>Morning Market Brief</b> · Trading day 2026-10-26
+⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
+<pre>S&P 500           7,676.77   +0.70%
+Nasdaq           26,169.38   +0.82%
+Dow              52,361.58   +0.28%
+Russell 2000      2,786.42   +0.38%
+Europe               86.55   +0.35%
+Japan                94.28   +0.19%
+China                49.12   +0.24%
+Emerging markets     61.82   -0.31%
+2-year                4.68    -1 bp
+10-year               5.00    +0 bp
+10y minus 2y          0.32    +1 bp
+High yield sprea      3.38    -2 bp
+VIX                  18.39   -5.45%
+Dollar index        102.04   +0.22%
+WTI oil             100.80   -2.39%
+Gold              4,030.20   +0.56%</pre>
+Breadth: 6 at 52 week lows, 13 at 52 week highs
+<b>Today</b>: 10 fast movers (LITE +8.19%, FICO -13.15%) · 3 slow mover alerts (COIN, BKNG, HOOD) · 1 earnings filers, 15 8-K filings
+<b>Deep dive</b>: Alphabet Inc. (Class A) — Tuesday: how the company makes money (10-K Item 1)
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
