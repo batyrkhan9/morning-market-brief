@@ -1,0 +1,22 @@
+<b>Morning Market Brief</b> · Trading day 2026-10-28
+<pre>S&P 500           7,743.98   +0.28%
+Nasdaq           26,549.85   +0.27%
+Dow              52,475.10   +0.19%
+Russell 2000      2,830.51   +0.41%
+Europe               87.31   +0.31%
+Japan                94.99   -0.27%
+China                49.04   -0.08%
+Emerging markets     63.52   +1.60%
+2-year                4.67    -3 bp
+10-year               5.05    +6 bp
+10y minus 2y          0.38    +9 bp
+High yield sprea      3.18   -12 bp
+VIX                  16.91   -3.48%
+Dollar index        102.08   -0.24%
+WTI oil             101.45   +1.55%
+Gold              4,064.20   -0.26%</pre>
+Breadth: 11 at 52 week lows, 19 at 52 week highs
+<b>Today</b>: 10 fast movers (VRT +16.48%, FFIV -20.43%) · 8 slow mover alerts (URI, LH, PODD, ARE, XYL) · 46 earnings filers, 63 8-K filings
+<b>Deep dive</b>: Alphabet Inc. (Class A) — Thursday: competitors
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
