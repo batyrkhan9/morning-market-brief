@@ -107,12 +107,16 @@
     "2026-10-29": {
       "at": "2026-10-30 02:31 UTC",
       "official": false
+    },
+    "2026-10-30": {
+      "at": "2026-10-31 09:19 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-10-29",
+  "latest_edition": "2026-10-30",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -349,17 +353,16 @@
       "severity": 3
     },
     "AJG": {
-      "count": 2,
-      "date": "2026-05-06",
-      "direction": "down",
-      "first_date": "2026-04-09",
-      "first_price": 218.38999938964844,
-      "price": 196.91000366210938,
+      "count": 1,
+      "date": "2026-10-30",
+      "direction": "up",
+      "first_date": "2026-10-30",
+      "first_price": 276.07000732421875,
+      "price": 276.07000732421875,
       "rules": [
-        "52w_low",
-        "3y_low"
+        "52w_high"
       ],
-      "severity": 2
+      "severity": 1
     },
     "AKAM": {
       "count": 2,
@@ -580,11 +583,11 @@
     },
     "APD": {
       "count": 1,
-      "date": "2026-04-23",
+      "date": "2026-10-30",
       "direction": "up",
-      "first_date": "2026-04-23",
-      "first_price": 303.6499938964844,
-      "price": 303.6499938964844,
+      "first_date": "2026-10-30",
+      "first_price": 316.42999267578125,
+      "price": 316.42999267578125,
       "rules": [
         "52w_high"
       ],
@@ -698,13 +701,13 @@
     },
     "AWK": {
       "count": 1,
-      "date": "2026-05-20",
-      "direction": "down",
-      "first_date": "2026-05-20",
-      "first_price": 122.36000061035156,
-      "price": 122.36000061035156,
+      "date": "2026-10-30",
+      "direction": "up",
+      "first_date": "2026-10-30",
+      "first_price": 144.3699951171875,
+      "price": 144.3699951171875,
       "rules": [
-        "52w_low"
+        "52w_high"
       ],
       "severity": 1
     },
@@ -2735,15 +2738,15 @@
     },
     "GPN": {
       "count": 1,
-      "date": "2026-10-02",
-      "direction": "down",
-      "first_date": "2026-10-02",
-      "first_price": 78.37999725341797,
-      "price": 78.37999725341797,
+      "date": "2026-10-30",
+      "direction": "up",
+      "first_date": "2026-10-30",
+      "first_price": 96.83999633789062,
+      "price": 96.83999633789062,
       "rules": [
-        "5y_below_50"
+        "52w_high"
       ],
-      "severity": 3
+      "severity": 1
     },
     "GRMN": {
       "count": 2,
@@ -3658,6 +3661,18 @@
       "price": 36.689998626708984,
       "rules": [
         "1y_below_30"
+      ],
+      "severity": 1
+    },
+    "LYB": {
+      "count": 1,
+      "date": "2026-10-30",
+      "direction": "up",
+      "first_date": "2026-10-30",
+      "first_price": 68.63999938964844,
+      "price": 68.63999938964844,
+      "rules": [
+        "1y_above_50"
       ],
       "severity": 1
     },
@@ -4860,16 +4875,17 @@
       "severity": 1
     },
     "RDDT": {
-      "count": 1,
-      "date": "2026-08-12",
+      "count": 2,
+      "date": "2026-10-30",
       "direction": "down",
       "first_date": "2026-08-12",
       "first_price": 153.4499969482422,
-      "price": 153.4499969482422,
+      "price": 91.7300033569336,
       "rules": [
-        "1y_below_30"
+        "52w_low",
+        "1y_below_50"
       ],
-      "severity": 1
+      "severity": 2
     },
     "REG": {
       "count": 2,
@@ -4979,13 +4995,13 @@
     },
     "ROP": {
       "count": 1,
-      "date": "2026-09-29",
-      "direction": "down",
-      "first_date": "2026-09-29",
-      "first_price": 349.45001220703125,
-      "price": 349.45001220703125,
+      "date": "2026-10-30",
+      "direction": "up",
+      "first_date": "2026-10-30",
+      "first_price": 466.6000061035156,
+      "price": 466.6000061035156,
       "rules": [
-        "1y_below_30"
+        "52w_high"
       ],
       "severity": 1
     },
@@ -5300,15 +5316,15 @@
     },
     "SWK": {
       "count": 1,
-      "date": "2026-08-31",
-      "direction": "down",
-      "first_date": "2026-08-31",
-      "first_price": 96.37000274658203,
-      "price": 96.37000274658203,
+      "date": "2026-10-30",
+      "direction": "up",
+      "first_date": "2026-10-30",
+      "first_price": 103.44000244140625,
+      "price": 103.44000244140625,
       "rules": [
-        "5y_below_50"
+        "1y_above_50"
       ],
-      "severity": 3
+      "severity": 1
     },
     "SWKS": {
       "count": 1,
@@ -5907,12 +5923,12 @@
       "severity": 3
     },
     "VRTX": {
-      "count": 2,
-      "date": "2026-07-02",
+      "count": 3,
+      "date": "2026-10-30",
       "direction": "up",
       "first_date": "2026-06-29",
       "first_price": 499.6499938964844,
-      "price": 528.0399780273438,
+      "price": 558.8800048828125,
       "rules": [
         "52w_high",
         "3y_high",

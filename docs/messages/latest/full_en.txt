@@ -1,23 +1,23 @@
-<b>Morning Market Brief</b> · Trading day 2026-10-29
+<b>Morning Market Brief</b> · Trading day 2026-10-30
 ⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
-<pre>S&P 500           7,720.39   -0.30%
-Nasdaq           26,184.72   -1.38%
-Dow              52,342.56   -0.25%
-Russell 2000      2,859.22   +1.01%
-Europe               88.14   +0.95%
-Japan                94.94   -0.05%
-China                48.96   -0.16%
-Emerging markets     62.72   -1.26%
-2-year                4.61    -6 bp
-10-year               4.98    -7 bp
-10y minus 2y          0.37    -1 bp
-High yield sprea      3.14    -4 bp
-VIX                  17.20   +1.71%
-Dollar index        101.75   -0.43%
-WTI oil             104.02   +1.21%
-Gold              4,019.10   -0.80%</pre>
-Breadth: 2 at 52 week lows, 31 at 52 week highs
-<b>Today</b>: 10 fast movers (GEN +15.81%, NOW -26.95%) · 7 slow mover alerts (NUE, ILMN, MTD, DGX, FTV) · 63 earnings filers, 75 8-K filings
-<b>Deep dive</b>: Alphabet Inc. (Class A) — Friday: latest earnings press release
+<pre>S&P 500           7,580.07   -1.82%
+Nasdaq           25,437.00   -2.86%
+Dow              51,770.31   -1.09%
+Russell 2000      2,811.84   -1.66%
+Europe               87.54   -0.68%
+Japan                92.91   -2.14%
+China                49.07   +0.22%
+Emerging markets     61.04   -2.68%
+2-year                4.56    -5 bp
+10-year               4.94    -4 bp
+10y minus 2y          0.38    +1 bp
+High yield sprea      3.26   +12 bp
+VIX                  19.42  +12.91%
+Dollar index        101.88   -0.16%
+WTI oil             104.12   +2.08%
+Gold              3,898.90   -3.29%</pre>
+Breadth: 4 at 52 week lows, 30 at 52 week highs
+<b>Today</b>: 10 fast movers (FDXF +14.91%, RDDT -29.22%) · 9 slow mover alerts (VRTX, RDDT, APD, AJG, ROP) · 41 earnings filers, 58 8-K filings
+<b>Deep dive</b>: Alphabet Inc. (Class A) — Saturday: risk factors (10-K Item 1A)
 <b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
