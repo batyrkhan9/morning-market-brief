@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-10-27T02:31:20+00:00",
+ "fetched_at": "2026-11-03T02:31:40+00:00",
  "source": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
  "rows": [
   {
@@ -2253,16 +2253,16 @@
    "cik": "0001137774"
   },
   {
-   "ticker": "PEG",
-   "name": "Public Service Enterprise Group",
-   "sector": "Utilities",
-   "cik": "0000788784"
-  },
-  {
    "ticker": "PTC",
    "name": "PTC Inc.",
    "sector": "Information Technology",
    "cik": "0000857005"
+  },
+  {
+   "ticker": "PEG",
+   "name": "Public Service Enterprise Group",
+   "sector": "Utilities",
+   "cik": "0000788784"
   },
   {
    "ticker": "PSA",

@@ -1,0 +1,23 @@
+<b>Morning Market Brief</b> · Trading day 2026-11-02
+⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
+<pre>S&P 500           7,541.40   -0.51%
+Nasdaq           25,164.36   -1.07%
+Dow              51,983.98   +0.41%
+Russell 2000      2,805.88   -0.21%
+Europe               88.06   +0.59%
+Japan                92.84   -0.08%
+China                49.59   +1.06%
+Emerging markets     61.11   +0.11%
+2-year                4.59    +3 bp
+10-year               4.91    -3 bp
+10y minus 2y          0.32    -6 bp
+High yield sprea      3.44   +18 bp
+VIX                  21.15   +8.91%
+Dollar index        101.86   -0.02%
+WTI oil              96.54   -7.28%
+Gold              3,953.90   +1.41%</pre>
+Breadth: 3 at 52 week lows, 37 at 52 week highs
+<b>Today</b>: 10 fast movers (IDXX +21.85%, LITE -18.59%) · 11 slow mover alerts (ECL, PKG, EG, ORCL, VLTO) · 10 earnings filers, 35 8-K filings
+<b>Deep dive</b>: Caterpillar Inc. — Tuesday: how the company makes money (10-K Item 1)
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
