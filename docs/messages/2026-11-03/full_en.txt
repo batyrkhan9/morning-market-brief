@@ -1,0 +1,23 @@
+<b>Morning Market Brief</b> · Trading day 2026-11-03
+⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
+<pre>S&P 500           7,568.92   +0.36%
+Nasdaq           25,372.01   +0.83%
+Dow              51,786.72   -0.38%
+Russell 2000      2,812.45   +0.23%
+Europe               87.54   -0.59%
+Japan                92.59   -0.27%
+China                49.40   -0.38%
+Emerging markets     61.10   -0.02%
+2-year                4.61    +2 bp
+10-year               4.95    +4 bp
+10y minus 2y          0.34    +2 bp
+High yield sprea      3.43    -1 bp
+VIX                  20.83   -1.51%
+Dollar index        101.40   -0.35%
+WTI oil              95.35   -1.15%
+Gold              3,953.60   -0.40%</pre>
+Breadth: 1 at 52 week lows, 10 at 52 week highs
+<b>Today</b>: 10 fast movers (FISV +12.46%, IT -13.19%) · 4 slow mover alerts (VRSN, APTV, EW, LDOS) · 33 earnings filers, 54 8-K filings
+<b>Deep dive</b>: Caterpillar Inc. — Wednesday: the numbers, 10 fiscal years
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>

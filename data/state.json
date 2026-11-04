@@ -115,12 +115,16 @@
     "2026-11-02": {
       "at": "2026-11-03 02:31 UTC",
       "official": false
+    },
+    "2026-11-03": {
+      "at": "2026-11-04 02:30 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-02",
+  "latest_edition": "2026-11-03",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -624,12 +628,12 @@
       "severity": 2
     },
     "APTV": {
-      "count": 2,
-      "date": "2026-08-04",
+      "count": 3,
+      "date": "2026-11-03",
       "direction": "down",
       "first_date": "2026-03-27",
       "first_price": 67.04000091552734,
-      "price": 47.720001220703125,
+      "price": 41.34000015258789,
       "rules": [
         "52w_low",
         "3y_low",
@@ -2203,12 +2207,12 @@
       "severity": 3
     },
     "EW": {
-      "count": 1,
-      "date": "2026-05-26",
+      "count": 2,
+      "date": "2026-11-03",
       "direction": "up",
       "first_date": "2026-05-26",
       "first_price": 87.54000091552734,
-      "price": 87.54000091552734,
+      "price": 95.19000244140625,
       "rules": [
         "52w_high"
       ],
@@ -3499,14 +3503,13 @@
       "severity": 3
     },
     "LDOS": {
-      "count": 2,
-      "date": "2026-06-24",
+      "count": 3,
+      "date": "2026-11-03",
       "direction": "down",
       "first_date": "2026-05-05",
       "first_price": 137.19000244140625,
-      "price": 104.31999969482422,
+      "price": 134.72000122070312,
       "rules": [
-        "52w_low",
         "1y_below_30"
       ],
       "severity": 1
@@ -5913,12 +5916,12 @@
       "severity": 3
     },
     "VRSN": {
-      "count": 1,
-      "date": "2026-05-22",
+      "count": 2,
+      "date": "2026-11-03",
       "direction": "up",
       "first_date": "2026-05-22",
       "first_price": 310.0,
-      "price": 310.0,
+      "price": 313.8800048828125,
       "rules": [
         "52w_high",
         "3y_high",
