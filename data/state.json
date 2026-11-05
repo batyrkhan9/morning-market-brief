@@ -119,12 +119,16 @@
     "2026-11-03": {
       "at": "2026-11-04 02:30 UTC",
       "official": false
+    },
+    "2026-11-04": {
+      "at": "2026-11-05 02:30 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-03",
+  "latest_edition": "2026-11-04",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -346,17 +350,16 @@
       "severity": 3
     },
     "AIZ": {
-      "count": 2,
-      "date": "2026-08-05",
+      "count": 3,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-05-11",
       "first_price": 244.13999938964844,
-      "price": 301.57000732421875,
+      "price": 308.5199890136719,
       "rules": [
         "52w_high",
         "3y_high",
-        "5y_high",
-        "1y_above_50"
+        "5y_high"
       ],
       "severity": 3
     },
@@ -510,14 +513,14 @@
       "severity": 1
     },
     "AMT": {
-      "count": 2,
-      "date": "2026-10-01",
-      "direction": "down",
-      "first_date": "2026-06-30",
-      "first_price": 163.57000732421875,
-      "price": 161.05999755859375,
+      "count": 1,
+      "date": "2026-11-04",
+      "direction": "up",
+      "first_date": "2026-11-04",
+      "first_price": 194.86000061035156,
+      "price": 194.86000061035156,
       "rules": [
-        "52w_low"
+        "52w_high"
       ],
       "severity": 1
     },
@@ -806,16 +809,17 @@
       "severity": 1
     },
     "BDX": {
-      "count": 1,
-      "date": "2026-08-19",
+      "count": 2,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-08-19",
       "first_price": 187.60000610351562,
-      "price": 187.60000610351562,
+      "price": 209.19000244140625,
       "rules": [
-        "52w_high"
+        "52w_high",
+        "3y_high"
       ],
-      "severity": 1
+      "severity": 2
     },
     "BE": {
       "count": 1,
@@ -887,6 +891,20 @@
       "first_date": "2026-04-06",
       "first_price": 60.70000076293945,
       "price": 68.94000244140625,
+      "rules": [
+        "52w_high",
+        "3y_high",
+        "5y_high"
+      ],
+      "severity": 3
+    },
+    "BLK": {
+      "count": 1,
+      "date": "2026-11-04",
+      "direction": "up",
+      "first_date": "2026-11-04",
+      "first_price": 1224.3699951171875,
+      "price": 1224.3699951171875,
       "rules": [
         "52w_high",
         "3y_high",
@@ -1579,16 +1597,18 @@
       "severity": 3
     },
     "CTAS": {
-      "count": 1,
-      "date": "2026-10-20",
+      "count": 2,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-10-20",
       "first_price": 217.02999877929688,
-      "price": 217.02999877929688,
+      "price": 229.02999877929688,
       "rules": [
-        "52w_high"
+        "52w_high",
+        "3y_high",
+        "5y_high"
       ],
-      "severity": 1
+      "severity": 3
     },
     "CTSH": {
       "count": 4,
@@ -1809,15 +1829,15 @@
     },
     "DIS": {
       "count": 1,
-      "date": "2026-03-27",
-      "direction": "down",
-      "first_date": "2026-03-27",
-      "first_price": 92.41999816894531,
-      "price": 92.41999816894531,
+      "date": "2026-11-04",
+      "direction": "up",
+      "first_date": "2026-11-04",
+      "first_price": 118.94999694824219,
+      "price": 118.94999694824219,
       "rules": [
-        "5y_below_50"
+        "52w_high"
       ],
-      "severity": 3
+      "severity": 1
     },
     "DLR": {
       "count": 2,
@@ -1834,13 +1854,13 @@
     },
     "DLTR": {
       "count": 1,
-      "date": "2026-04-06",
+      "date": "2026-11-04",
       "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 111.08999633789062,
-      "price": 111.08999633789062,
+      "first_date": "2026-11-04",
+      "first_price": 147.0,
+      "price": 147.0,
       "rules": [
-        "1y_above_50"
+        "52w_high"
       ],
       "severity": 1
     },
@@ -2207,16 +2227,16 @@
       "severity": 3
     },
     "EW": {
-      "count": 2,
-      "date": "2026-11-03",
+      "count": 3,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-05-26",
       "first_price": 87.54000091552734,
-      "price": 95.19000244140625,
+      "price": 99.37000274658203,
       "rules": [
-        "52w_high"
+        "3y_high"
       ],
-      "severity": 1
+      "severity": 2
     },
     "EXC": {
       "count": 1,
@@ -2309,12 +2329,12 @@
       "severity": 3
     },
     "FAST": {
-      "count": 1,
-      "date": "2026-08-06",
+      "count": 2,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-08-06",
       "first_price": 50.79999923706055,
-      "price": 50.79999923706055,
+      "price": 53.209999084472656,
       "rules": [
         "52w_high",
         "3y_high",
@@ -2414,16 +2434,17 @@
       "severity": 2
     },
     "FIS": {
-      "count": 2,
-      "date": "2026-09-15",
+      "count": 3,
+      "date": "2026-11-04",
       "direction": "down",
       "first_date": "2026-04-01",
       "first_price": 45.16999816894531,
-      "price": 37.34000015258789,
+      "price": 29.760000228881836,
       "rules": [
         "52w_low",
         "3y_low",
-        "5y_low"
+        "5y_low",
+        "1y_below_50"
       ],
       "severity": 3
     },
@@ -2692,12 +2713,12 @@
       "severity": 3
     },
     "GM": {
-      "count": 3,
-      "date": "2026-07-27",
+      "count": 4,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-03-27",
       "first_price": 72.9800033569336,
-      "price": 87.04000091552734,
+      "price": 92.43000030517578,
       "rules": [
         "52w_high",
         "3y_high",
@@ -2801,15 +2822,16 @@
     },
     "GWW": {
       "count": 1,
-      "date": "2026-05-07",
+      "date": "2026-11-04",
       "direction": "up",
-      "first_date": "2026-05-07",
-      "first_price": 1234.0999755859375,
-      "price": 1234.0999755859375,
+      "first_date": "2026-11-04",
+      "first_price": 1489.3900146484375,
+      "price": 1489.3900146484375,
       "rules": [
         "52w_high",
         "3y_high",
-        "5y_high"
+        "5y_high",
+        "1y_above_50"
       ],
       "severity": 3
     },
@@ -3663,12 +3685,12 @@
       "severity": 3
     },
     "LUV": {
-      "count": 2,
-      "date": "2026-08-03",
+      "count": 3,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-04-08",
       "first_price": 40.400001525878906,
-      "price": 47.06999969482422,
+      "price": 46.41999816894531,
       "rules": [
         "1y_above_50"
       ],
@@ -3754,16 +3776,18 @@
       "severity": 3
     },
     "MAS": {
-      "count": 2,
-      "date": "2026-11-02",
+      "count": 3,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-06-24",
       "first_price": 78.05000305175781,
-      "price": 83.51000213623047,
+      "price": 86.81999969482422,
       "rules": [
-        "52w_high"
+        "52w_high",
+        "3y_high",
+        "5y_high"
       ],
-      "severity": 1
+      "severity": 3
     },
     "MCD": {
       "count": 3,
@@ -3894,12 +3918,12 @@
       "severity": 1
     },
     "MMM": {
-      "count": 1,
-      "date": "2026-07-27",
+      "count": 2,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-07-27",
       "first_price": 178.22999572753906,
-      "price": 178.22999572753906,
+      "price": 193.9499969482422,
       "rules": [
         "52w_high",
         "3y_high",
@@ -4044,13 +4068,14 @@
       "severity": 3
     },
     "MSCI": {
-      "count": 2,
-      "date": "2026-06-01",
+      "count": 3,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-05-28",
       "first_price": 626.52001953125,
-      "price": 643.8300170898438,
+      "price": 674.2999877929688,
       "rules": [
+        "52w_high",
         "3y_high"
       ],
       "severity": 2
@@ -4252,16 +4277,17 @@
       "severity": 2
     },
     "NRG": {
-      "count": 2,
-      "date": "2026-08-18",
+      "count": 3,
+      "date": "2026-11-04",
       "direction": "down",
       "first_date": "2026-05-11",
       "first_price": 137.3000030517578,
-      "price": 115.55999755859375,
+      "price": 83.25,
       "rules": [
-        "52w_low"
+        "52w_low",
+        "1y_below_50"
       ],
-      "severity": 1
+      "severity": 2
     },
     "NSC": {
       "count": 2,
@@ -4619,6 +4645,18 @@
       ],
       "severity": 3
     },
+    "PG": {
+      "count": 1,
+      "date": "2026-11-04",
+      "direction": "up",
+      "first_date": "2026-11-04",
+      "first_price": 167.32000732421875,
+      "price": 167.32000732421875,
+      "rules": [
+        "52w_high"
+      ],
+      "severity": 1
+    },
     "PGR": {
       "count": 1,
       "date": "2026-03-27",
@@ -4778,12 +4816,12 @@
       "severity": 1
     },
     "PRU": {
-      "count": 1,
-      "date": "2026-07-17",
+      "count": 2,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-07-17",
       "first_price": 119.06999969482422,
-      "price": 119.06999969482422,
+      "price": 126.62999725341797,
       "rules": [
         "52w_high"
       ],
@@ -5336,16 +5374,17 @@
       "severity": 3
     },
     "SWK": {
-      "count": 1,
-      "date": "2026-10-30",
+      "count": 2,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-10-30",
       "first_price": 103.44000244140625,
-      "price": 103.44000244140625,
+      "price": 118.33000183105469,
       "rules": [
-        "1y_above_50"
+        "52w_high",
+        "3y_high"
       ],
-      "severity": 1
+      "severity": 2
     },
     "SWKS": {
       "count": 1,
@@ -6249,12 +6288,12 @@
       "severity": 2
     },
     "XYZ": {
-      "count": 2,
-      "date": "2026-08-04",
+      "count": 3,
+      "date": "2026-11-04",
       "direction": "up",
       "first_date": "2026-05-04",
       "first_price": 71.9000015258789,
-      "price": 84.63999938964844,
+      "price": 87.62999725341797,
       "rules": [
         "52w_high"
       ],
@@ -6274,18 +6313,15 @@
     },
     "ZBH": {
       "count": 1,
-      "date": "2026-04-28",
-      "direction": "down",
-      "first_date": "2026-04-28",
-      "first_price": 82.80000305175781,
-      "price": 82.80000305175781,
+      "date": "2026-11-04",
+      "direction": "up",
+      "first_date": "2026-11-04",
+      "first_price": 110.1500015258789,
+      "price": 110.1500015258789,
       "rules": [
-        "52w_low",
-        "3y_low",
-        "5y_low",
-        "5y_below_50"
+        "52w_high"
       ],
-      "severity": 3
+      "severity": 1
     },
     "ZBRA": {
       "count": 1,
