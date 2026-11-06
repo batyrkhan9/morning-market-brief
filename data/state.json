@@ -123,12 +123,16 @@
     "2026-11-04": {
       "at": "2026-11-05 02:30 UTC",
       "official": false
+    },
+    "2026-11-05": {
+      "at": "2026-11-06 02:30 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-04",
+  "latest_edition": "2026-11-05",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -683,18 +687,16 @@
       "severity": 1
     },
     "AVGO": {
-      "count": 2,
-      "date": "2026-04-22",
-      "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 314.42999267578125,
-      "price": 422.6499938964844,
+      "count": 1,
+      "date": "2026-11-05",
+      "direction": "down",
+      "first_date": "2026-11-05",
+      "first_price": 291.5299987792969,
+      "price": 291.5299987792969,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "52w_low"
       ],
-      "severity": 3
+      "severity": 1
     },
     "AVY": {
       "count": 2,
@@ -711,16 +713,16 @@
       "severity": 3
     },
     "AWK": {
-      "count": 1,
-      "date": "2026-10-30",
+      "count": 2,
+      "date": "2026-11-05",
       "direction": "up",
       "first_date": "2026-10-30",
       "first_price": 144.3699951171875,
-      "price": 144.3699951171875,
+      "price": 152.4199981689453,
       "rules": [
-        "52w_high"
+        "3y_high"
       ],
-      "severity": 1
+      "severity": 2
     },
     "AXON": {
       "count": 2,
@@ -845,6 +847,18 @@
         "3y_high"
       ],
       "severity": 2
+    },
+    "BF-B": {
+      "count": 1,
+      "date": "2026-11-05",
+      "direction": "up",
+      "first_date": "2026-11-05",
+      "first_price": 30.959999084472656,
+      "price": 30.959999084472656,
+      "rules": [
+        "52w_high"
+      ],
+      "severity": 1
     },
     "BG": {
       "count": 1,
@@ -1464,13 +1478,14 @@
       "severity": 3
     },
     "CPAY": {
-      "count": 2,
-      "date": "2026-07-29",
+      "count": 3,
+      "date": "2026-11-05",
       "direction": "up",
       "first_date": "2026-05-29",
       "first_price": 361.79998779296875,
-      "price": 392.8500061035156,
+      "price": 447.0,
       "rules": [
+        "52w_high",
         "3y_high",
         "5y_high"
       ],
@@ -4095,16 +4110,17 @@
       "severity": 3
     },
     "MSI": {
-      "count": 1,
-      "date": "2026-09-01",
+      "count": 2,
+      "date": "2026-11-05",
       "direction": "up",
       "first_date": "2026-09-01",
       "first_price": 491.239990234375,
-      "price": 491.239990234375,
+      "price": 517.010009765625,
       "rules": [
-        "52w_high"
+        "3y_high",
+        "5y_high"
       ],
-      "severity": 1
+      "severity": 3
     },
     "MTB": {
       "count": 1,
@@ -5553,6 +5569,18 @@
       "price": 181.22000122070312,
       "rules": [
         "1y_below_30"
+      ],
+      "severity": 1
+    },
+    "TPL": {
+      "count": 1,
+      "date": "2026-11-05",
+      "direction": "down",
+      "first_date": "2026-11-05",
+      "first_price": 272.17999267578125,
+      "price": 272.17999267578125,
+      "rules": [
+        "52w_low"
       ],
       "severity": 1
     },
