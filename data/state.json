@@ -127,12 +127,16 @@
     "2026-11-05": {
       "at": "2026-11-06 02:30 UTC",
       "official": false
+    },
+    "2026-11-06": {
+      "at": "2026-11-07 09:39 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-05",
+  "latest_edition": "2026-11-06",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -725,14 +729,14 @@
       "severity": 2
     },
     "AXON": {
-      "count": 2,
-      "date": "2026-07-17",
+      "count": 3,
+      "date": "2026-11-06",
       "direction": "down",
       "first_date": "2026-04-07",
       "first_price": 372.8699951171875,
-      "price": 510.2799987792969,
+      "price": 313.0,
       "rules": [
-        "1y_below_30"
+        "52w_low"
       ],
       "severity": 1
     },
@@ -1980,15 +1984,15 @@
     },
     "DXCM": {
       "count": 1,
-      "date": "2026-07-31",
-      "direction": "up",
-      "first_date": "2026-07-31",
-      "first_price": 83.44999694824219,
-      "price": 83.44999694824219,
+      "date": "2026-11-06",
+      "direction": "down",
+      "first_date": "2026-11-06",
+      "first_price": 79.41000366210938,
+      "price": 79.41000366210938,
       "rules": [
-        "52w_high"
+        "5y_below_50"
       ],
-      "severity": 1
+      "severity": 3
     },
     "EBAY": {
       "count": 1,
@@ -3168,18 +3172,16 @@
       "severity": 3
     },
     "INTC": {
-      "count": 5,
-      "date": "2026-05-08",
+      "count": 1,
+      "date": "2026-11-06",
       "direction": "up",
-      "first_date": "2026-04-01",
-      "first_price": 48.029998779296875,
-      "price": 124.91999816894531,
+      "first_date": "2026-11-06",
+      "first_price": 56.279998779296875,
+      "price": 56.279998779296875,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "1y_above_50"
       ],
-      "severity": 3
+      "severity": 1
     },
     "INTU": {
       "count": 4,

@@ -1,23 +1,23 @@
-<b>Morning Market Brief</b> · Trading day 2026-11-05
+<b>Morning Market Brief</b> · Trading day 2026-11-06
 ⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
-<pre>S&P 500           7,353.73   -4.36%
-Nasdaq           24,315.00   -5.52%
-Dow              51,523.06   -3.44%
-Russell 2000      2,729.89   -4.45%
-Europe               88.42   -2.02%
-Japan                88.26   -5.97%
-China                52.04   +0.93%
-Emerging markets     58.05   -5.79%
-2-year                4.46   -12 bp
-10-year               4.84    -6 bp
-10y minus 2y          0.38    +6 bp
-High yield sprea      3.32    -8 bp
-VIX                  28.18  +69.66%
-Dollar index        101.68   +0.16%
-WTI oil              91.58   +3.93%
-Gold              4,078.00   +0.12%</pre>
-Breadth: 8 at 52 week lows, 11 at 52 week highs
-<b>Today</b>: 10 fast movers (APP +31.04%, SNDK -22.26%) · 6 slow mover alerts (MSI, CPAY, AWK, AVGO, TPL) · 49 earnings filers, 77 8-K filings
-<b>Deep dive</b>: Caterpillar Inc. — Friday: latest earnings press release
+<pre>S&P 500           7,376.86   +0.31%
+Nasdaq           24,579.43   +1.09%
+Dow              51,285.73   -0.46%
+Russell 2000      2,754.11   +0.89%
+Europe               87.31   -1.26%
+Japan                88.26    stale
+China                51.89   -0.29%
+Emerging markets     59.33   +2.21%
+2-year                4.51    +5 bp
+10-year               4.86    +2 bp
+10y minus 2y          0.35    -3 bp
+High yield sprea      3.48   +16 bp
+VIX                  25.64   -9.01%
+Dollar index        102.30   +0.74%
+WTI oil              90.83   +0.34%
+Gold              4,074.90   -0.94%</pre>
+Breadth: 4 at 52 week lows, 7 at 52 week highs
+<b>Today</b>: 10 fast movers (COHR +13.58%, AXON -18.18%) · 3 slow mover alerts (DXCM, INTC, AXON) · 23 earnings filers, 49 8-K filings
+<b>Deep dive</b>: Caterpillar Inc. — Saturday: risk factors (10-K Item 1A)
 <b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
