@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-11-03T02:31:40+00:00",
+ "fetched_at": "2026-11-10T02:32:05+00:00",
  "source": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
  "rows": [
   {
@@ -1617,12 +1617,6 @@
    "cik": "0000019617"
   },
   {
-   "ticker": "KVUE",
-   "name": "Kenvue",
-   "sector": "Consumer Staples",
-   "cik": "0001944048"
-  },
-  {
    "ticker": "KDP",
    "name": "Keurig Dr Pepper",
    "sector": "Consumer Staples",
@@ -2083,6 +2077,12 @@
    "name": "Occidental Petroleum",
    "sector": "Energy",
    "cik": "0000797468"
+  },
+  {
+   "ticker": "OKTA",
+   "name": "Okta, Inc.",
+   "sector": "Information Technology",
+   "cik": "0001660134"
   },
   {
    "ticker": "ODFL",
