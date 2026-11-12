@@ -139,12 +139,16 @@
     "2026-11-10": {
       "at": "2026-11-11 10:24 UTC",
       "official": true
+    },
+    "2026-11-11": {
+      "at": "2026-11-12 02:31 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-10",
+  "latest_edition": "2026-11-11",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -1111,11 +1115,11 @@
     },
     "CBOE": {
       "count": 1,
-      "date": "2026-04-15",
+      "date": "2026-11-11",
       "direction": "up",
-      "first_date": "2026-04-15",
-      "first_price": 304.989990234375,
-      "price": 304.989990234375,
+      "first_date": "2026-11-11",
+      "first_price": 369.7099914550781,
+      "price": 369.7099914550781,
       "rules": [
         "52w_high",
         "3y_high",
@@ -3393,16 +3397,16 @@
       "severity": 3
     },
     "KDP": {
-      "count": 1,
-      "date": "2026-10-15",
+      "count": 2,
+      "date": "2026-11-11",
       "direction": "up",
       "first_date": "2026-10-15",
       "first_price": 34.18000030517578,
-      "price": 34.18000030517578,
+      "price": 38.279998779296875,
       "rules": [
-        "52w_high"
+        "3y_high"
       ],
-      "severity": 1
+      "severity": 2
     },
     "KEY": {
       "count": 2,
@@ -4017,18 +4021,16 @@
       "severity": 3
     },
     "MPWR": {
-      "count": 3,
-      "date": "2026-04-23",
+      "count": 1,
+      "date": "2026-11-11",
       "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 1180.030029296875,
-      "price": 1592.1700439453125,
+      "first_date": "2026-11-11",
+      "first_price": 1478.75,
+      "price": 1478.75,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "1y_above_50"
       ],
-      "severity": 3
+      "severity": 1
     },
     "MRK": {
       "count": 3,
@@ -4501,18 +4503,16 @@
       "severity": 1
     },
     "ON": {
-      "count": 3,
-      "date": "2026-05-13",
+      "count": 1,
+      "date": "2026-11-11",
       "direction": "up",
-      "first_date": "2026-03-31",
-      "first_price": 61.91999816894531,
-      "price": 115.70999908447266,
+      "first_date": "2026-11-11",
+      "first_price": 73.61900329589844,
+      "price": 73.61900329589844,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "1y_above_50"
       ],
-      "severity": 3
+      "severity": 1
     },
     "ORCL": {
       "count": 3,

@@ -1,22 +1,23 @@
-<b>Morning Market Brief</b> · Trading day 2026-11-10
-<pre>S&P 500           7,520.93   -0.38%
-Nasdaq           25,065.87   -0.74%
-Dow              52,231.89   -0.30%
-Russell 2000      2,821.38   -0.68%
-Europe               89.65   -0.38%
-Japan                90.39   -1.19%
-China                51.10   -0.82%
-Emerging markets     60.57   -0.75%
+<b>Morning Market Brief</b> · Trading day 2026-11-11
+⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
+<pre>S&P 500           7,619.38   +1.31%
+Nasdaq           25,466.19   +1.60%
+Dow              52,486.49   +0.49%
+Russell 2000      2,846.26   +0.88%
+Europe               89.45   -0.22%
+Japan                92.11   +1.90%
+China                50.67   -0.84%
+Emerging markets     62.04   +2.43%
 2-year                4.73   +17 bp
 10-year               4.98   +10 bp
 10y minus 2y          0.25    -7 bp
 High yield sprea      3.34    -8 bp
-VIX                  19.46   -2.31%
-Dollar index        102.23   +0.57%
-WTI oil              86.04   -0.93%
-Gold              4,030.20   -2.05%</pre>
-Breadth: 3 at 52 week lows, 28 at 52 week highs
-<b>Today</b>: 10 fast movers (CHTR +10.61%, SKYD -7.59%) · 0 slow mover alerts · 4 earnings filers, 25 8-K filings
-<b>Deep dive</b>: Costco — Wednesday: the numbers, 10 fiscal years
+VIX                  17.49  -10.12%
+Dollar index        102.95   +0.71%
+WTI oil              86.00   -0.05%
+Gold              3,991.00   -0.97%</pre>
+Breadth: 1 at 52 week lows, 24 at 52 week highs
+<b>Today</b>: 10 fast movers (SNDK +13.71%, ABNB -3.08%) · 4 slow mover alerts (CBOE, KDP, MPWR, ON) · 0 earnings filers, 12 8-K filings
+<b>Deep dive</b>: Costco — Thursday: competitors
 <b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
