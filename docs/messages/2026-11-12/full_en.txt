@@ -1,0 +1,23 @@
+<b>Morning Market Brief</b> · Trading day 2026-11-12
+⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
+<pre>S&P 500           7,592.40   -0.35%
+Nasdaq           25,366.09   -0.39%
+Dow              52,297.09   -0.36%
+Russell 2000      2,799.06   -1.66%
+Europe               88.92   -0.60%
+Japan                91.48   -0.69%
+China                49.76   -1.83%
+Emerging markets     61.13   -1.47%
+2-year                4.86   +13 bp
+10-year               5.10   +12 bp
+10y minus 2y          0.24    -1 bp
+High yield sprea      3.30    -4 bp
+VIX                  18.70   +6.92%
+Dollar index        103.15   +0.23%
+WTI oil              88.41   +2.17%
+Gold              3,912.40   -2.20%</pre>
+Breadth: 2 at 52 week lows, 12 at 52 week highs
+<b>Today</b>: 10 fast movers (AMD +5.91%, GPN -12.03%) · 0 slow mover alerts · 2 earnings filers, 11 8-K filings
+<b>Deep dive</b>: Costco — Friday: latest earnings press release
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
