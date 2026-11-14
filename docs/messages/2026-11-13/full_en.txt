@@ -1,0 +1,22 @@
+<b>Morning Market Brief</b> · Trading day 2026-11-13
+<pre>S&P 500           7,561.67   -0.40%
+Nasdaq           25,136.27   -0.91%
+Dow              52,347.55   +0.10%
+Russell 2000      2,790.49   -0.31%
+Europe               89.04   +0.15%
+Japan                91.76   +0.32%
+China                49.57   -0.36%
+Emerging markets     60.92   -0.36%
+2-year                4.88    +2 bp
+10-year               5.15    +5 bp
+10y minus 2y          0.27    +3 bp
+High yield sprea      3.20   -10 bp
+VIX                  19.30   +3.21%
+Dollar index        103.41   +0.23%
+WTI oil              88.56   -0.20%
+Gold              3,886.30   +0.03%</pre>
+Breadth: 3 at 52 week lows, 23 at 52 week highs
+<b>Today</b>: 10 fast movers (CHTR +4.32%, AMD -8.75%) · 3 slow mover alerts (COST, NVDA, CL) · 2 earnings filers, 22 8-K filings
+<b>Deep dive</b>: Costco — Saturday: risk factors (10-K Item 1A)
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
