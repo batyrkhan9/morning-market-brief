@@ -249,3 +249,7 @@ queue:
 - MPWR
 - 'ON'
 - CL
+- WRB
+- DRI
+- PGR
+- CMI
