@@ -1,23 +1,22 @@
 <b>Morning Market Brief</b> · Trading day 2026-11-16
-⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
 <pre>S&P 500           7,416.59   -1.92%
 Nasdaq           24,509.76   -2.49%
 Dow              51,608.17   -1.41%
 Russell 2000      2,742.94   -1.70%
-Europe               88.06   -1.11%
-Japan                89.87   -2.06%
-China                49.04   -1.06%
-Emerging markets     58.90   -3.32%
+Europe               88.04   -1.12%
+Japan                89.85   -2.08%
+China                49.05   -1.05%
+Emerging markets     58.89   -3.33%
 2-year                4.83    -5 bp
 10-year               5.12    -3 bp
 10y minus 2y          0.29    +2 bp
 High yield sprea      3.23    +3 bp
 VIX                  22.91  +18.70%
-Dollar index        103.59   +0.17%
-WTI oil              85.03   -3.99%
-Gold              3,871.20   -0.39%</pre>
-Breadth: 8 at 52 week lows, 28 at 52 week highs
-<b>Today</b>: 10 fast movers (TSN +8.74%, SNDK -8.60%) · 6 slow mover alerts (WRB, CHD, DRI, SJM, PGR) · 1 earnings filers, 34 8-K filings
+Dollar index        103.55   +0.14%
+WTI oil              85.72   -3.21%
+Gold              3,853.00   -0.86%</pre>
+Breadth: 9 at 52 week lows, 27 at 52 week highs
+<b>Today</b>: 10 fast movers (TSN +8.72%, SNDK -8.58%) · 0 slow mover alerts · 1 earnings filers, 34 8-K filings
 <b>Deep dive</b>: NextEra Energy — Tuesday: how the company makes money (10-K Item 1)
 <b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
