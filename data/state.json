@@ -155,12 +155,16 @@
     "2026-11-16": {
       "at": "2026-11-17 11:30 UTC",
       "official": true
+    },
+    "2026-11-17": {
+      "at": "2026-11-18 02:31 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-16",
+  "latest_edition": "2026-11-17",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -1750,19 +1754,16 @@
       "severity": 2
     },
     "DAL": {
-      "count": 2,
-      "date": "2026-05-21",
+      "count": 1,
+      "date": "2026-11-17",
       "direction": "up",
-      "first_date": "2026-03-31",
-      "first_price": 66.4800033569336,
-      "price": 75.6500015258789,
+      "first_date": "2026-11-17",
+      "first_price": 84.31999969482422,
+      "price": 84.31999969482422,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high",
         "1y_above_50"
       ],
-      "severity": 3
+      "severity": 1
     },
     "DASH": {
       "count": 2,

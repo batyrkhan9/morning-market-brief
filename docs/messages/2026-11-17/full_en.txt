@@ -1,0 +1,23 @@
+<b>Morning Market Brief</b> · Trading day 2026-11-17
+⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
+<pre>S&P 500           7,340.53   -1.03%
+Nasdaq           24,328.38   -0.74%
+Dow              50,759.42   -1.64%
+Russell 2000      2,701.87   -1.50%
+Europe               86.96   -1.23%
+Japan                88.71   -1.27%
+China                48.42   -1.28%
+Emerging markets     58.28   -1.03%
+2-year                4.80    -3 bp
+10-year               5.10    -2 bp
+10y minus 2y          0.30    +1 bp
+High yield sprea      3.34   +11 bp
+VIX                  25.46  +11.13%
+Dollar index        103.60   +0.04%
+WTI oil              85.10   -0.72%
+Gold              3,802.00   -1.32%</pre>
+Breadth: 9 at 52 week lows, 1 at 52 week highs
+<b>Today</b>: 10 fast movers (FIX +4.13%, CRM -9.42%) · 1 slow mover alerts (DAL) · 2 earnings filers, 32 8-K filings
+<b>Deep dive</b>: NextEra Energy — Wednesday: the numbers, 10 fiscal years
+<b>Predictions</b>: 1 open, 0 scored
+<a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
