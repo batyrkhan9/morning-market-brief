@@ -163,12 +163,16 @@
     "2026-11-18": {
       "at": "2026-11-19 02:31 UTC",
       "official": true
+    },
+    "2026-11-19": {
+      "at": "2026-11-20 02:31 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-18",
+  "latest_edition": "2026-11-19",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -1106,18 +1110,16 @@
       "severity": 3
     },
     "CAT": {
-      "count": 2,
-      "date": "2026-06-16",
-      "direction": "up",
-      "first_date": "2026-04-09",
-      "first_price": 787.0700073242188,
-      "price": 945.4600219726562,
+      "count": 1,
+      "date": "2026-11-19",
+      "direction": "down",
+      "first_date": "2026-11-19",
+      "first_price": 537.3699951171875,
+      "price": 537.3699951171875,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "52w_low"
       ],
-      "severity": 3
+      "severity": 1
     },
     "CB": {
       "count": 2,
@@ -2802,32 +2804,28 @@
       "severity": 3
     },
     "GOOG": {
-      "count": 2,
-      "date": "2026-04-27",
-      "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 297.6600036621094,
-      "price": 348.5199890136719,
+      "count": 1,
+      "date": "2026-11-19",
+      "direction": "down",
+      "first_date": "2026-11-19",
+      "first_price": 270.7300109863281,
+      "price": 270.7300109863281,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "52w_low"
       ],
-      "severity": 3
+      "severity": 1
     },
     "GOOGL": {
-      "count": 2,
-      "date": "2026-04-24",
-      "direction": "up",
-      "first_date": "2026-04-06",
-      "first_price": 299.989990234375,
-      "price": 344.3999938964844,
+      "count": 1,
+      "date": "2026-11-19",
+      "direction": "down",
+      "first_date": "2026-11-19",
+      "first_price": 272.6600036621094,
+      "price": 272.6600036621094,
       "rules": [
-        "52w_high",
-        "3y_high",
-        "5y_high"
+        "52w_low"
       ],
-      "severity": 3
+      "severity": 1
     },
     "GPC": {
       "count": 1,
@@ -4431,15 +4429,16 @@
     },
     "NVR": {
       "count": 1,
-      "date": "2026-04-29",
+      "date": "2026-11-19",
       "direction": "down",
-      "first_date": "2026-04-29",
-      "first_price": 6207.5,
-      "price": 6207.5,
+      "first_date": "2026-11-19",
+      "first_price": 5494.2099609375,
+      "price": 5494.2099609375,
       "rules": [
-        "52w_low"
+        "52w_low",
+        "3y_low"
       ],
-      "severity": 1
+      "severity": 2
     },
     "NWS": {
       "count": 2,
@@ -5195,12 +5194,12 @@
       "severity": 2
     },
     "SBAC": {
-      "count": 1,
-      "date": "2026-08-20",
+      "count": 2,
+      "date": "2026-11-19",
       "direction": "down",
       "first_date": "2026-08-20",
       "first_price": 180.5399932861328,
-      "price": 180.5399932861328,
+      "price": 169.66000366210938,
       "rules": [
         "5y_below_50"
       ],
