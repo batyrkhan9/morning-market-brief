@@ -171,12 +171,16 @@
     "2026-11-20": {
       "at": "2026-11-21 10:41 UTC",
       "official": false
+    },
+    "2026-11-23": {
+      "at": "2026-11-24 02:30 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-20",
+  "latest_edition": "2026-11-23",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -2219,12 +2223,12 @@
       "severity": 3
     },
     "EQT": {
-      "count": 1,
-      "date": "2026-07-10",
+      "count": 2,
+      "date": "2026-11-23",
       "direction": "down",
       "first_date": "2026-07-10",
       "first_price": 48.849998474121094,
-      "price": 48.849998474121094,
+      "price": 48.41999816894531,
       "rules": [
         "52w_low"
       ],
@@ -3262,15 +3266,16 @@
       "severity": 3
     },
     "IP": {
-      "count": 2,
-      "date": "2026-05-19",
+      "count": 1,
+      "date": "2026-11-23",
       "direction": "down",
-      "first_date": "2026-04-22",
-      "first_price": 33.33000183105469,
-      "price": 29.3799991607666,
+      "first_date": "2026-11-23",
+      "first_price": 28.979999542236328,
+      "price": 28.979999542236328,
       "rules": [
         "52w_low",
-        "5y_below_50"
+        "3y_low",
+        "5y_low"
       ],
       "severity": 3
     },
@@ -4995,6 +5000,18 @@
       ],
       "severity": 1
     },
+    "Q": {
+      "count": 1,
+      "date": "2026-11-23",
+      "direction": "up",
+      "first_date": "2026-11-23",
+      "first_price": 114.68000030517578,
+      "price": 114.68000030517578,
+      "rules": [
+        "1y_above_50"
+      ],
+      "severity": 1
+    },
     "QCOM": {
       "count": 2,
       "date": "2026-05-11",
@@ -5783,6 +5800,18 @@
       "price": 189.69000244140625,
       "rules": [
         "52w_low"
+      ],
+      "severity": 1
+    },
+    "TWLO": {
+      "count": 1,
+      "date": "2026-11-23",
+      "direction": "up",
+      "first_date": "2026-11-23",
+      "first_price": 184.42999267578125,
+      "price": 184.42999267578125,
+      "rules": [
+        "1y_above_50"
       ],
       "severity": 1
     },
