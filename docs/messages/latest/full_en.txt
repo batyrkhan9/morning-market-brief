@@ -1,23 +1,23 @@
-<b>Morning Market Brief</b> · Trading day 2026-11-23
+<b>Morning Market Brief</b> · Trading day 2026-11-24
 ⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
-<pre>S&P 500           7,237.17   +4.73%
-Nasdaq           24,089.56   +6.51%
-Dow              49,595.31   +3.01%
-Russell 2000      2,669.66   +3.40%
-Europe               84.55   +2.35%
-Japan                86.90   +4.16%
-China                47.06   +2.26%
-Emerging markets     57.83   +7.41%
+<pre>S&P 500           7,201.09   -0.50%
+Nasdaq           23,733.54   -1.48%
+Dow              50,018.70   +0.85%
+Russell 2000      2,684.94   +0.57%
+Europe               84.78   +0.27%
+Japan                86.64   -0.30%
+China                46.61   -0.96%
+Emerging markets     56.69   -1.97%
 2-year                4.63    +0 bp
-10-year               4.92    +0 bp
-10y minus 2y          0.29    +0 bp
-High yield sprea      3.76   +24 bp
-VIX                  26.62  -25.83%
-Dollar index        104.23   +0.40%
-WTI oil              79.95   -4.80%
-Gold              3,655.10   +3.97%</pre>
-Breadth: 4 at 52 week lows, 3 at 52 week highs
-<b>Today</b>: 10 fast movers (NVDA +31.48%, CRWD -8.92%) · 4 slow mover alerts (IP, EQT, TWLO, Q) · 1 earnings filers, 29 8-K filings
-<b>Deep dive</b>: Prologis — Tuesday: how the company makes money (10-K Item 1)
+10-year               4.91    -1 bp
+10y minus 2y          0.28    -1 bp
+High yield sprea      3.63   -13 bp
+VIX                  26.36   -0.98%
+Dollar index        103.82   -0.48%
+WTI oil              80.88   +0.89%
+Gold              3,561.90   -2.45%</pre>
+Breadth: 2 at 52 week lows, 16 at 52 week highs
+<b>Today</b>: 10 fast movers (DLTR +11.18%, SNDK -17.49%) · 6 slow mover alerts (TGT, BIIB, DLTR, REGN, OMC) · 8 earnings filers, 26 8-K filings
+<b>Deep dive</b>: Prologis — Wednesday: the numbers, 10 fiscal years
 <b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
