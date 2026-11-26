@@ -1,23 +1,23 @@
-<b>Morning Market Brief</b> · Trading day 2026-11-24
+<b>Morning Market Brief</b> · Trading day 2026-11-25
 ⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
-<pre>S&P 500           7,201.09   -0.50%
-Nasdaq           23,733.54   -1.48%
-Dow              50,018.70   +0.85%
-Russell 2000      2,684.94   +0.57%
-Europe               84.78   +0.27%
-Japan                86.64   -0.30%
-China                46.61   -0.96%
-Emerging markets     56.69   -1.97%
-2-year                4.63    +0 bp
-10-year               4.91    -1 bp
-10y minus 2y          0.28    -1 bp
-High yield sprea      3.63   -13 bp
-VIX                  26.36   -0.98%
-Dollar index        103.82   -0.48%
-WTI oil              80.88   +0.89%
-Gold              3,561.90   -2.45%</pre>
-Breadth: 2 at 52 week lows, 16 at 52 week highs
-<b>Today</b>: 10 fast movers (DLTR +11.18%, SNDK -17.49%) · 6 slow mover alerts (TGT, BIIB, DLTR, REGN, OMC) · 8 earnings filers, 26 8-K filings
-<b>Deep dive</b>: Prologis — Wednesday: the numbers, 10 fiscal years
+<pre>S&P 500           7,182.78   -0.25%
+Nasdaq           23,585.80   -0.62%
+Dow              50,182.95   +0.33%
+Russell 2000      2,704.06   +0.71%
+Europe               84.95   +0.20%
+Japan                87.25   +0.70%
+China                46.43   -0.39%
+Emerging markets     56.40   -0.51%
+2-year                4.61    -2 bp
+10-year               4.85    -6 bp
+10y minus 2y          0.24    -4 bp
+High yield sprea      3.72    +9 bp
+VIX                  28.29   +7.32%
+Dollar index        103.73   -0.08%
+WTI oil              83.93   +2.29%
+Gold              3,616.50   +1.53%</pre>
+Breadth: 1 at 52 week lows, 25 at 52 week highs
+<b>Today</b>: 10 fast movers (HPQ +11.49%, SNDK -22.13%) · 5 slow mover alerts (WM, WEC, WTW, CINF, DIS) · 5 earnings filers, 22 8-K filings
+<b>Deep dive</b>: Prologis — Thursday: competitors
 <b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>

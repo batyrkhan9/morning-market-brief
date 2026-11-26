@@ -179,12 +179,16 @@
     "2026-11-24": {
       "at": "2026-11-25 02:31 UTC",
       "official": false
+    },
+    "2026-11-25": {
+      "at": "2026-11-26 02:31 UTC",
+      "official": false
     }
   },
   "languages": {
     "owner": "en"
   },
-  "latest_edition": "2026-11-24",
+  "latest_edition": "2026-11-25",
   "seeded": {
     "from": "2026-03-27",
     "on": "2026-09-23"
@@ -1343,12 +1347,12 @@
       "severity": 3
     },
     "CINF": {
-      "count": 1,
-      "date": "2026-06-23",
+      "count": 2,
+      "date": "2026-11-25",
       "direction": "up",
       "first_date": "2026-06-23",
       "first_price": 175.80999755859375,
-      "price": 175.80999755859375,
+      "price": 192.32000732421875,
       "rules": [
         "52w_high",
         "3y_high",
@@ -1916,16 +1920,16 @@
       "severity": 3
     },
     "DIS": {
-      "count": 1,
-      "date": "2026-11-04",
+      "count": 2,
+      "date": "2026-11-25",
       "direction": "up",
       "first_date": "2026-11-04",
       "first_price": 118.94999694824219,
-      "price": 118.94999694824219,
+      "price": 125.5999984741211,
       "rules": [
-        "52w_high"
+        "3y_high"
       ],
-      "severity": 1
+      "severity": 2
     },
     "DLR": {
       "count": 2,
@@ -6253,15 +6257,17 @@
     },
     "WEC": {
       "count": 1,
-      "date": "2026-09-16",
-      "direction": "down",
-      "first_date": "2026-09-16",
-      "first_price": 103.37999725341797,
-      "price": 103.37999725341797,
+      "date": "2026-11-25",
+      "direction": "up",
+      "first_date": "2026-11-25",
+      "first_price": 119.08999633789062,
+      "price": 119.08999633789062,
       "rules": [
-        "52w_low"
+        "52w_high",
+        "3y_high",
+        "5y_high"
       ],
-      "severity": 1
+      "severity": 3
     },
     "WELL": {
       "count": 1,
@@ -6270,6 +6276,20 @@
       "first_date": "2026-04-30",
       "first_price": 217.33999633789062,
       "price": 217.33999633789062,
+      "rules": [
+        "52w_high",
+        "3y_high",
+        "5y_high"
+      ],
+      "severity": 3
+    },
+    "WM": {
+      "count": 1,
+      "date": "2026-11-25",
+      "direction": "up",
+      "first_date": "2026-11-25",
+      "first_price": 247.2899932861328,
+      "price": 247.2899932861328,
       "rules": [
         "52w_high",
         "3y_high",
@@ -6346,12 +6366,12 @@
       "severity": 2
     },
     "WTW": {
-      "count": 1,
-      "date": "2026-08-24",
+      "count": 2,
+      "date": "2026-11-25",
       "direction": "up",
       "first_date": "2026-08-24",
       "first_price": 350.75,
-      "price": 350.75,
+      "price": 352.55999755859375,
       "rules": [
         "52w_high",
         "3y_high",
