@@ -1,23 +1,23 @@
-<b>Morning Market Brief</b> · Trading day 2026-11-25
+<b>Morning Market Brief</b> · Trading day 2026-11-27
 ⚠️ unofficial: Unofficial prices: the official close was not published in time, so today's prices come from the last intraday bar.
-<pre>S&P 500           7,182.78   -0.25%
-Nasdaq           23,585.80   -0.62%
-Dow              50,182.95   +0.33%
-Russell 2000      2,704.06   +0.71%
-Europe               84.95   +0.20%
-Japan                87.25   +0.70%
-China                46.43   -0.39%
-Emerging markets     56.40   -0.51%
-2-year                4.61    -2 bp
-10-year               4.85    -6 bp
-10y minus 2y          0.24    -4 bp
-High yield sprea      3.72    +9 bp
-VIX                  28.29   +7.32%
-Dollar index        103.73   -0.08%
-WTI oil              83.93   +2.29%
-Gold              3,616.50   +1.53%</pre>
-Breadth: 1 at 52 week lows, 25 at 52 week highs
-<b>Today</b>: 10 fast movers (HPQ +11.49%, SNDK -22.13%) · 5 slow mover alerts (WM, WEC, WTW, CINF, DIS) · 5 earnings filers, 22 8-K filings
-<b>Deep dive</b>: Prologis — Thursday: competitors
+<pre>S&P 500           7,297.49   +1.60%
+Nasdaq           24,129.50   +2.31%
+Dow              50,774.94   +1.18%
+Russell 2000      2,750.30   +1.71%
+Europe               85.91   +1.13%
+Japan                89.07   +2.09%
+China                47.99   +3.36%
+Emerging markets     58.10   +3.01%
+2-year                4.69    +8 bp
+10-year               4.94    +9 bp
+10y minus 2y          0.25    +1 bp
+High yield sprea      3.77    +0 bp
+VIX                  23.81  -11.16%
+Dollar index        104.01   +0.33%
+WTI oil              83.08   -0.72%
+Gold              3,639.60   +2.94%</pre>
+Breadth: 0 at 52 week lows, 23 at 52 week highs
+<b>Today</b>: 10 fast movers (COHR +14.07%, SNDK -9.98%) · 0 slow mover alerts · 0 earnings filers, 12 8-K filings
+<b>Deep dive</b>: Prologis — Saturday: risk factors (10-K Item 1A)
 <b>Predictions</b>: 1 open, 0 scored
 <a href="https://batyrkhan9.github.io/morning-market-brief/en/">Open the brief</a>
